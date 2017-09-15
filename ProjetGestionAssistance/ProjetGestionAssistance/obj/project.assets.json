@@ -9778,11 +9778,11 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "C:\\Users\\Vengor\\Desktop\\Automne 2017\\Dev Projet\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
+      "projectUniqueName": "C:\\Users\\Vengor\\Desktop\\Automne 2017\\Dev Projet\\Repo\\ProjetAssistance\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
       "projectName": "ProjetGestionAssistance",
-      "projectPath": "C:\\Users\\Vengor\\Desktop\\Automne 2017\\Dev Projet\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
+      "projectPath": "C:\\Users\\Vengor\\Desktop\\Automne 2017\\Dev Projet\\Repo\\ProjetAssistance\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
       "packagesPath": "C:\\Users\\Vengor\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Vengor\\Desktop\\Automne 2017\\Dev Projet\\ProjetGestionAssistance\\ProjetGestionAssistance\\obj\\",
+      "outputPath": "C:\\Users\\Vengor\\Desktop\\Automne 2017\\Dev Projet\\Repo\\ProjetAssistance\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Vengor\\AppData\\Roaming\\NuGet\\NuGet.Config",
