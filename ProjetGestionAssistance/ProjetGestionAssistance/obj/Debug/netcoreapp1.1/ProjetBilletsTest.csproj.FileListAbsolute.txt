@@ -1,0 +1,10 @@
+C:\Users\Vengor\Desktop\Automne 2017\Dev Projet\ProjetBilletsTest\ProjetBilletsTest\bin\Debug\netcoreapp1.1\ProjetBilletsTest.deps.json
+C:\Users\Vengor\Desktop\Automne 2017\Dev Projet\ProjetBilletsTest\ProjetBilletsTest\bin\Debug\netcoreapp1.1\ProjetBilletsTest.runtimeconfig.json
+C:\Users\Vengor\Desktop\Automne 2017\Dev Projet\ProjetBilletsTest\ProjetBilletsTest\bin\Debug\netcoreapp1.1\ProjetBilletsTest.runtimeconfig.dev.json
+C:\Users\Vengor\Desktop\Automne 2017\Dev Projet\ProjetBilletsTest\ProjetBilletsTest\bin\Debug\netcoreapp1.1\ProjetBilletsTest.dll
+C:\Users\Vengor\Desktop\Automne 2017\Dev Projet\ProjetBilletsTest\ProjetBilletsTest\bin\Debug\netcoreapp1.1\ProjetBilletsTest.pdb
+C:\Users\Vengor\Desktop\Automne 2017\Dev Projet\ProjetBilletsTest\ProjetBilletsTest\obj\Debug\netcoreapp1.1\ProjetBilletsTest.csprojResolveAssemblyReference.cache
+C:\Users\Vengor\Desktop\Automne 2017\Dev Projet\ProjetBilletsTest\ProjetBilletsTest\obj\Debug\netcoreapp1.1\ProjetBilletsTest.csproj.CoreCompileInputs.cache
+C:\Users\Vengor\Desktop\Automne 2017\Dev Projet\ProjetBilletsTest\ProjetBilletsTest\obj\Debug\netcoreapp1.1\ProjetBilletsTest.AssemblyInfo.cs
+C:\Users\Vengor\Desktop\Automne 2017\Dev Projet\ProjetBilletsTest\ProjetBilletsTest\obj\Debug\netcoreapp1.1\ProjetBilletsTest.dll
+C:\Users\Vengor\Desktop\Automne 2017\Dev Projet\ProjetBilletsTest\ProjetBilletsTest\obj\Debug\netcoreapp1.1\ProjetBilletsTest.pdb
