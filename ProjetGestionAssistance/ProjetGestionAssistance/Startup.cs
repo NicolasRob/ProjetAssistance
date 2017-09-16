@@ -31,6 +31,10 @@ namespace ProjetGestionAssistance
             services.AddDbContext<ProjetGestionAssistanceContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ProjetGestionAssistanceContext")));
 
+            services.AddDistributedMemoryCache();
+
+            services.AddSession();
+
 
         }
 
@@ -51,6 +55,8 @@ namespace ProjetGestionAssistance
             }
 
             app.UseStaticFiles();
+
+            app.UseSession();
 
             app.UseMvc(routes =>
             {
