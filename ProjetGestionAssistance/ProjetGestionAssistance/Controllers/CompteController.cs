@@ -51,7 +51,7 @@ namespace ProjetGestionAssistance.Controllers
         //Cet objet sera ensuite ajouter à la BD
         //Attention: Il faut avoir créer au moins une équipe pour créer un utilisateur
         //Sinon, la liste des équipes sera vide et le formulaire ne sera jamais accepté
-        public async Task<IActionResult> Creation([Bind("Id,Courriel,MotPasse,Nom,Prenom,Telephone,Type,Actif,EquipeId")] Compte compte)
+        public async Task<IActionResult> Creation([Bind("Id,Courriel,MotPasse,ConfirmationMotPasse,Nom,Prenom,Telephone,Type,Actif,EquipeId")] Compte compte)
         {
             if (ModelState.IsValid)
             {
