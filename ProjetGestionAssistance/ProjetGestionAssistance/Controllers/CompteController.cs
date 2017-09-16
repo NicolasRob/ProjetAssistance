@@ -42,7 +42,7 @@ namespace ProjetGestionAssistance.Controllers
         public IActionResult AffichageCreation()
         {
             //Ce ViewData sera utilisé dans le formulaire de création pour afficher une liste des ID des équipes de la BD
-            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Id");
+            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom");
             return View("Creation");
         }
 
@@ -66,7 +66,7 @@ namespace ProjetGestionAssistance.Controllers
             //Si la création échoue, on redirige l'utilisateur vers la vue de Creation
             //Cependant, il faut recréer la liste des Id des équipes puisqu'on a perdu le ViewData précédent
             //lorsqu'on a appuyé sur le bouton de soumission.
-            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Id", compte.EquipeId);
+            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom", compte.EquipeId);
             return View();
         }
     }
