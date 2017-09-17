@@ -125,6 +125,7 @@ namespace ProjetGestionAssistance.Controllers
 
             var departement = await _context.Departement
                 .SingleOrDefaultAsync(m => m.Id == id);
+
             if (departement == null)
             {
                 return NotFound();
@@ -138,6 +139,11 @@ namespace ProjetGestionAssistance.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var billets = await _context.Billet.Where(b => b.DepartementId == id).ToListAsync();
+            foreach (var b in billets)
+            {
+                b.DepartementId = null;
+            }
             var departement = await _context.Departement.SingleOrDefaultAsync(m => m.Id == id);
             _context.Departement.Remove(departement);
             await _context.SaveChangesAsync();

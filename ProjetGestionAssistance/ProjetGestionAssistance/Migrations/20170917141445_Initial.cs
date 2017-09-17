@@ -49,12 +49,12 @@ namespace ProjetGestionAssistance.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Actif = table.Column<bool>(nullable: false),
-                    Courriel = table.Column<string>(nullable: true),
+                    Courriel = table.Column<string>(nullable: false),
                     EquipeId = table.Column<int>(nullable: false),
-                    MotPasse = table.Column<string>(nullable: true),
-                    Nom = table.Column<string>(nullable: true),
-                    Prenom = table.Column<string>(nullable: true),
-                    Telephone = table.Column<string>(nullable: true),
+                    MotPasse = table.Column<string>(nullable: false),
+                    Nom = table.Column<string>(nullable: false),
+                    Prenom = table.Column<string>(nullable: false),
+                    Telephone = table.Column<string>(nullable: false),
                     Type = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -76,6 +76,7 @@ namespace ProjetGestionAssistance.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     AuteurId = table.Column<int>(nullable: false),
                     Commentaires = table.Column<string>(nullable: true),
+                    DepartementId = table.Column<int>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     Etat = table.Column<string>(nullable: true),
                     Image = table.Column<string>(nullable: true),
@@ -90,12 +91,23 @@ namespace ProjetGestionAssistance.Migrations
                         principalTable: "Compte",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Billet_Departement_DepartementId",
+                        column: x => x.DepartementId,
+                        principalTable: "Departement",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Billet_AuteurId",
                 table: "Billet",
                 column: "AuteurId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Billet_DepartementId",
+                table: "Billet",
+                column: "DepartementId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Compte_EquipeId",

@@ -8,7 +8,7 @@ using ProjetGestionAssistance.Models;
 namespace ProjetGestionAssistance.Migrations
 {
     [DbContext(typeof(ProjetGestionAssistanceContext))]
-    [Migration("20170916144825_Initial")]
+    [Migration("20170917141445_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,6 +26,8 @@ namespace ProjetGestionAssistance.Migrations
 
                     b.Property<string>("Commentaires");
 
+                    b.Property<int?>("DepartementId");
+
                     b.Property<string>("Description");
 
                     b.Property<string>("Etat");
@@ -38,6 +40,8 @@ namespace ProjetGestionAssistance.Migrations
 
                     b.HasIndex("AuteurId");
 
+                    b.HasIndex("DepartementId");
+
                     b.ToTable("Billet");
                 });
 
@@ -48,17 +52,22 @@ namespace ProjetGestionAssistance.Migrations
 
                     b.Property<bool>("Actif");
 
-                    b.Property<string>("Courriel");
+                    b.Property<string>("Courriel")
+                        .IsRequired();
 
                     b.Property<int>("EquipeId");
 
-                    b.Property<string>("MotPasse");
+                    b.Property<string>("MotPasse")
+                        .IsRequired();
 
-                    b.Property<string>("Nom");
+                    b.Property<string>("Nom")
+                        .IsRequired();
 
-                    b.Property<string>("Prenom");
+                    b.Property<string>("Prenom")
+                        .IsRequired();
 
-                    b.Property<string>("Telephone");
+                    b.Property<string>("Telephone")
+                        .IsRequired();
 
                     b.Property<int>("Type");
 
@@ -103,6 +112,10 @@ namespace ProjetGestionAssistance.Migrations
                         .WithMany()
                         .HasForeignKey("AuteurId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ProjetGestionAssistance.Models.Departement", "Departement")
+                        .WithMany()
+                        .HasForeignKey("DepartementId");
                 });
 
             modelBuilder.Entity("ProjetGestionAssistance.Models.Compte", b =>

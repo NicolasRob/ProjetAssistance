@@ -21,5 +21,6 @@ namespace ProjetGestionAssistance.Models
         public DbSet<ProjetGestionAssistance.Models.Departement> Departement { get; set; }
 
         public DbSet<ProjetGestionAssistance.Models.Equipe> Equipe { get; set; }
+
     }
 }

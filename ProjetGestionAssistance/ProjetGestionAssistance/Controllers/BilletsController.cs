@@ -21,7 +21,7 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Billets
         public async Task<IActionResult> Index()
         {
-            var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur);
+            var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement);
             return View(await projetGestionAssistanceContext.ToListAsync());
         }
 
@@ -35,6 +35,7 @@ namespace ProjetGestionAssistance.Controllers
 
             var billet = await _context.Billet
                 .Include(b => b.Auteur)
+                .Include(b => b.Departement)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (billet == null)
             {
@@ -47,7 +48,8 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Billets/Create
         public IActionResult Create()
         {
-            ViewData["AuteurId"] = new SelectList(_context.Set<Compte>(), "Id", "Id");
+            ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel");
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id");
             return View();
         }
 
@@ -56,7 +58,7 @@ namespace ProjetGestionAssistance.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId")] Billet billet)
+        public async Task<IActionResult> Create([Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId")] Billet billet)
         {
             if (ModelState.IsValid)
             {
@@ -64,7 +66,8 @@ namespace ProjetGestionAssistance.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewData["AuteurId"] = new SelectList(_context.Set<Compte>(), "Id", "Id", billet.AuteurId);
+            ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel", billet.AuteurId);
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id", billet.DepartementId);
             return View(billet);
         }
 
@@ -81,7 +84,8 @@ namespace ProjetGestionAssistance.Controllers
             {
                 return NotFound();
             }
-            ViewData["AuteurId"] = new SelectList(_context.Set<Compte>(), "Id", "Id", billet.AuteurId);
+            ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel", billet.AuteurId);
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id", billet.DepartementId);
             return View(billet);
         }
 
@@ -90,7 +94,7 @@ namespace ProjetGestionAssistance.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId")] Billet billet)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId")] Billet billet)
         {
             if (id != billet.Id)
             {
@@ -117,7 +121,8 @@ namespace ProjetGestionAssistance.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewData["AuteurId"] = new SelectList(_context.Set<Compte>(), "Id", "Id", billet.AuteurId);
+            ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel", billet.AuteurId);
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id", billet.DepartementId);
             return View(billet);
         }
 
@@ -131,6 +136,7 @@ namespace ProjetGestionAssistance.Controllers
 
             var billet = await _context.Billet
                 .Include(b => b.Auteur)
+                .Include(b => b.Departement)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (billet == null)
             {
