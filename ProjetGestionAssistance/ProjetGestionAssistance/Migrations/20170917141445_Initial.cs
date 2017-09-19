@@ -96,7 +96,7 @@ namespace ProjetGestionAssistance.Migrations
                         column: x => x.DepartementId,
                         principalTable: "Departement",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
