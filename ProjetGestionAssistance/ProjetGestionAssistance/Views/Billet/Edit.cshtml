@@ -1,16 +1,17 @@
 @model ProjetGestionAssistance.Models.Billet
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
 }
 
-<h2>Create</h2>
+<h2>Edit</h2>
 
-<form asp-action="Create">
+<form asp-action="Edit">
     <div class="form-horizontal">
         <h4>Billet</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
         <div class="form-group">
             <label asp-for="Titre" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -47,20 +48,22 @@
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="AuteurId" class="col-md-2 control-label"></label>
+            <label asp-for="AuteurId" class="control-label col-md-2"></label>
             <div class="col-md-10">
-                <select asp-for="AuteurId" class ="form-control" asp-items="ViewBag.AuteurId"></select>
+                <select asp-for="AuteurId" class="form-control" asp-items="ViewBag.AuteurId"></select>
+                <span asp-validation-for="AuteurId" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="DepartementId" class="col-md-2 control-label"></label>
+            <label asp-for="DepartementId" class="control-label col-md-2"></label>
             <div class="col-md-10">
-                <select asp-for="DepartementId" class ="form-control" asp-items="ViewBag.DepartementId"></select>
+                <select asp-for="DepartementId" class="form-control" asp-items="ViewBag.DepartementId"></select>
+                <span asp-validation-for="DepartementId" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Envoyer mon billet" class="btn btn-default" />
+                <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </div>
     </div>
