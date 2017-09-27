@@ -28,6 +28,18 @@
         <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
             <!-- Ajout de 4 nouveaux boutons -->
             <!-- Ces boutons dirigent vers les vues et controlleurs pas défaut pour gérer les entités de la BD -->
+
+            <!-- CA : Ajout du bouton "Créer un billet" -->
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="CreerBillet">
+                <a class="nav-link" asp-area="" asp-controller="Billet" asp-action="Creation">
+                    <i class="fa fa-fw fa-table"></i>
+                    <span class="nav-link-text">
+                        Créer un billet
+                    </span>
+                </a>
+            </li>
+
+            
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Billets">
                 <a class="nav-link" asp-area="" asp-controller="Billet" asp-action="Index">
                     <i class="fa fa-fw fa-table"></i>
@@ -36,6 +48,7 @@
                     </span>
                 </a>
             </li>
+           
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Comptes">
                 <a class="nav-link" asp-area="" asp-controller="Comptes" asp-action="Index">
                     <i class="fa fa-fw fa-male"></i>

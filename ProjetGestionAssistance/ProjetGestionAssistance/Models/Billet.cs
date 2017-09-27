@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +10,9 @@ namespace ProjetGestionAssistance.Models
     public class Billet
     {
         public int Id { get; set; }
+        [Required(ErrorMessage = "Le titre du billet est obligatoire")]
         public string Titre { get; set; }
+        [Required(ErrorMessage = "La description du billet est obligatoire")]
         public string Description { get; set; }
         public string Etat { get; set; }
         public string Image { get; set; }

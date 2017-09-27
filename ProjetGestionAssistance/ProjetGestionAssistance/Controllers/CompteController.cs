@@ -28,14 +28,24 @@ namespace ProjetGestionAssistance.Controllers
             return View();
         }
 
-        //Implémentation temporaire
+        //Francis Paré 2017-09-27
         //Action appelé quand on appuie sur le bouton connection
-        //On set le SessionId à 1, l'utilisateur sera maintenant considéré connecté
-        //On le redige ensuite vers l'action Index dans le controlleur HomeController
-        public IActionResult Connection()
+        //Si la connection fonctionne, On set le SessionId avec son Id d'utilisateur, il sera maintenant considéré connecté
+        //Puis, On le redige vers l'action Index dans le controlleur HomeController()
+        //**** A noté que l'utilisateur devra etre rediriger vers sa liste de billet lorsqu'elle sera implémenter ****
+        [HttpPost]
+        public IActionResult Connection([Bind("Courriel")]string Courriel, [Bind("MotPasse")]string MotPasse)
         {
-            HttpContext.Session.SetInt32(SessionId, 1);
-            return RedirectToAction("Index", "Home");
+            if (ModelState.IsValid)
+            {
+                Compte tempCompte = _context.Compte.SingleOrDefault(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse);
+                if (tempCompte != null)
+                {
+                    HttpContext.Session.SetInt32(SessionId, tempCompte.Id);
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            return RedirectToAction("Login", "Compte");
         }
 
         //Action qui affiche la page de création de compte

@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using ProjetGestionAssistance.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ProjetGestionAssistance.Models;
 
 namespace ProjetGestionAssistance.Controllers
 {
     public class BilletController : Controller
     {
+        //Initialisation de la variable _context pour intéragir avec la base de données
         private readonly ProjetGestionAssistanceContext _context;
 
         public BilletController(ProjetGestionAssistanceContext context)
         {
-            _context = context;    
+            _context = context;
         }
 
-        // GET: Billets
         public async Task<IActionResult> Index()
         {
             var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement);
@@ -42,32 +43,6 @@ namespace ProjetGestionAssistance.Controllers
                 return NotFound();
             }
 
-            return View(billet);
-        }
-
-        // GET: Billets/Create
-        public IActionResult Create()
-        {
-            ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel");
-            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id");
-            return View();
-        }
-
-        // POST: Billets/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId")] Billet billet)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(billet);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel", billet.AuteurId);
-            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id", billet.DepartementId);
             return View(billet);
         }
 
@@ -120,6 +95,26 @@ namespace ProjetGestionAssistance.Controllers
                     }
                 }
                 return RedirectToAction("Index");
+
+        public IActionResult Creation()
+        {
+            ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel");
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id");
+            return View("Creation");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Creation([Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId")] Billet billet)
+        {
+            if (ModelState.IsValid)
+            {
+                billet.Etat = "Nouveau";
+                _context.Add(billet);
+                await _context.SaveChangesAsync();
+
+                //À CHANGER pour la vue des billets fait par Joel
+                return RedirectToAction("Index", "Billet");
             }
             ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel", billet.AuteurId);
             ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id", billet.DepartementId);
@@ -161,5 +156,8 @@ namespace ProjetGestionAssistance.Controllers
         {
             return _context.Billet.Any(e => e.Id == id);
         }
+    }
+}
+
     }
 }

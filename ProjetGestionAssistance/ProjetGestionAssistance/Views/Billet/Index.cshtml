@@ -4,6 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
+
 <h2>Liste des billets</h2>
 
 <p>
@@ -21,8 +22,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Etat)
             </th>
-
-
             <th>
                 @Html.DisplayNameFor(model => model.Auteur)
             </th>
@@ -52,7 +51,7 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
-               <a asp-action="Details" asp-route-id="@item.Id">Détails</a> |
+               <a asp-action="Details" asp-route-id="@item.Id">Dï¿½tails</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
             </td>
         </tr>

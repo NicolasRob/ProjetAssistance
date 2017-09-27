@@ -1,17 +1,17 @@
 @model ProjetGestionAssistance.Models.Billet
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Creation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Edit</h2>
+<h2>Cr&eacute;ation d'un billet</h2>
 
-<form asp-action="Edit">
+<form asp-action="Creation">
     <div class="form-horizontal">
         <h4>Billet</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="Id" />
         <div class="form-group">
             <label asp-for="Titre" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -22,17 +22,11 @@
         <div class="form-group">
             <label asp-for="Description" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Description" class="form-control" />
+                <textarea asp-for="Description" rows="5" class="form-control"> </textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
-        <div class="form-group">
-            <label asp-for="Etat" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Etat" class="form-control" />
-                <span asp-validation-for="Etat" class="text-danger"></span>
-            </div>
-        </div>
+
         <div class="form-group">
             <label asp-for="Image" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -40,37 +34,29 @@
                 <span asp-validation-for="Image" class="text-danger"></span>
             </div>
         </div>
+
         <div class="form-group">
-            <label asp-for="Commentaires" class="col-md-2 control-label"></label>
+            <label asp-for="AuteurId" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Commentaires" class="form-control" />
-                <span asp-validation-for="Commentaires" class="text-danger"></span>
+                <select asp-for="AuteurId" class ="form-control" asp-items="ViewBag.AuteurId"></select>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="AuteurId" class="control-label col-md-2"></label>
+            <label asp-for="DepartementId" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <select asp-for="AuteurId" class="form-control" asp-items="ViewBag.AuteurId"></select>
-                <span asp-validation-for="AuteurId" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="DepartementId" class="control-label col-md-2"></label>
-            <div class="col-md-10">
-                <select asp-for="DepartementId" class="form-control" asp-items="ViewBag.DepartementId"></select>
-                <span asp-validation-for="DepartementId" class="text-danger"></span>
+                <select asp-for="DepartementId" class ="form-control" asp-items="ViewBag.DepartementId"></select>
             </div>
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Enregistrer le billet" class="btn btn-default" />
             </div>
         </div>
     </div>
 </form>
 
 <div>
-    <a asp-action="Index">Revenir � la liste</a>
+    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
