@@ -1,6 +1,7 @@
 ﻿@{
     Layout="";
 }
+@model ProjetGestionAssistance.Models.Compte
 @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 <!DOCTYPE html>
 <html lang="en">
@@ -28,14 +29,14 @@
                 Login
             </div>
             <div class="card-body">
-                <form>
+                <form asp-action="Connection">
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                        <label asp-for="Courriel">Courriel</label>
+                        <input asp-for="Courriel" type="email" class="form-control"  placeholder="Courriel">
                     </div>
                     <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                        <label asp-for="MotPasse">Mot de passe</label>
+                        <input asp-for="MotPasse" type="password" class="form-control" placeholder="Mot de passe">
                     </div>
                     <div class="form-group">
                         <div class="form-check">
@@ -46,9 +47,7 @@
                         </div>
                     </div>
                     <!-- Amene vers l'action Connection dans le controlleur CompteController -->
-                    <!-- Pour l'instant, cliquer sur ce bouton vous connectera sans verification -->
-                    <!-- puisque la fonctionnalite de login n'existe pas encore -->
-                    <a class="btn btn-primary btn-block" href="Connection">Connection</a>
+                    <input type="submit" class="btn btn-primary btn-block" value="Connection"/>
                 </form>
                 <div class="text-center">
                     <a class="d-block small mt-3" href="AffichageCreation">Cr&eacute;er un compte</a>
