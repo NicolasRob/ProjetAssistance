@@ -40,6 +40,7 @@ namespace ProjetGestionAssistance.Controllers
         {
             if (ModelState.IsValid)
             {
+                billet.Etat = "Nouveau";
                 _context.Add(billet);
                 await _context.SaveChangesAsync();
 
