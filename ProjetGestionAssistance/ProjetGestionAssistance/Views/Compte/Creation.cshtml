@@ -48,17 +48,25 @@
                                 <!-- Même pas besoin de type, le framework choisira le type d'input approprié -->
                                 <label asp-for="Prenom">Prenom</label>
                                 <input asp-for="Prenom" class="form-control" placeholder="Entrez votre pr&eacute;nom">
+                                <span asp-validation-for="Prenom" class="text-danger"></span>
                             </div>
                             <div class="col-md-6">
                                 <!-- On répète ça pour tous les attributs -->
                                 <label asp-for="Nom">Nom</label>
                                 <input asp-for="Nom" class="form-control" placeholder="Entrez votre nom">
+                                <span asp-validation-for="Nom" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label asp-for="Courriel">Courriel</label>
                         <input asp-for="Courriel" type="email" class="form-control" placeholder="Entrez votre courriel">
+                        <span asp-validation-for="Courriel" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Telephone">Telephone</label>
+                        <input asp-for="Telephone" class="form-control" placeholder="Entrez votre numéro de téléphone">
+                        <span asp-validation-for="Telephone" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <div class="form-row">
@@ -68,24 +76,14 @@
                                 <!-- Comme MotPasse est un String, le framework aurait choisi type="text" -->
                                 <!-- Il faut donc mentionné type="password" -->
                                 <input asp-for="MotPasse" type="password" class="form-control">
+                                <span asp-validation-for="MotPasse" class="text-danger"></span>
                             </div>
                             <!-- J'ai ignorer la confirmation de mot de passe pour l'instant -->
                             <!-- Le champ est présent, mais il ne fait rien -->
                             <div class="col-md-6">
                                 <label asp-for="ConfirmationMotPasse">Confirmer le mot de passe</label>
                                 <input asp-for="ConfirmationMotPasse" type="password" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="form-row">
-                            <div class="col-md-6">
-                                <label asp-for="Telephone">Telephone</label>
-                                <input asp-for="Telephone" class="form-control" placeholder="Entrez votre numéro de téléphone">
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="Type">Type</label>
-                                <input asp-for="Type" class="form-control" >
+                                <span asp-validation-for="ConfirmationMotPasse" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
@@ -93,10 +91,6 @@
                         <label asp-for="EquipeId">Equipe</label>
                         <!-- C'est ici qu'on utilise la liste des id d'équipe qu'on a préparé dans les controlleurs -->
                         <select asp-for="EquipeId" class="form-control" asp-items="ViewBag.EquipeId"></select>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Actif">Actif</label>
-                        <input asp-for="Actif" class="form-control">
                     </div>
                     <!-- On termine le formulaire avec un submit -->
                     <!-- La méthode POST sera utilisé pour envoyer les valeurs à l'action Creation dans CompteController -->
