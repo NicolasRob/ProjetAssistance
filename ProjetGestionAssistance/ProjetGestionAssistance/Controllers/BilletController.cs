@@ -94,7 +94,9 @@ namespace ProjetGestionAssistance.Controllers
                         throw;
                     }
                 }
+            }
                 return RedirectToAction("Index");
+        }
 
         public IActionResult Creation()
         {
@@ -159,5 +161,4 @@ namespace ProjetGestionAssistance.Controllers
     }
 }
 
-    }
-}
+    
