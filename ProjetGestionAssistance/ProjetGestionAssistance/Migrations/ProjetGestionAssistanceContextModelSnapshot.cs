@@ -75,6 +75,7 @@ namespace ProjetGestionAssistance.Migrations
                     b.HasIndex("EquipeId");
 
                     b.ToTable("Compte");
+
                 });
 
             modelBuilder.Entity("ProjetGestionAssistance.Models.Departement", b =>

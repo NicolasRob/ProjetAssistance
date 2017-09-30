@@ -22,5 +22,11 @@ namespace ProjetGestionAssistance.Models
 
         public DbSet<ProjetGestionAssistance.Models.Equipe> Equipe { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Compte>()
+                .HasIndex("Courriel").IsUnique().HasName("Compte_UQ_Courriel");
+        }
+
     }
 }
