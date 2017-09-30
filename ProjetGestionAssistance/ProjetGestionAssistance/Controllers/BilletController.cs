@@ -20,11 +20,17 @@ namespace ProjetGestionAssistance.Controllers
             _context = context;
         }
 
-        //Paramètre page peut être null; il servira à la pagination.
+        //Paramètre page peut être null; il sert à la pagination.
         public async Task<IActionResult> Index(int? page)
         {
+            //nombre de billet par page
+            int taillePage = 5;
+            
             var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement);
-            return View(await projetGestionAssistanceContext.ToListAsync());
+            /*return View(await projetGestionAssistanceContext.ToListAsync());
+    */
+
+            return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, taillePage));
         }
 
         // GET: Billets/Details/5
