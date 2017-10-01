@@ -27,8 +27,7 @@ namespace ProjetGestionAssistance.Controllers
             int nbElementParPage = 5;
             
             var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement);
-            /*return View(await projetGestionAssistanceContext.ToListAsync());
-    */
+            //return View(await projetGestionAssistanceContext.ToListAsync());
 
             return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
         }

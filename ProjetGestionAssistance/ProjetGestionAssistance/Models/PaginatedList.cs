@@ -41,7 +41,7 @@ namespace ProjetGestionAssistance.Models
         }
 
 
-        //Elle reçoit une liste de données, la page présente et, le nombre d'élément par page et retourne une version de liste en format PaginatedList
+        //Elle reçoit une liste de données, la page présente et, le nombre d'élément par page et retourne une version de liste en format PaginatedList Async
         public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int indexDePage, int nbElementParPage)
         {
             var nbElementTotal = await source.CountAsync();
