@@ -1,4 +1,5 @@
 ﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@using Microsoft.AspNetCore.Http;
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,12 +42,54 @@
 
             
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Billets">
-                <a class="nav-link" asp-area="" asp-controller="Billet" asp-action="Index">
+                
+                <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#optionsBillet" data-parent="#exampleAccordion">
                     <i class="fa fa-fw fa-table"></i>
                     <span class="nav-link-text">
                         Billets
                     </span>
                 </a>
+                <ul class="sidenav-second-level collapse" id="optionsBillet">
+                    @{
+                        var roleUtilisateur = Context.Session.GetInt32("_role");
+                        //il faudrait pouvoir accéder au département et à l'équipe de l'utilisateur connecté
+                    }
+                    @if (roleUtilisateur >= 1)
+                    {
+                    <li>
+                        <a class="nav-link" asp-area="" asp-controller="Billet" asp-action="Index">
+                            <i class="fa fa-fw fa-tablet"></i>
+                            <span class="nav-link-text">
+                                Liste des billets assignés
+                            </span>
+                        </a>
+                    </li>
+                    }
+
+                    @if (roleUtilisateur >= 2)
+                    {
+                    <li>
+                        <a class="nav-link" asp-area="" asp-controller="Billet" asp-action="Index">
+                            <i class="fa fa-fw fa-tablet"></i>
+                            <span class="nav-link-text">
+                                Liste des billets de mon département
+                            </span>
+                        </a>
+                    </li>
+                    }
+                    @if (roleUtilisateur >= 3)
+                    {
+                    <li>
+                        <a class="nav-link" asp-area="" asp-controller="Billet" asp-action="Index">
+                            <i class="fa fa-fw fa-tablet"></i>
+                            <span class="nav-link-text">
+                                Liste de tous billets
+                            </span>
+                        </a>
+                    </li>
+                    }
+                </ul>
+
             </li>
            
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Comptes">

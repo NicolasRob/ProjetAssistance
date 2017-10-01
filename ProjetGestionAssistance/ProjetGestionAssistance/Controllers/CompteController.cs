@@ -42,6 +42,8 @@ namespace ProjetGestionAssistance.Controllers
                 if (tempCompte != null)
                 {
                     HttpContext.Session.SetInt32(SessionId, tempCompte.Id);
+                    HttpContext.Session.SetInt32("_role",tempCompte.Type);
+                    ViewData["connection"] = tempCompte.Id;
                     return RedirectToAction("Index", "Home");
                 }
             }

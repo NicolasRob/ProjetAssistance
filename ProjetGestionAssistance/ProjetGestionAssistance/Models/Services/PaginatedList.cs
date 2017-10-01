@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace ProjetGestionAssistance.Models
+namespace ProjetGestionAssistance.Models.Services
 {
     public class PaginatedList<T> : List<T>
     {
