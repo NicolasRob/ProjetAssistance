@@ -24,13 +24,13 @@ namespace ProjetGestionAssistance.Controllers
         public async Task<IActionResult> Index(int? page)
         {
             //nombre de billet par page
-            int taillePage = 5;
+            int nbElementParPage = 5;
             
             var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement);
             /*return View(await projetGestionAssistanceContext.ToListAsync());
     */
 
-            return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, taillePage));
+            return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
         }
 
         // GET: Billets/Details/5

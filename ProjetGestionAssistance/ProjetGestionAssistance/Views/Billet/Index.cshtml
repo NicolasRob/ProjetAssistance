@@ -1,5 +1,7 @@
-@model IEnumerable<ProjetGestionAssistance.Models.Billet>
-@*@model PaginatedList<ProjetGestionAssistance.Models.Billet>*@
+@*pour utiliser la PaginatedList*@
+@using ProjetGestionAssistance.Models
+
+@model PaginatedList<Billet>
 @{
     ViewData["Title"] = "Index";
 }
@@ -11,19 +13,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Titre)
+                Titre
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                Description
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Etat)
+                Etat
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Auteur)
+                Auteur
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Departement)
+                Departement
             </th>
             <th></th>
         </tr>
@@ -59,14 +61,25 @@
 
 </table>
 
+@{
+    var precDisactive = !Model.APagePrecedente ? "disabled" : "";
+    var suivantDesactive = !Model.APageSuivante ? "disabled" : "";
+}
 
-        <div class="col-lg-12">
-            <ul class="pagination justify-content-center">
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">4</a></li>
-                <li class="page-item"><a class="page-link" href="#">5</a></li>
-            </ul>
-        </div>
+
+
+
+
+<div class="col-lg-12">
+    <ul class="pagination justify-content-center">
+        <li class="page-item"><a asp-action="Index" asp-route-page="@(Model.IndexDePage - 1)" class="page-link btn @precDisactive">Pr&eacute;c&eacute;dant </a></li>
+        @for (int i = 1; i <= Model.NbPagesTotal; i++)
+        {
+            var pageDesactive = Model.PageCourante(i) ? "btn-secondary disabled" : "";
+            <li class="page-item"><a asp-action="Index" asp-route-page="@(i)" class="page-link btn @pageDesactive">@i</a></li>
+        }
+        
+        <li class="page-item"><a asp-action="Index" asp-route-page="@(Model.IndexDePage + 1)" class="page-link btn @suivantDesactive">Suivant</a></li>
+    </ul>
+</div>
 
