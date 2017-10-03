@@ -70,7 +70,7 @@
 </form>
 
 <div>
-    <a asp-action="Index">Revenir &agrave; la liste</a>
+    <a asp-action="Index" asp-route-ordre="@(ViewData["ordre"])">Revenir &agrave; la liste</a>
 </div>
 
 @section Scripts {

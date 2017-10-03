@@ -36,8 +36,9 @@ namespace ProjetGestionAssistance.Controllers
             {
                 ViewData["ordre"] = "compose";
                 var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.AuteurId == compte.Id);
-                return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
+                return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
+            
             /*// vérifie si l'utilisateur est minimalement un employé de service   => mise en place pour l'ajout d'assignation
             else if (ordre == "assigne" && compte.Type >= 1)
             {
@@ -45,35 +46,42 @@ namespace ProjetGestionAssistance.Controllers
                 //var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.DepartementId == compte.Equipe.DepartementId);
                 return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }*/
+            
             // vérifie si l'utilisateur est minimalement un gestionnaire
             else if (ordre == "departement" && compte.Type >= 2)
             {
                 ViewData["ordre"] = "departement";
                 //Joel Lutumba - 2017-10-03
-                //Impossible d'acceder à l'id du département avec compte.Equipe.DepartementId
-                //cherche l'équipe dont fait partie l'utilisateur connecté
+                /*Impossible d'acceder à l'id du département avec compte.Equipe.DepartementId sans
+                  chercher l'équipe dont fait partie l'utilisateur connecté donc*/
                 var equipe = _context.Equipe.SingleOrDefault(e => e.Id == compte.EquipeId);
-                //cherche les billets en comparant l'id de son déparment et l'id du déparment de l'équipe de l'utilisateur connecté
-                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.DepartementId == compte.Equipe.DepartementId);
-                return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
+
+                // option 1 - cherche les billets en comparant l'id de son déparment et l'id du déparment de l'équipe de l'utilisateur connecté
+                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.DepartementId == equipe.DepartementId);
+                
+                // option 2 - vu que c'est maintenant possible on peut aussi faire
+                //var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.DepartementId == compte.Equipe.DepartementId);
+
+                return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
+            
             // revoie la vue billet avec tous les billets crées
             else if (ordre == "entreprise" && compte.Type >= 3)
             {
                 ViewData["ordre"] = "entreprise";
                 var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement);
-                return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
+                return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
+            
+            //si l'utilisateur n'est qu'un demandeur alors sa vue par defaut sera billets composés sinon ce sera la vue billets assignés
             else
             {
-                ViewData["ordre"] = "compose";
                 //Pour l'instant lorsque le paramètre n'est pas définit on renvoie la vue des billets composés
+                ViewData["ordre"] = "compose";
                 var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.AuteurId == HttpContext.Session.GetInt32("_Id"));
                 //return View(await projetGestionAssistanceContext.ToListAsync());
-                return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
-                
-                //idéalement il faudrait rediriger vers la page d'accceuil ou quelque chose du genre
-                //return View();
+                return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
+
             }
 
         }

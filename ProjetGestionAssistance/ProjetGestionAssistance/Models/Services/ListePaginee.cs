@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ProjetGestionAssistance.Models.Services
 {
-    public class PaginatedList<T> : List<T>
+    public class ListePaginee<T> : List<T>
     {
         public int IndexDePage { get; private set; }
         public int NbPagesTotal { get; private set; }
 
-        public PaginatedList(List<T> listeElements, int nbElementTotal, int indexDePage, int nbElementParPage)
+        public ListePaginee(List<T> listeElements, int nbElementTotal, int indexDePage, int nbElementParPage)
         {
             IndexDePage = indexDePage;
             NbPagesTotal = (int)Math.Ceiling(nbElementTotal / (double)nbElementParPage); //Arrondit vers le haut pour permettre un page de plus.
@@ -42,11 +42,11 @@ namespace ProjetGestionAssistance.Models.Services
 
 
         //Elle reçoit une liste de données, la page présente et, le nombre d'élément par page et retourne une version de liste en format PaginatedList Async
-        public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int indexDePage, int nbElementParPage)
+        public static async Task<ListePaginee<T>> CreateAsync(IQueryable<T> source, int indexDePage, int nbElementParPage)
         {
             var nbElementTotal = await source.CountAsync();
             var listeElements = await source.Skip((indexDePage - 1) * nbElementParPage).Take(nbElementParPage).ToListAsync();
-            return new PaginatedList<T>(listeElements, nbElementTotal, indexDePage, nbElementParPage);
+            return new ListePaginee<T>(listeElements, nbElementTotal, indexDePage, nbElementParPage);
         }
     }
 }
