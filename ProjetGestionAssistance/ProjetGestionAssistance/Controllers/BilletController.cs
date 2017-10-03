@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using ProjetGestionAssistance.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace ProjetGestionAssistance.Controllers
 {
@@ -91,29 +92,48 @@ namespace ProjetGestionAssistance.Controllers
                     }
                     else
                     {
+                       
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                
+            }
+            return RedirectToAction("Index");
+        }
 
+        
         public IActionResult Creation()
         {
             ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel");
-            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id");
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom");
             return View("Creation");
         }
+        
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Creation([Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId")] Billet billet)
+        public async Task<IActionResult> Creation([Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId")] Billet billet, IFormFile fichierPhoto)
         {
             if (ModelState.IsValid)
             {
-                billet.Etat = "Nouveau";
+                
+                var filePath = "./images/test";  // À MODIFIER : Il faut trouver un moyen de construire des noms de fichiers uniques.
+                
+                //Copie du fichierPhoto dans notre dossier local
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await fichierPhoto.CopyToAsync(stream);
+                }
+                
+                billet.Image = filePath; //copie du chemin d'accès du fichier dans l'attribut Image du billet
+
+                billet.AuteurId = (int)HttpContext.Session.GetInt32("_Id"); // Attribut AuteurId du billet = Id de l'utilisateur en cours
+                billet.Etat = "Nouveau"; //L'état d'un billet est initialisé à "Nouveau"
+                
+                //Enregistrement du billet dans la base de données
                 _context.Add(billet);
                 await _context.SaveChangesAsync();
 
-                //À CHANGER pour la vue des billets fait par Joel
                 return RedirectToAction("Index", "Billet");
             }
             ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel", billet.AuteurId);
@@ -159,5 +179,4 @@ namespace ProjetGestionAssistance.Controllers
     }
 }
 
-    }
-}
+    
