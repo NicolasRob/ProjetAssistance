@@ -41,8 +41,12 @@ namespace ProjetGestionAssistance.Controllers
                 Compte tempCompte = _context.Compte.SingleOrDefault(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse);
                 if (tempCompte != null)
                 {
+                    //Joel Lutumba 2017-10-01 
+                    //typeUtilisateur : variable dont la valeur est stockée dans la session pour avoir le type de l'utilisateur connecté
+                    string typeConnecte = "_Type";
+
                     HttpContext.Session.SetInt32(SessionId, tempCompte.Id);
-                    HttpContext.Session.SetInt32("_role",tempCompte.Type);
+                    HttpContext.Session.SetInt32(typeConnecte, tempCompte.Type);
                     ViewData["connection"] = tempCompte.Id;
                     return RedirectToAction("Index", "Home");
                 }

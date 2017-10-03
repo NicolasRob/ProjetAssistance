@@ -14,7 +14,7 @@ namespace ProjetGestionAssistance.Models.Services
         public PaginatedList(List<T> listeElements, int nbElementTotal, int indexDePage, int nbElementParPage)
         {
             IndexDePage = indexDePage;
-            NbPagesTotal = (int)Math.Ceiling(nbElementTotal / (double)nbElementParPage); //Arrondit vers le haut pour permettre un page de plus. exp : 
+            NbPagesTotal = (int)Math.Ceiling(nbElementTotal / (double)nbElementParPage); //Arrondit vers le haut pour permettre un page de plus.
 
             this.AddRange(listeElements);
         }

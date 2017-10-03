@@ -20,17 +20,52 @@ namespace ProjetGestionAssistance.Controllers
         {
             _context = context;
         }
-
+        //Joel Lutumba - 2017-09-30
+        //Paramètre ordre est utilisé pour savoir quels billets aller chercher & afficher
         //Paramètre page peut être null; il sert à la pagination.
-        public async Task<IActionResult> Index(int? page)
+        public async Task<IActionResult> Index(String ordre, int? page)
         {
+            //Compte connecté
+            Compte compte = _context.Compte.SingleOrDefault(cpt => cpt.Id == HttpContext.Session.GetInt32("_Id"));
+            
             //nombre de billet par page
             int nbElementParPage = 5;
-            
-            var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement);
-            //return View(await projetGestionAssistanceContext.ToListAsync());
 
-            return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
+            // renvoie la vue billet seulement avec les billets que l'utiilisateur connecté à composé
+            if (ordre == "compose")
+            {
+                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.AuteurId == HttpContext.Session.GetInt32("_Id"));
+                return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
+            }
+            /*// vérifie si l'utilisateur est minimalement un employé de service   => mise en place pour l'ajout d'assignation
+            else if (ordre == "departement" && compte.Type >= 2)
+            {
+                //var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.DepartementId == compte.Equipe.DepartementId);
+                return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
+            }*/
+            // vérifie si l'utilisateur est minimalement un gestionnaire
+            else if (ordre == "departement" && compte.Type >=2)
+            {
+                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.DepartementId == compte.Equipe.DepartementId);
+                return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
+            }
+            // revoi la vue billet avec tous les billets crées
+            else if (ordre == "entreprise" && compte.Type >= 3)
+            {
+                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement);
+                return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
+            }
+            else
+            {
+                //Pour l'instant lorsque le paramètre n'est pas définit on renvoie la vue des billets composés
+                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.AuteurId == HttpContext.Session.GetInt32("_Id"));
+                //return View(await projetGestionAssistanceContext.ToListAsync());
+                return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
+                
+                //idéalement il faudrait rediriger vers la page d'accceuil ou quelque chose du genre
+                //return View();
+            }
+
         }
 
         // GET: Billets/Details/5

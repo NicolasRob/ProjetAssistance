@@ -50,40 +50,52 @@
                     </span>
                 </a>
                 <ul class="sidenav-second-level collapse" id="optionsBillet">
+                    
                     @{
-                        var roleUtilisateur = Context.Session.GetInt32("_role");
-                        //il faudrait pouvoir accéder au département et à l'équipe de l'utilisateur connecté
+                        //Joel Lutumba`: 2017-09-31
+                        //L'affichage se fait en fonction de l'utilisateur connecté
+                        var roleUtilisateur = Context.Session.GetInt32("_Type");
                     }
-                    @if (roleUtilisateur >= 1)
+                    @if (roleUtilisateur >= 0) //option visible aux demandeurs et plus haut [Employé de Service, Gestionnaire, Administrateur]
                     {
                     <li>
-                        <a class="nav-link" asp-area="" asp-controller="Billet" asp-action="Index">
+                        <a class="nav-link" asp-controller="Billet" asp-action="Index" asp-route-ordre="compose">
                             <i class="fa fa-fw fa-tablet"></i>
                             <span class="nav-link-text">
-                                Liste des billets assignés
+                               Billets composés
                             </span>
                         </a>
                     </li>
                     }
-
-                    @if (roleUtilisateur >= 2)
+                    @if (roleUtilisateur >= 1) //option visible aux employé de service et plus haut [Gestionnaire, Administrateur]
+                    {
+                        <li>
+                            <a class="nav-link" asp-controller="Billet" asp-action="Index">
+                                <i class="fa fa-fw fa-tablet"></i>
+                                <span class="nav-link-text">
+                                    Billets assignés
+                                </span>
+                            </a>
+                        </li>
+                    }
+                    @if (roleUtilisateur >= 2) //option visible aux gestionnaires et plus haut [Administrateur]
                     {
                     <li>
-                        <a class="nav-link" asp-area="" asp-controller="Billet" asp-action="Index">
+                        <a class="nav-link" asp-controller="Billet" asp-action="Index" asp-route-ordre="departement">
                             <i class="fa fa-fw fa-tablet"></i>
                             <span class="nav-link-text">
-                                Liste des billets de mon département
+                                Billets du département
                             </span>
                         </a>
                     </li>
                     }
-                    @if (roleUtilisateur >= 3)
+                    @if (roleUtilisateur >= 3) //option visible aux administrateurs ou plus haut
                     {
                     <li>
-                        <a class="nav-link" asp-area="" asp-controller="Billet" asp-action="Index">
+                        <a class="nav-link" asp-controller="Billet" asp-action="Index" asp-route-ordre="entreprise">
                             <i class="fa fa-fw fa-tablet"></i>
                             <span class="nav-link-text">
-                                Liste de tous billets
+                                Billets de tous les départements
                             </span>
                         </a>
                     </li>
