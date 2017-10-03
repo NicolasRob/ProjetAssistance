@@ -55,8 +55,8 @@
 
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
+                <a asp-action="Modification" asp-route-id="@item.Id">Modifier</a> |
+                <a asp-action="Suppression" asp-route-id="@item.Id">Supprimer</a>
             </td>
         </tr>
 }
@@ -65,6 +65,7 @@
 </table>
 
 @{
+    var ordreCourrant = ViewData["ordre"];
     var precDisactive = !Model.APagePrecedente ? "disabled" : "";
     var suivantDesactive = !Model.APageSuivante ? "disabled" : "";
 }
@@ -75,14 +76,14 @@
 
 <div class="col-lg-12">
     <ul class="pagination justify-content-center">
-        <li class="page-item"><a asp-action="Index" asp-route-page="@(Model.IndexDePage - 1)" class="page-link btn @precDisactive">Pr&eacute;c&eacute;dant </a></li>
+        <li class="page-item"><a asp-action="Index" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(Model.IndexDePage - 1)" class="page-link btn @precDisactive">Pr&eacute;c&eacute;dant </a></li>
         @for (int i = 1; i <= Model.NbPagesTotal; i++)
         {
             var pageDesactive = Model.PageCourante(i) ? "btn-secondary disabled" : "";
-            <li class="page-item"><a asp-action="Index" asp-route-page="@(i)" class="page-link btn @pageDesactive">@i</a></li>
+            <li class="page-item"><a asp-action="Index" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(i)" class="page-link btn @pageDesactive">@i</a></li>
         }
         
-        <li class="page-item"><a asp-action="Index" asp-route-page="@(Model.IndexDePage + 1)" class="page-link btn @suivantDesactive">Suivant</a></li>
+        <li class="page-item"><a asp-action="Index" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(Model.IndexDePage + 1)" class="page-link btn @suivantDesactive">Suivant</a></li>
     </ul>
 </div>
 

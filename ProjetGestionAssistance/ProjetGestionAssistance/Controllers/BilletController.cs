@@ -34,29 +34,39 @@ namespace ProjetGestionAssistance.Controllers
             // renvoie la vue billet seulement avec les billets que l'utiilisateur connecté à composé
             if (ordre == "compose")
             {
-                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.AuteurId == HttpContext.Session.GetInt32("_Id"));
+                ViewData["ordre"] = "compose";
+                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.AuteurId == compte.Id);
                 return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
             /*// vérifie si l'utilisateur est minimalement un employé de service   => mise en place pour l'ajout d'assignation
-            else if (ordre == "departement" && compte.Type >= 2)
+            else if (ordre == "assigne" && compte.Type >= 1)
             {
+                ViewData["ordre"] = "assigne";
                 //var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.DepartementId == compte.Equipe.DepartementId);
                 return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }*/
             // vérifie si l'utilisateur est minimalement un gestionnaire
-            else if (ordre == "departement" && compte.Type >=2)
+            else if (ordre == "departement" && compte.Type >= 2)
             {
+                ViewData["ordre"] = "departement";
+                //Joel Lutumba - 2017-10-03
+                //Impossible d'acceder à l'id du département avec compte.Equipe.DepartementId
+                //cherche l'équipe dont fait partie l'utilisateur connecté
+                var equipe = _context.Equipe.SingleOrDefault(e => e.Id == compte.EquipeId);
+                //cherche les billets en comparant l'id de son déparment et l'id du déparment de l'équipe de l'utilisateur connecté
                 var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.DepartementId == compte.Equipe.DepartementId);
                 return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
-            // revoi la vue billet avec tous les billets crées
+            // revoie la vue billet avec tous les billets crées
             else if (ordre == "entreprise" && compte.Type >= 3)
             {
+                ViewData["ordre"] = "entreprise";
                 var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement);
                 return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
             else
             {
+                ViewData["ordre"] = "compose";
                 //Pour l'instant lorsque le paramètre n'est pas définit on renvoie la vue des billets composés
                 var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.AuteurId == HttpContext.Session.GetInt32("_Id"));
                 //return View(await projetGestionAssistanceContext.ToListAsync());
@@ -88,8 +98,8 @@ namespace ProjetGestionAssistance.Controllers
             return View(billet);
         }
 
-        // GET: Billets/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Billet/Modification/5
+        public async Task<IActionResult> Modification(int? id)
         {
             if (id == null)
             {
@@ -106,12 +116,12 @@ namespace ProjetGestionAssistance.Controllers
             return View(billet);
         }
 
-        // POST: Billets/Edit/5
+        // POST: Billet/Modification/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId")] Billet billet)
+        public async Task<IActionResult> Modification(int id, [Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId")] Billet billet)
         {
             if (id != billet.Id)
             {
@@ -165,8 +175,8 @@ namespace ProjetGestionAssistance.Controllers
             return View(billet);
         }
 
-        // GET: Billets/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Billet/Suppression/5
+        public async Task<IActionResult> Suppression(int? id)
         {
             if (id == null)
             {
@@ -185,10 +195,10 @@ namespace ProjetGestionAssistance.Controllers
             return View(billet);
         }
 
-        // POST: Billets/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: Billet/Suppression/5
+        [HttpPost, ActionName("Suppression")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> SuppressionConfirmee(int id)
         {
             var billet = await _context.Billet.SingleOrDefaultAsync(m => m.Id == id);
             _context.Billet.Remove(billet);

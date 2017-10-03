@@ -1,10 +1,10 @@
 @model ProjetGestionAssistance.Models.Billet
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Suppression";
 }
 
-<h2>Delete</h2>
+<h2>Suppression</h2>
 
 <h3>&Ecirc;tes-vous s&ucirc;r de vouloir supprimer ce billet?</h3>
 <div>
@@ -56,9 +56,9 @@
         </dd>
     </dl>
     
-    <form asp-action="Delete">
+    <form asp-action="Suppression">
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
+            <input type="submit" value="Supprimer" class="btn btn-default" /> |
             <a asp-action="Index">Revenir &agrave; la liste</a>
         </div>
     </form>
