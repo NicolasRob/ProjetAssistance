@@ -69,16 +69,23 @@ namespace ProjetGestionAssistance.Controllers
         //Sinon, la liste des équipes sera vide et le formulaire ne sera jamais accepté
         public async Task<IActionResult> Creation([Bind("Id,Courriel,MotPasse,ConfirmationMotPasse,Nom,Prenom,Telephone,Type,Actif,EquipeId")] Compte compte)
         {
-            if (ModelState.IsValid)
+            if (_context.Compte.SingleOrDefault(cpt => cpt.Courriel == compte.Courriel) == null)
             {
-                //_contexte représente la BD, .Add est une méthode de DAO qui a été généré automatiquement
-                //et compte est l'objet créé par le formulaire
-                _context.Add(compte);
-                await _context.SaveChangesAsync();
-                //On redirige ensuite l'utilisateur vers la page de login
-                //On utilise RedirectToAction plutôt que View pour éviter les doubles submit
-                return RedirectToAction("Login");
+                compte.Type = 1;
+                compte.Actif = true;
+                if (ModelState.IsValid)
+                {
+                    //_contexte représente la BD, .Add est une méthode de DAO qui a été généré automatiquement
+                    //et compte est l'objet créé par le formulaire
+                    _context.Add(compte);
+                    await _context.SaveChangesAsync();
+                    //On redirige ensuite l'utilisateur vers la page de login
+                    //On utilise RedirectToAction plutôt que View pour éviter les doubles submit
+                    return RedirectToAction("Login");
+                }
             }
+            else
+                ViewData["CourrielErreur"] = "Le courriel entré est déja en utilisation";
             //Si la création échoue, on redirige l'utilisateur vers la vue de Creation
             //Cependant, il faut recréer la liste des Id des équipes puisqu'on a perdu le ViewData précédent
             //lorsqu'on a appuyé sur le bouton de soumission.

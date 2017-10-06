@@ -220,5 +220,3 @@ namespace ProjetGestionAssistance.Controllers
         }
     }
 }
-
-    
