@@ -94,7 +94,10 @@ namespace ProjetGestionAssistance.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                
+            }
+            return RedirectToAction("Index");
+        }
 
         public IActionResult Creation()
         {
@@ -156,8 +159,5 @@ namespace ProjetGestionAssistance.Controllers
         {
             return _context.Billet.Any(e => e.Id == id);
         }
-    }
-}
-
     }
 }
