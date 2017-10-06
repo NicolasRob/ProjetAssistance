@@ -69,6 +69,8 @@ namespace ProjetGestionAssistance.Controllers
         //Sinon, la liste des équipes sera vide et le formulaire ne sera jamais accepté
         public async Task<IActionResult> Creation([Bind("Id,Courriel,MotPasse,ConfirmationMotPasse,Nom,Prenom,Telephone,Type,Actif,EquipeId")] Compte compte)
         {
+            compte.Type = 1;
+            compte.Actif = true;
             if (ModelState.IsValid)
             {
                 //_contexte représente la BD, .Add est une méthode de DAO qui a été généré automatiquement

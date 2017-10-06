@@ -155,7 +155,7 @@ namespace ProjetGestionAssistance.Controllers
                     }
                 }
             }
-                return RedirectToAction("Index");
+              return RedirectToAction("Index");
         }
 
         public IActionResult Creation()
@@ -220,5 +220,3 @@ namespace ProjetGestionAssistance.Controllers
         }
     }
 }
-
-    
