@@ -77,10 +77,10 @@ namespace ProjetGestionAssistance.Migrations
                     AuteurId = table.Column<int>(nullable: false),
                     Commentaires = table.Column<string>(nullable: true),
                     DepartementId = table.Column<int>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: false),
                     Etat = table.Column<string>(nullable: true),
                     Image = table.Column<string>(nullable: true),
-                    Titre = table.Column<string>(nullable: true)
+                    Titre = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -96,7 +96,7 @@ namespace ProjetGestionAssistance.Migrations
                         column: x => x.DepartementId,
                         principalTable: "Departement",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -108,6 +108,12 @@ namespace ProjetGestionAssistance.Migrations
                 name: "IX_Billet_DepartementId",
                 table: "Billet",
                 column: "DepartementId");
+
+            migrationBuilder.CreateIndex(
+                name: "Compte_UQ_Courriel",
+                table: "Compte",
+                column: "Courriel",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Compte_EquipeId",
