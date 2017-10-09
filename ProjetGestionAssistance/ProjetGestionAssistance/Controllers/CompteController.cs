@@ -41,6 +41,14 @@ namespace ProjetGestionAssistance.Controllers
                 Compte tempCompte = _context.Compte.SingleOrDefault(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse);
                 if (tempCompte != null)
                 {
+                    // On vérifie si le compte de l'utilisateur est actif
+                    if (!tempCompte.Actif)
+                    {
+                        // Le compte n'est pas actif, on le redirige vers le vue de login.
+                        // Puis, on affiche un message à l'utilisateur lui indiquant que son compte n'est pas actif
+                        ViewData["MessageErreurConnection"] = "Votre compte n'est pas activé. Veuillez contacter un supérieur pour plus d'information.";
+                        return View("Login");
+                    }
                     //Joel Lutumba 2017-10-01 -ajout
                     //typeUtilisateur : variable dont la valeur est stockée dans la session pour avoir le type de l'utilisateur connecté
                     string typeConnecte = "_Type";
@@ -50,8 +58,10 @@ namespace ProjetGestionAssistance.Controllers
                     ViewData["connection"] = tempCompte.Id;
                     return RedirectToAction("Index", "Home");
                 }
+                // On affiche ce message d'erreur quand le courriel utilisateur ou le mot de passe saisie est incorrect.
+                ViewData["MessageErreurConnection"] = "Le courriel ou le mot de passe entré est incorrect";
             }
-            return RedirectToAction("Login", "Compte");
+            return View("Login");
         }
 
         //Action qui affiche la page de création de compte
@@ -86,6 +96,14 @@ namespace ProjetGestionAssistance.Controllers
             //lorsqu'on a appuyé sur le bouton de soumission.
             ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom", compte.EquipeId);
             return View();
+        }
+        //Francis Paré : 2017-10-07
+        // Action qui déconnecte l'utilisateur de la session
+        // On clear l'élément session, puis on redirige l'utilisateur à la page de connection
+        public IActionResult Deconnection()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login","Compte");
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿@{
-    Layout="";
+    Layout = "";
 }
 @model ProjetGestionAssistance.Models.Compte
 @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>SB Admin - Start Bootstrap Template</title>
+    <title>Bienvenue</title>
     <!-- Bootstrap core CSS -->
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom fonts for this template -->
@@ -26,32 +26,26 @@
     <div class="container">
         <div class="card card-login mx-auto mt-5">
             <div class="card-header">
-                Login
+                Se connecter
             </div>
             <div class="card-body">
                 <form asp-action="Connection">
+                    <!-- Affichage du message d'erreur en lien avec la méthode connection du controleur compte-->
+                    <span  class="text-danger">@ViewData["MessageErreurConnection"]</span>
                     <div class="form-group">
                         <label asp-for="Courriel">Courriel</label>
                         <input asp-for="Courriel" type="email" class="form-control"  placeholder="Courriel">
+                        
                     </div>
                     <div class="form-group">
                         <label asp-for="MotPasse">Mot de passe</label>
                         <input asp-for="MotPasse" type="password" class="form-control" placeholder="Mot de passe">
                     </div>
-                    <div class="form-group">
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input">
-                                Remember Password
-                            </label>
-                        </div>
-                    </div>
-                    <!-- Amene vers l'action Connection dans le controlleur CompteController -->
+                    <!-- Amène vers l'action Connection dans le controlleur CompteController -->
                     <input type="submit" class="btn btn-primary btn-block" value="Connection"/>
                 </form>
                 <div class="text-center">
                     <a class="d-block small mt-3" href="AffichageCreation">Cr&eacute;er un compte</a>
-                    <a class="d-block small" href="forgot-password.html">Forgot Password?</a>
                 </div>
             </div>
         </div>
