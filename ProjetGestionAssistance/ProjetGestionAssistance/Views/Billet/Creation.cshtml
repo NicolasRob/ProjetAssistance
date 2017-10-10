@@ -6,15 +6,16 @@
 @{
     ViewData["Title"] = "Creation";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
+    
 
 }
+
 
 <h2>Cr&eacute;ation d'un billet</h2>
 
 <form asp-action="Creation" enctype="multipart/form-data">
     <div class="form-horizontal">
-        <h4> Billet @Context.Session.GetInt32("_Id") </h4>
+      
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
@@ -42,29 +43,22 @@
                 </div>
         </div>
 
+   
+
         <div class="form-group">
-
-           
-                <asp:FileUpload id="FileUploadControl" runat="server" />
-                <asp:Button runat="server" id="UploadButton" text="Upload" onclick="UploadButton_Click" />
-                <br /><br />
-                <asp:Label runat="server" id="StatusLabel" text="Upload status: " />
-         
-
-        </div>
-
-            <div class="form-group">
-                <label asp-for="DepartementId" class="col-md-2 control-label">D&eacute;partement</label>
-                <div class="col-md-10">
-                    <select asp-for="DepartementId" class="form-control" asp-items="ViewBag.DepartementId"></select>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Enregistrer le billet" class="btn btn-default" />
-                </div>
+            <label asp-for="DepartementId" class="col-md-2 control-label">D&eacute;partement</label>
+            <div class="col-md-10">
+                <select asp-for="DepartementId" class="form-control" asp-items="ViewBag.DepartementId"></select>
             </div>
         </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Enregistrer le billet" class="btn btn-default" />
+            </div>
+        </div>
+
+    </div>
 </form>
 
 <div>
