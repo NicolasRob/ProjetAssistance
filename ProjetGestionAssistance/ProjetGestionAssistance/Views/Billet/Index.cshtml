@@ -1,5 +1,7 @@
-@model IEnumerable<ProjetGestionAssistance.Models.Billet>
+@*pour utiliser la PaginatedList*@
+@using ProjetGestionAssistance.Models.Services
 
+@model ListePaginee<ProjetGestionAssistance.Models.Billet>
 @{
     ViewData["Title"] = "Index";
 }
@@ -7,26 +9,23 @@
 
 <h2>Liste des billets</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Titre)
+                Titre
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                Description
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Etat)
+                Etat
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Auteur)
+                Auteur
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Departement)
+                Departement
             </th>
             <th></th>
         </tr>
@@ -35,7 +34,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Titre)
+                <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Titre)</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
@@ -44,17 +43,47 @@
                 @Html.DisplayFor(modelItem => item.Etat)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Auteur.Courriel)
+                <a asp-controller="Comptes" asp-action="Details" asp-route-id="@item.AuteurId">
+                    @Html.DisplayFor(modelItem => item.Auteur.Prenom)
+                    @Html.DisplayFor(modelItem => item.Auteur.Nom)
+                </a>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Departement.Nom)
+                <a asp-controller="Departements" asp-action="Details" asp-route-id="@item.DepartementId">
+                    @Html.DisplayFor(modelItem => item.Departement.Nom)
+                </a>
+
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
-               <a asp-action="Details" asp-route-id="@item.Id">D�tails</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
+                <a asp-action="Modification" asp-route-id="@item.Id">Modifier</a> |
+                <a asp-action="Suppression" asp-route-id="@item.Id">Supprimer</a>
             </td>
         </tr>
 }
     </tbody>
+
 </table>
+
+@{
+    var ordreCourrant = ViewData["ordre"];
+    var precDisactive = !Model.APagePrecedente ? "disabled" : "";
+    var suivantDesactive = !Model.APageSuivante ? "disabled" : "";
+}
+
+
+
+
+
+<div class="col-lg-12">
+    <ul class="pagination justify-content-center">
+        <li class="page-item"><a asp-action="Index" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(Model.IndexDePage - 1)" class="page-link btn @precDisactive">Pr&eacute;c&eacute;dant </a></li>
+        @for (int i = 1; i <= Model.NbPagesTotal; i++)
+        {
+            var pageDesactive = Model.PageCourante(i) ? "btn-secondary disabled" : "";
+            <li class="page-item"><a asp-action="Index" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(i)" class="page-link btn @pageDesactive">@i</a></li>
+        }
+        
+        <li class="page-item"><a asp-action="Index" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(Model.IndexDePage + 1)" class="page-link btn @suivantDesactive">Suivant</a></li>
+    </ul>
+</div>
+

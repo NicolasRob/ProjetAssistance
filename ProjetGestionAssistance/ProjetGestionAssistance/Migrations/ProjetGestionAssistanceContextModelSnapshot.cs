@@ -27,13 +27,15 @@ namespace ProjetGestionAssistance.Migrations
 
                     b.Property<int?>("DepartementId");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .IsRequired();
 
                     b.Property<string>("Etat");
 
                     b.Property<string>("Image");
 
-                    b.Property<string>("Titre");
+                    b.Property<string>("Titre")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -71,6 +73,10 @@ namespace ProjetGestionAssistance.Migrations
                     b.Property<int>("Type");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Courriel")
+                        .IsUnique()
+                        .HasName("Compte_UQ_Courriel");
 
                     b.HasIndex("EquipeId");
 
