@@ -1,15 +1,21 @@
+
 @model ProjetGestionAssistance.Models.Billet
+@using Microsoft.AspNetCore.Http
+
 
 @{
     ViewData["Title"] = "Creation";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    
+
 }
+
 
 <h2>Cr&eacute;ation d'un billet</h2>
 
-<form asp-action="Creation">
+<form asp-action="Creation" enctype="multipart/form-data">
     <div class="form-horizontal">
-        <h4>Billet</h4>
+      
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
@@ -19,6 +25,7 @@
                 <span asp-validation-for="Titre" class="text-danger"></span>
             </div>
         </div>
+
         <div class="form-group">
             <label asp-for="Description" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -28,30 +35,29 @@
         </div>
 
         <div class="form-group">
-            <label asp-for="Image" class="col-md-2 control-label"></label>
+                <label asp-for="Image" class="col-md-2 control-label">Joindre une photo</label>
+                <div class="col-md-10">
+                    <input asp-for="Image" id="photo" type="file" accept="image/*" name="fichierPhoto" class="form-control" />
+                    
+                    <span asp-validation-for="Image" class="text-danger"></span>
+                </div>
+        </div>
+
+   
+
+        <div class="form-group">
+            <label asp-for="DepartementId" class="col-md-2 control-label">D&eacute;partement</label>
             <div class="col-md-10">
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
+                <select asp-for="DepartementId" class="form-control" asp-items="ViewBag.DepartementId"></select>
             </div>
         </div>
 
-        <div class="form-group">
-            <label asp-for="AuteurId" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <select asp-for="AuteurId" class ="form-control" asp-items="ViewBag.AuteurId"></select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="DepartementId" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <select asp-for="DepartementId" class ="form-control" asp-items="ViewBag.DepartementId"></select>
-            </div>
-        </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Enregistrer le billet" class="btn btn-default" />
             </div>
         </div>
+
     </div>
 </form>
 
@@ -62,3 +68,4 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
