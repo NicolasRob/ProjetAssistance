@@ -4,6 +4,11 @@
 @model ListePaginee<ProjetGestionAssistance.Models.Billet>
 @{
     ViewData["Title"] = "Index";
+
+    var ordreCourrant = ViewData["ordre"];
+    var numPageCourante = Model.IndexDePage;
+    var precDesactive = !Model.APagePrecedente ? "disabled" : "";
+    var suivantDesactive = !Model.APageSuivante ? "disabled" : "";
 }
 
 
@@ -34,7 +39,9 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Titre)</a>
+                <a asp-action="Details" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">
+                    @Html.DisplayFor(modelItem => item.Titre)
+                </a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
@@ -55,8 +62,8 @@
 
             </td>
             <td>
-                <a asp-action="Modification" asp-route-id="@item.Id">Modifier</a> |
-                <a asp-action="Suppression" asp-route-id="@item.Id">Supprimer</a>
+                <a asp-action="Modification" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Modifier</a> |
+                <a asp-action="Suppression" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Supprimer</a>
             </td>
         </tr>
 }
@@ -64,11 +71,6 @@
 
 </table>
 
-@{
-    var ordreCourrant = ViewData["ordre"];
-    var precDisactive = !Model.APagePrecedente ? "disabled" : "";
-    var suivantDesactive = !Model.APageSuivante ? "disabled" : "";
-}
 
 
 
@@ -76,7 +78,7 @@
 
 <div class="col-lg-12">
     <ul class="pagination justify-content-center">
-        <li class="page-item"><a asp-action="Index" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(Model.IndexDePage - 1)" class="page-link btn @precDisactive">Pr&eacute;c&eacute;dant </a></li>
+        <li class="page-item"><a asp-action="Index" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(Model.IndexDePage - 1)" class="page-link btn @precDesactive">Pr&eacute;c&eacute;dant </a></li>
         @for (int i = 1; i <= Model.NbPagesTotal; i++)
         {
             var pageDesactive = Model.PageCourante(i) ? "btn-secondary disabled" : "";
