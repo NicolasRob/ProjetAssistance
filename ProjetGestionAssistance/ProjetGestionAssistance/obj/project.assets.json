@@ -10779,7 +10779,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Charles\\.nuget\\packages\\": {}
+    "C:\\Users\\Joel\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
@@ -10787,14 +10787,14 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "C:\\Users\\Charles\\Documents\\CEGEP\\DevProjet\\ProjetBillets\\GitHub\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
+      "projectUniqueName": "E:\\Dossier d'école\\Mes Documents\\Session 6 [Automne 2017]\\420-AW6_Dev-projets\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
       "projectName": "ProjetGestionAssistance",
-      "projectPath": "C:\\Users\\Charles\\Documents\\CEGEP\\DevProjet\\ProjetBillets\\GitHub\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
-      "packagesPath": "C:\\Users\\Charles\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Charles\\Documents\\CEGEP\\DevProjet\\ProjetBillets\\GitHub\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\obj\\",
+      "projectPath": "E:\\Dossier d'école\\Mes Documents\\Session 6 [Automne 2017]\\420-AW6_Dev-projets\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
+      "packagesPath": "C:\\Users\\Joel\\.nuget\\packages\\",
+      "outputPath": "E:\\Dossier d'école\\Mes Documents\\Session 6 [Automne 2017]\\420-AW6_Dev-projets\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Charles\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Joel\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

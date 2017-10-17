@@ -8,3 +8,13 @@ C:\Users\Charles\Documents\CEGEP\DevProjet\ProjetBillets\GitHub\ProjetAssistance
 C:\Users\Charles\Documents\CEGEP\DevProjet\ProjetBillets\GitHub\ProjetAssistance\ProjetGestionAssistance\ProjetGestionAssistance\obj\Debug\netcoreapp1.1\ProjetGestionAssistance.dll
 C:\Users\Charles\Documents\CEGEP\DevProjet\ProjetBillets\GitHub\ProjetAssistance\ProjetGestionAssistance\ProjetGestionAssistance\obj\Debug\netcoreapp1.1\ProjetGestionAssistance.pdb
 C:\Users\Charles\Documents\CEGEP\DevProjet\ProjetBillets\GitHub\ProjetAssistance\ProjetGestionAssistance\ProjetGestionAssistance\obj\Debug\netcoreapp1.1\ProjetGestionAssistance.csproj.CoreCompileInputs.cache
+E:\Dossier d'école\Mes Documents\Session 6 [Automne 2017]\420-AW6_Dev-projets\ProjetAssistance\ProjetGestionAssistance\ProjetGestionAssistance\bin\Debug\netcoreapp1.1\ProjetGestionAssistance.deps.json
+E:\Dossier d'école\Mes Documents\Session 6 [Automne 2017]\420-AW6_Dev-projets\ProjetAssistance\ProjetGestionAssistance\ProjetGestionAssistance\bin\Debug\netcoreapp1.1\ProjetGestionAssistance.runtimeconfig.json
+E:\Dossier d'école\Mes Documents\Session 6 [Automne 2017]\420-AW6_Dev-projets\ProjetAssistance\ProjetGestionAssistance\ProjetGestionAssistance\bin\Debug\netcoreapp1.1\ProjetGestionAssistance.runtimeconfig.dev.json
+E:\Dossier d'école\Mes Documents\Session 6 [Automne 2017]\420-AW6_Dev-projets\ProjetAssistance\ProjetGestionAssistance\ProjetGestionAssistance\bin\Debug\netcoreapp1.1\ProjetGestionAssistance.dll
+E:\Dossier d'école\Mes Documents\Session 6 [Automne 2017]\420-AW6_Dev-projets\ProjetAssistance\ProjetGestionAssistance\ProjetGestionAssistance\bin\Debug\netcoreapp1.1\ProjetGestionAssistance.pdb
+E:\Dossier d'école\Mes Documents\Session 6 [Automne 2017]\420-AW6_Dev-projets\ProjetAssistance\ProjetGestionAssistance\ProjetGestionAssistance\obj\Debug\netcoreapp1.1\ProjetGestionAssistance.csprojResolveAssemblyReference.cache
+E:\Dossier d'école\Mes Documents\Session 6 [Automne 2017]\420-AW6_Dev-projets\ProjetAssistance\ProjetGestionAssistance\ProjetGestionAssistance\obj\Debug\netcoreapp1.1\ProjetGestionAssistance.csproj.CoreCompileInputs.cache
+E:\Dossier d'école\Mes Documents\Session 6 [Automne 2017]\420-AW6_Dev-projets\ProjetAssistance\ProjetGestionAssistance\ProjetGestionAssistance\obj\Debug\netcoreapp1.1\ProjetGestionAssistance.AssemblyInfo.cs
+E:\Dossier d'école\Mes Documents\Session 6 [Automne 2017]\420-AW6_Dev-projets\ProjetAssistance\ProjetGestionAssistance\ProjetGestionAssistance\obj\Debug\netcoreapp1.1\ProjetGestionAssistance.dll
+E:\Dossier d'école\Mes Documents\Session 6 [Automne 2017]\420-AW6_Dev-projets\ProjetAssistance\ProjetGestionAssistance\ProjetGestionAssistance\obj\Debug\netcoreapp1.1\ProjetGestionAssistance.pdb
