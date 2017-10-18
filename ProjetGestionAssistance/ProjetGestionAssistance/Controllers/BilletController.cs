@@ -16,8 +16,6 @@ namespace ProjetGestionAssistance.Controllers
     {
         //Initialisation de la variable _context pour intéragir avec la base de données
         private readonly ProjetGestionAssistanceContext _context;
-        //compteur qui sera ajouté au nom de fichier de l'image du billet, pour rendre le nom unique.
-        private int compteurImage = 0;
 
         public BilletController(ProjetGestionAssistanceContext context)
         {
@@ -189,19 +187,33 @@ namespace ProjetGestionAssistance.Controllers
                 //L'état d'un billet est initialisé à "Nouveau"
                 billet.Etat = "Nouveau";
 
-                //Le path du fichier de l'image est construit à partir de l'ID de l'auteur et de l'ID du billet
-                //Il faudra trouver une autre manière de nommer les fichiers si on accepte plus d'une photo par billet
-                Billet billetTemp = _context.Billet.LastOrDefault();
-                int idBilletTemp = billetTemp.Id+1;
-                var filePath = "./images/billet"+billet.AuteurId+"-"+idBilletTemp;  // À MODIFIER : Il faut trouver un moyen de construire des noms de fichiers uniques.
-                compteurImage++;
-                //Copie du fichierPhoto dans notre dossier local
-                using (var stream = new FileStream(filePath, FileMode.Create))
+
+                if (fichierPhoto != null)
                 {
-                    await fichierPhoto.CopyToAsync(stream);
+                    //Le path du fichier de l'image est construit à partir de l'ID de l'auteur et de l'ID du billet
+                    //Il faudra trouver une autre manière de nommer les fichiers si on accepte plus d'une photo par billet
+                    Billet billetTemp = _context.Billet.LastOrDefault();
+                    int idBilletTemp = billetTemp.Id+1;
+                    var filePath = "./images/billet"+billet.AuteurId+"-"+idBilletTemp;  // À MODIFIER : Il faut trouver un moyen de construire des noms de fichiers uniques.
+                    try
+                    {
+                        //Copie du fichierPhoto dans notre dossier local
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await fichierPhoto.CopyToAsync(stream);
+                        }
+
+                        billet.Image = filePath; //copie du chemin d'accès du fichier dans l'attribut Image du billet
+                    }
+                    catch (FileNotFoundException e)
+                    {
+                        Console.WriteLine("Erreur : " + e.Message);
+                    }
+
                 }
-                
-                billet.Image = filePath; //copie du chemin d'accès du fichier dans l'attribut Image du billet
+
+                else
+                    billet.Image = "";
 
                 //Enregistrement du billet dans la base de données
                 _context.Add(billet);
