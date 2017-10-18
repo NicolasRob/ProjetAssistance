@@ -41,7 +41,8 @@ namespace ProjetGestionAssistance.Controllers
         {
             if (ModelState.IsValid)
             {
-                Compte tempCompte = _context.Compte.SingleOrDefault(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse);
+                //Compte tempCompte = _context.Compte.SingleOrDefault(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse);
+                Compte tempCompte = _context.Compte.Where(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse).AsEnumerable().SingleOrDefault(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse);
                 if (tempCompte != null)
                 {
                     // On vérifie si le compte de l'utilisateur est actif
