@@ -1,0 +1,93 @@
+@model ProjetGestionAssistance.Models.Compte
+
+@{
+    ViewData["Title"] = "Modification du compte";
+}
+
+<h2>Modification du compte</h2>
+
+<form asp-action="ModifierCompte">
+    <div class="form-horizontal">
+        <div>
+            <a asp-action="AfficherGestionCompte" asp-route-ordre="@(ViewData["ordre"])" asp-route-page="@(ViewData["page"])">Revenir a la liste des comptes</a>
+        </div>
+        <p class="text-success">@Html.Raw(ViewData["MessageModificationCompte"])</p>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <label asp-for="Courriel" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Courriel" class="form-control" />
+                <span asp-validation-for="Courriel" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="MotPasse" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="MotPasse" class="form-control" />
+                <span asp-validation-for="MotPasse" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Nom" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Nom" class="form-control" />
+                <span asp-validation-for="Nom" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Prenom" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Prenom" class="form-control" />
+                <span asp-validation-for="Prenom" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Telephone" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Telephone" class="form-control" />
+                <span asp-validation-for="Telephone" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Type" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="Type" class="form-control" >
+                    <option value="0">Demandeur</option>
+                    <option value="1">Employ&eacute;</option>
+                    <option value="2">Gestionnaire</option>
+                    <option value="3">Administrateur</option>
+                </select>
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="checkbox">
+                    <input asp-for="Actif" id="etat" />
+                    <label asp-for="Actif"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="EquipeId" class="control-label col-md-2">&Eacute;quipe</label>
+            <div class="col-md-10">
+                <select asp-for="EquipeId" class="form-control" asp-items="ViewBag.EquipeId"></select>
+                <span asp-validation-for="EquipeId" class="text-danger"></span>
+            </div>
+        </div>
+        <input type="hidden" asp-for="ConfirmationMotPasse" value="@Model.MotPasse" />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Sauvegarder" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
