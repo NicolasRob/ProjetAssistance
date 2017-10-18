@@ -55,6 +55,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Modifier le billet</a> |
-    <a asp-action="Index">Revenir &agrave; la liste</a>
+    <a asp-action="Modification" asp-route-id="@Model.Id">Modifier le billet</a> |
+    <a asp-action="Index" asp-route-ordre="@ViewData["ordrePrecedent"]" asp-route-page="@ViewData["pagePrecedente"]">Revenir &agrave; la liste</a>
 </div>

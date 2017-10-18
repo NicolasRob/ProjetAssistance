@@ -59,7 +59,7 @@ namespace ProjetGestionAssistance.Controllers
                   chercher l'équipe dont fait partie l'utilisateur connecté donc*/
                 var equipe = _context.Equipe.SingleOrDefault(e => e.Id == compte.EquipeId);
 
-                // option 1 - cherche les billets en comparant l'id de son déparment et l'id du déparment de l'équipe de l'utilisateur connecté
+                // option 1 - cherche les billets en comparant l'id de son déparment et l'id du département de l'équipe de l'utilisateur connecté
                 var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.DepartementId == equipe.DepartementId);
                 
                 // option 2 - vu que c'est maintenant possible on peut aussi faire
@@ -89,14 +89,15 @@ namespace ProjetGestionAssistance.Controllers
 
         }
 
-        // GET: Billets/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Billet/Details/5
+        public async Task<IActionResult> Details(int? id, String ordrePrecedent, int? pagePrecedente)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
+            ViewData["ordrePrecedent"] = ordrePrecedent;
+            ViewData["pagePrecedente"] = pagePrecedente ?? 1;
             var billet = await _context.Billet
                 .Include(b => b.Auteur)
                 .Include(b => b.Departement)
@@ -110,13 +111,14 @@ namespace ProjetGestionAssistance.Controllers
         }
 
         // GET: Billet/Modification/5
-        public async Task<IActionResult> Modification(int? id)
+        public async Task<IActionResult> Modification(int? id, String ordrePrecedent, int? pagePrecedente)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
+            ViewData["ordrePrecedent"] = ordrePrecedent;
+            ViewData["pagePrecedente"] = pagePrecedente ?? 1;
             var billet = await _context.Billet.SingleOrDefaultAsync(m => m.Id == id);
             if (billet == null)
             {
@@ -159,7 +161,10 @@ namespace ProjetGestionAssistance.Controllers
                     }
                 }
             }
-              return RedirectToAction("Index");
+            // Cherche la valeur des paramètres cachés dans du formulaire qui a envoyé la request post et les envoie comme paramètre à L'action Billet.Index() 
+            var ordrePrecedent = HttpContext.Request.Form["ordrePrecedent"];
+            var pagePrecedente = HttpContext.Request.Form["pagePrecedente"];
+                return RedirectToAction("Index", new { @ordre=ordrePrecedent, @page=pagePrecedente});
         }
 
         
@@ -211,13 +216,14 @@ namespace ProjetGestionAssistance.Controllers
         }
 
         // GET: Billet/Suppression/5
-        public async Task<IActionResult> Suppression(int? id)
+        public async Task<IActionResult> Suppression(int? id, String ordrePrecedent, int? pagePrecedente)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
+            ViewData["ordrePrecedent"] = ordrePrecedent;
+            ViewData["pagePrecedente"] = pagePrecedente?? 1;
             var billet = await _context.Billet
                 .Include(b => b.Auteur)
                 .Include(b => b.Departement)
@@ -238,7 +244,11 @@ namespace ProjetGestionAssistance.Controllers
             var billet = await _context.Billet.SingleOrDefaultAsync(m => m.Id == id);
             _context.Billet.Remove(billet);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+
+            var ordrePrecedent = HttpContext.Request.Form["ordrePrecedent"];
+            var pagePrecedente = HttpContext.Request.Form["pagePrecedente"];
+
+            return RedirectToAction("Index", new { @ordre = ordrePrecedent, @page = pagePrecedente });
         }
 
         private bool BilletExists(int id)
