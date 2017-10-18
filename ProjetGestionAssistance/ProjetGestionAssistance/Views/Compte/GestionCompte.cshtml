@@ -1,0 +1,130 @@
+@*pour utiliser la PaginatedList*@
+@using ProjetGestionAssistance.Models.Services
+
+@model ListePaginee<ProjetGestionAssistance.Models.Compte>
+
+@{
+ViewData["Title"] = "GestionCompte";
+Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Gestion des comptes</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="AfficherGestionCompte" asp-route-ordre="@((string)ViewData["ordre"] == "IdUp" ? "IdDown" : "IdUp")" asp-route-page="@(Model.IndexDePage)">
+                ID
+                </a>
+            </th>
+            <th>
+                <a asp-action="AfficherGestionCompte" asp-route-ordre="@((string)ViewData["ordre"] == "PrenomUp" ? "PrenomDown" : "PrenomUp")" asp-route-page="@(Model.IndexDePage)">
+                Prenom
+                </a>
+            </th>
+            <th>
+                <a asp-action="AfficherGestionCompte" asp-route-ordre="@((string)ViewData["ordre"] == "NomUp" ? "NomDown" : "NomUp")" asp-route-page="@(Model.IndexDePage)">
+                Nom
+                </a>
+            </th>
+            <th>
+                <a asp-action="AfficherGestionCompte" asp-route-ordre="@((string)ViewData["ordre"] == "CourrielUp" ? "CourrielDown" : "CourrielUp")" asp-route-page="@(Model.IndexDePage)">
+                Courriel
+                </a>
+            </th>
+            <th>
+                <a asp-action="AfficherGestionCompte" asp-route-ordre="@((string)ViewData["ordre"] == "EquipeUp" ? "EquipeDown" : "EquipeUp")" asp-route-page="@(Model.IndexDePage)">
+                Equipe
+                </a>
+            </th>
+            <th>
+                <a asp-action="AfficherGestionCompte" asp-route-ordre="@((string)ViewData["ordre"] == "TypeUp" ? "TypeDown" : "TypeUp")" asp-route-page="@(Model.IndexDePage)">
+                Type
+                </a>
+            </th>
+            <th>
+                <a asp-action="AfficherGestionCompte" asp-route-ordre="@((string)ViewData["ordre"] == "EtatUp" ? "EtatDown" : "EtatUp")" asp-route-page="@(Model.IndexDePage)">
+                Etat
+                </a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Prenom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Courriel)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Equipe.Nom)
+                </td>
+                <td>
+                    @{
+                        string nomType;
+                        switch (item.Type)
+                        {
+                            case 0:
+                                nomType = "Demandeur";
+                                break;
+                            case 1:
+                                nomType = "Employ&eacute;";
+                                break;
+                            case 2:
+                                nomType = "Gestionnaire";
+                                break;
+                            case 3:
+                                nomType = "Administrateur";
+                                break;
+                            default:
+                                nomType = "Administrateur";
+                                break;
+                        }
+                    }
+                    @Html.Raw(nomType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Actif)
+                </td>
+                <td>
+                    <a asp-action="ModifierEtatCompte" asp-route-id="@item.Id" asp-route-ordre="@(ViewData["ordre"])" asp-route-page="@(Model.IndexDePage)">@(Html.Raw((item.Actif) ? "D&eacute;sactiver" : "Activer"))</a> |
+                    <a asp-action="AfficherModificationCompte" asp-route-id="@item.Id" asp-route-ordre="@(ViewData["ordre"])" asp-route-page="@(Model.IndexDePage)">Modifier</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+
+@{
+    var ordreCourrant = ViewData["ordre"];
+    var precDisactive = !Model.APagePrecedente ? "disabled" : "";
+    var suivantDesactive = !Model.APageSuivante ? "disabled" : "";
+}
+
+
+
+
+
+<div class="col-lg-12">
+    <ul class="pagination justify-content-center">
+        <li class="page-item"><a asp-action="AfficherGestionCompte" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(Model.IndexDePage - 1)" class="page-link btn @precDisactive">Pr&eacute;c&eacute;dant </a></li>
+        @for (int i = 1; i <= Model.NbPagesTotal; i++)
+        {
+            var pageDesactive = Model.PageCourante(i) ? "btn-secondary disabled" : "";
+            <li class="page-item"><a asp-action="AfficherGestionCompte" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(i)" class="page-link btn @pageDesactive">@i</a></li>
+        }
+
+        <li class="page-item"><a asp-action="AfficherGestionCompte" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(Model.IndexDePage + 1)" class="page-link btn @suivantDesactive">Suivant</a></li>
+    </ul>
+</div>

@@ -10779,7 +10779,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Charles\\.nuget\\packages\\": {}
+    "C:\\Users\\Vengor\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
@@ -10787,14 +10787,14 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "C:\\Users\\Charles\\Documents\\CEGEP\\DevProjet\\ProjetBillets\\GitHub\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
+      "projectUniqueName": "C:\\Users\\Vengor\\Desktop\\Automne 2017\\Dev Projet\\Repo\\ProjetAssistance\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
       "projectName": "ProjetGestionAssistance",
-      "projectPath": "C:\\Users\\Charles\\Documents\\CEGEP\\DevProjet\\ProjetBillets\\GitHub\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
-      "packagesPath": "C:\\Users\\Charles\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Charles\\Documents\\CEGEP\\DevProjet\\ProjetBillets\\GitHub\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\obj\\",
+      "projectPath": "C:\\Users\\Vengor\\Desktop\\Automne 2017\\Dev Projet\\Repo\\ProjetAssistance\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
+      "packagesPath": "C:\\Users\\Vengor\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Vengor\\Desktop\\Automne 2017\\Dev Projet\\Repo\\ProjetAssistance\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Charles\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Vengor\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

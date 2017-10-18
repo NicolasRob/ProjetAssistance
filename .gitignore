@@ -3,4 +3,9 @@
 ################################################################################
 
 .vs/
-
+ProjetGestionAssistance/bin/
+ProjetGestionAssistance/obj/
+/ProjetGestionAssistance/ProjetGestionAssistance/bin/Release/netcoreapp1.1
+/ProjetGestionAssistance/ProjetGestionAssistance/obj/Release/netcoreapp1.1
+/ProjetGestionAssistance/ProjetGestionAssistance/Properties/PublishProfiles
+/ProjetGestionAssistance/ProjetGestionAssistance/Images
