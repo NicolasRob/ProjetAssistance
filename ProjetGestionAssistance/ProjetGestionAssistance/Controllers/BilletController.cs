@@ -192,10 +192,17 @@ namespace ProjetGestionAssistance.Controllers
                 if (fichierPhoto != null)
                 {
                     //Le path du fichier de l'image est construit à partir de l'ID de l'auteur et de l'ID du billet
-                    //Il faudra trouver une autre manière de nommer les fichiers si on accepte plus d'une photo par billet
+                    //Cette méthode fonctionne si on ajoute UNE SEULE photo par billet.
+
+                    //On va chercher le ID du dernier billet, pour ajouter l'ID du billet présent dans le path.
                     Billet billetTemp = _context.Billet.LastOrDefault();
-                    int idBilletTemp = billetTemp.Id+1;
-                    var filePath = "./images/billet"+billet.AuteurId+"-"+idBilletTemp;  // À MODIFIER : Il faut trouver un moyen de construire des noms de fichiers uniques.
+                    int idBilletTemp;
+                    //S'il n'y a pas encore de billet dans la BD, on initalise l'ID à 0
+                    if (billetTemp == null)
+                        idBilletTemp = 0;
+                    else
+                        idBilletTemp = billetTemp.Id + 1;
+                    var filePath = "./images/billet"+billet.AuteurId+"-"+idBilletTemp;
                     try
                     {
                         //Copie du fichierPhoto dans notre dossier local

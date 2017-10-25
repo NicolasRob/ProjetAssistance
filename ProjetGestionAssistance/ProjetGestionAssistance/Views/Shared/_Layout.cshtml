@@ -128,6 +128,8 @@
                         </span>
                     </a>
                 </li>
+                @if (roleUtilisateur >= 3) //option visible aux administrateurs ou plus haut
+                {
                 <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Gestion des comptes">
                     <a class="nav-link" asp-area="" asp-controller="Compte" asp-action="AfficherGestionCompte">
                         <i class="fa fa-fw fa-male"></i>
@@ -136,6 +138,7 @@
                         </span>
                     </a>
                 </li>
+                }
                 <!-- Fin des nouveaux boutons -->
             </ul>
                 <ul class="navbar-nav sidenav-toggler">
