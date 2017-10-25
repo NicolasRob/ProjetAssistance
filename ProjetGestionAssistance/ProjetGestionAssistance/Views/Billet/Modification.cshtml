@@ -4,7 +4,16 @@
     ViewData["Title"] = "Modification";
 }
 
+    <div class="container">
 <h2>Modification</h2>
+@if (Model.Etat == "EN TRAITEMENT") {
+    <h3>Votre demande est pr&eacute;sentement trait&eacute;e</h3>
+
+    <h5>Titre : @Model.Titre</h5>
+    <h5>Description :</h5>
+    <p>@Model.Description</p>
+}
+else {
 
 <form asp-action="Modification">
     <div class="form-horizontal">
@@ -70,11 +79,13 @@
         </div>
     </div>
 </form>
+}
 
 <div>
     <a asp-action="Index" asp-route-ordre="@ViewData["ordrePrecedent"]" asp-route-page="@ViewData["pagePrecedente"]">Revenir &agrave; la liste</a>
 </div>
 
+    </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
