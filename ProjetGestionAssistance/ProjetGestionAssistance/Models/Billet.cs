@@ -23,6 +23,11 @@ namespace ProjetGestionAssistance.Models
         [ForeignKey("AuteurId")]
         public Compte Auteur { get; set; }
 
+        public int? CompteId { get; set; }
+
+        [ForeignKey("CompteId")]
+        public Compte Compte { get; set; }
+
         public int? DepartementId { get; set; }
 
         [ForeignKey("DepartementId")]
