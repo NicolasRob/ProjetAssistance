@@ -10779,7 +10779,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Joel\\.nuget\\packages\\": {}
+    "C:\\Users\\Vengor\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
@@ -10787,14 +10787,14 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "E:\\Dossier d'école\\Mes Documents\\Session 6 [Automne 2017]\\420-AW6_Dev-projets\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
+      "projectUniqueName": "C:\\Users\\Vengor\\Desktop\\Automne 2017\\Dev Projet\\Repo\\ProjetAssistance\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
       "projectName": "ProjetGestionAssistance",
-      "projectPath": "E:\\Dossier d'école\\Mes Documents\\Session 6 [Automne 2017]\\420-AW6_Dev-projets\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
-      "packagesPath": "C:\\Users\\Joel\\.nuget\\packages\\",
-      "outputPath": "E:\\Dossier d'école\\Mes Documents\\Session 6 [Automne 2017]\\420-AW6_Dev-projets\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\obj\\",
+      "projectPath": "C:\\Users\\Vengor\\Desktop\\Automne 2017\\Dev Projet\\Repo\\ProjetAssistance\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
+      "packagesPath": "C:\\Users\\Vengor\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Vengor\\Desktop\\Automne 2017\\Dev Projet\\Repo\\ProjetAssistance\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Joel\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Vengor\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
