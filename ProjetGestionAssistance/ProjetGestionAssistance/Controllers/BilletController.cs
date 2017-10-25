@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using ProjetGestionAssistance.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 using ProjetGestionAssistance.Models.Services;
 
 namespace ProjetGestionAssistance.Controllers
@@ -15,6 +16,8 @@ namespace ProjetGestionAssistance.Controllers
     {
         //Initialisation de la variable _context pour intéragir avec la base de données
         private readonly ProjetGestionAssistanceContext _context;
+        //compteur qui sera ajouté au nom de fichier de l'image du billet, pour rendre le nom unique.
+        private int compteurImage = 0;
 
         public BilletController(ProjetGestionAssistanceContext context)
         {
@@ -153,6 +156,7 @@ namespace ProjetGestionAssistance.Controllers
                     }
                     else
                     {
+                       
                         throw;
                     }
                 }
@@ -163,24 +167,47 @@ namespace ProjetGestionAssistance.Controllers
                 return RedirectToAction("Index", new { @ordre=ordrePrecedent, @page=pagePrecedente});
         }
 
+        
+        //Get : Création d'un billet
         public IActionResult Creation()
         {
             ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel");
-            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id");
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom");
             return View("Creation");
         }
+        
 
+        //Post : Création d'un billet
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Creation([Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId")] Billet billet)
+        public async Task<IActionResult> Creation([Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId")] Billet billet, IFormFile fichierPhoto)
         {
             if (ModelState.IsValid)
             {
+                // Attribut AuteurId du billet = Id de l'utilisateur en cours
+                billet.AuteurId = (int)HttpContext.Session.GetInt32("_Id");
+                //L'état d'un billet est initialisé à "Nouveau"
                 billet.Etat = "Nouveau";
+
+                //Le path du fichier de l'image est construit à partir de l'ID de l'auteur et de l'ID du billet
+                //Il faudra trouver une autre manière de nommer les fichiers si on accepte plus d'une photo par billet
+                Billet billetTemp = _context.Billet.LastOrDefault();
+                int idBilletTemp = billetTemp.Id+1;
+                var filePath = "./images/billet"+billet.AuteurId+"-"+idBilletTemp;  // À MODIFIER : Il faut trouver un moyen de construire des noms de fichiers uniques.
+                compteurImage++;
+                //Copie du fichierPhoto dans notre dossier local
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await fichierPhoto.CopyToAsync(stream);
+                }
+                
+                billet.Image = filePath; //copie du chemin d'accès du fichier dans l'attribut Image du billet
+
+                //Enregistrement du billet dans la base de données
                 _context.Add(billet);
+         
                 await _context.SaveChangesAsync();
 
-                //À CHANGER pour la vue des billets fait par Joel
                 return RedirectToAction("Index", "Billet");
             }
             ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel", billet.AuteurId);
@@ -228,7 +255,7 @@ namespace ProjetGestionAssistance.Controllers
         {
             return _context.Billet.Any(e => e.Id == id);
         }
+
+
     }
 }
-
-    

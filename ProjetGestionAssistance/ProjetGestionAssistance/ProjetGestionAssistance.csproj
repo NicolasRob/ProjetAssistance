@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+    <Folder Include="Images\" />
     <Folder Include="Views\Billet\" />
     <Folder Include="Views\Compte\" />
     <Folder Include="Views\Shared\" />
