@@ -186,6 +186,7 @@ namespace ProjetGestionAssistance.Controllers
                 billet.AuteurId = (int)HttpContext.Session.GetInt32("_Id");
                 //L'état d'un billet est initialisé à "Nouveau"
                 billet.Etat = "Nouveau";
+                billet.CompteId = null;
 
 
                 if (fichierPhoto != null)

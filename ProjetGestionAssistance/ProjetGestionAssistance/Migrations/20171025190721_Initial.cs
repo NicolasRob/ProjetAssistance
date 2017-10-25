@@ -76,6 +76,7 @@ namespace ProjetGestionAssistance.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     AuteurId = table.Column<int>(nullable: false),
                     Commentaires = table.Column<string>(nullable: true),
+                    CompteId = table.Column<int>(nullable: true),
                     DepartementId = table.Column<int>(nullable: true),
                     Description = table.Column<string>(nullable: false),
                     Etat = table.Column<string>(nullable: true),
@@ -92,6 +93,12 @@ namespace ProjetGestionAssistance.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_Billet_Compte_CompteId",
+                        column: x => x.CompteId,
+                        principalTable: "Compte",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Billet_Departement_DepartementId",
                         column: x => x.DepartementId,
                         principalTable: "Departement",
@@ -103,6 +110,11 @@ namespace ProjetGestionAssistance.Migrations
                 name: "IX_Billet_AuteurId",
                 table: "Billet",
                 column: "AuteurId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Billet_CompteId",
+                table: "Billet",
+                column: "CompteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Billet_DepartementId",

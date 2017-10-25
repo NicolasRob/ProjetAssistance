@@ -25,6 +25,8 @@ namespace ProjetGestionAssistance.Migrations
 
                     b.Property<string>("Commentaires");
 
+                    b.Property<int>("CompteId");
+
                     b.Property<int?>("DepartementId");
 
                     b.Property<string>("Description")
@@ -40,6 +42,8 @@ namespace ProjetGestionAssistance.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuteurId");
+
+                    b.HasIndex("CompteId");
 
                     b.HasIndex("DepartementId");
 
@@ -116,6 +120,11 @@ namespace ProjetGestionAssistance.Migrations
                     b.HasOne("ProjetGestionAssistance.Models.Compte", "Auteur")
                         .WithMany()
                         .HasForeignKey("AuteurId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ProjetGestionAssistance.Models.Compte", "Compte")
+                        .WithMany()
+                        .HasForeignKey("CompteId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ProjetGestionAssistance.Models.Departement", "Departement")
