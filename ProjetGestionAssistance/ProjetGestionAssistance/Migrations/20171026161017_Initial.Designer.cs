@@ -8,7 +8,7 @@ using ProjetGestionAssistance.Models;
 namespace ProjetGestionAssistance.Migrations
 {
     [DbContext(typeof(ProjetGestionAssistanceContext))]
-    [Migration("20171025190721_Initial")]
+    [Migration("20171026161017_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,12 +26,14 @@ namespace ProjetGestionAssistance.Migrations
 
                     b.Property<string>("Commentaires");
 
-                    b.Property<int>("CompteId");
+                    b.Property<int?>("CompteId");
 
                     b.Property<int?>("DepartementId");
 
                     b.Property<string>("Description")
                         .IsRequired();
+
+                    b.Property<int?>("EquipeId");
 
                     b.Property<string>("Etat");
 
@@ -47,6 +49,8 @@ namespace ProjetGestionAssistance.Migrations
                     b.HasIndex("CompteId");
 
                     b.HasIndex("DepartementId");
+
+                    b.HasIndex("EquipeId");
 
                     b.ToTable("Billet");
                 });
@@ -125,12 +129,15 @@ namespace ProjetGestionAssistance.Migrations
 
                     b.HasOne("ProjetGestionAssistance.Models.Compte", "Compte")
                         .WithMany()
-                        .HasForeignKey("CompteId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CompteId");
 
                     b.HasOne("ProjetGestionAssistance.Models.Departement", "Departement")
                         .WithMany()
                         .HasForeignKey("DepartementId");
+
+                    b.HasOne("ProjetGestionAssistance.Models.Departement", "Equipe")
+                        .WithMany()
+                        .HasForeignKey("EquipeId");
                 });
 
             modelBuilder.Entity("ProjetGestionAssistance.Models.Compte", b =>

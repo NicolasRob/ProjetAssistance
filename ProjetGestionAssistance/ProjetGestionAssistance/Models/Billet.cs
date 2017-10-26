@@ -32,5 +32,10 @@ namespace ProjetGestionAssistance.Models
 
         [ForeignKey("DepartementId")]
         public Departement Departement { get; set; }
+
+        public int? EquipeId { get; set; }
+
+        [ForeignKey("EquipeId")]
+        public Departement Equipe { get; set; }
     }
 }
