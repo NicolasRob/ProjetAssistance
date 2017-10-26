@@ -79,6 +79,7 @@ namespace ProjetGestionAssistance.Migrations
                     CompteId = table.Column<int>(nullable: true),
                     DepartementId = table.Column<int>(nullable: true),
                     Description = table.Column<string>(nullable: false),
+                    EquipeId = table.Column<int>(nullable: true),
                     Etat = table.Column<string>(nullable: true),
                     Image = table.Column<string>(nullable: true),
                     Titre = table.Column<string>(nullable: false)
@@ -104,6 +105,12 @@ namespace ProjetGestionAssistance.Migrations
                         principalTable: "Departement",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Billet_Departement_EquipeId",
+                        column: x => x.EquipeId,
+                        principalTable: "Departement",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -120,6 +127,11 @@ namespace ProjetGestionAssistance.Migrations
                 name: "IX_Billet_DepartementId",
                 table: "Billet",
                 column: "DepartementId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Billet_EquipeId",
+                table: "Billet",
+                column: "EquipeId");
 
             migrationBuilder.CreateIndex(
                 name: "Compte_UQ_Courriel",

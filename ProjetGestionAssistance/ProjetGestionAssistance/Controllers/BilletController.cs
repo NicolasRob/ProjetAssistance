@@ -189,6 +189,7 @@ namespace ProjetGestionAssistance.Controllers
                 //L'état d'un billet est initialisé à "Nouveau"
                 billet.Etat = "Nouveau";
                 billet.CompteId = null;
+                billet.EquipeId = null;
 
 
                 if (fichierPhoto != null)
