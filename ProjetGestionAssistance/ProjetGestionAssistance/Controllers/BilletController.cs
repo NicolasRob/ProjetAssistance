@@ -115,6 +115,7 @@ namespace ProjetGestionAssistance.Controllers
             {
                 return NotFound();
             }
+
             ViewData["ordrePrecedent"] = ordrePrecedent;
             ViewData["pagePrecedente"] = pagePrecedente ?? 1;
             var billet = await _context.Billet.SingleOrDefaultAsync(m => m.Id == id);
@@ -124,6 +125,7 @@ namespace ProjetGestionAssistance.Controllers
             }
             ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel", billet.AuteurId);
             ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id", billet.DepartementId);
+            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom");
             return View(billet);
         }
 

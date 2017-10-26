@@ -1,7 +1,8 @@
 @*pour utiliser la PaginatedList*@
 @using ProjetGestionAssistance.Models.Services
+@using Microsoft.AspNetCore.Http;
 
-@model ListePaginee<ProjetGestionAssistance.Models.Billet>
+@model ListePaginee<ProjetGestionAssistance.Models.Billet> 
 @{
     ViewData["Title"] = "Index";
 
@@ -9,8 +10,11 @@
     var numPageCourante = Model.IndexDePage;
     var precDesactive = !Model.APagePrecedente ? "disabled" : "";
     var suivantDesactive = !Model.APageSuivante ? "disabled" : "";
-}
 
+    //Francis Paré: 2017-10-26
+    //L'affichage se fait en fonction de l'utilisateur connecté
+    var roleUtilisateur = Context.Session.GetInt32("_Type");
+}
 
 <h2>Liste des billets</h2>
 
@@ -62,10 +66,28 @@
 
             </td>
             <td>
-                @if (item.Etat != "EN TRAITEMENT") { 
+                @if (item.Etat != "EN TRAITEMENT")
+                {
 
-                <a asp-action="Modification" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Modifier</a> <span>|</span>
-                <a asp-action="Suppression" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Supprimer</a>
+                    <a asp-action="Modification" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Modifier</a> <span>|</span>
+                    <a asp-action="Suppression" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Supprimer</a> 
+                    // Assigner est seuement visible pour les gestiopnnaires et les roles plus haut
+                    @if (roleUtilisateur >= 2)
+                    {
+                        <span>|</span>
+                        <select>
+                            <option value="Assigner" selected>Assigner</option>
+                            @foreach (var equipe in ViewBag.EquipeId)
+                            {
+                               @if (equipe.DepartementId == item.DepartementId)
+                               {
+                                <option value="@equipe.Id">@equipe.Nom</option>
+                               }
+
+                             }
+                    
+                        </select>
+                     }
                 }
             </td>
         </tr>
