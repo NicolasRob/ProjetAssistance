@@ -71,23 +71,6 @@
 
                     <a asp-action="Modification" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Modifier</a> <span>|</span>
                     <a asp-action="Suppression" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Supprimer</a> 
-                    // Assigner est seuement visible pour les gestiopnnaires et les roles plus haut
-                    @if (roleUtilisateur >= 2)
-                    {
-                        <span>|</span>
-                        <select>
-                            <option value="Assigner" selected>Assigner</option>
-                            @foreach (var equipe in ViewBag.EquipeId)
-                            {
-                               @if (equipe.DepartementId == item.DepartementId)
-                               {
-                                <option value="@equipe.Id">@equipe.Nom</option>
-                               }
-
-                             }
-                    
-                        </select>
-                     }
                 }
             </td>
         </tr>

@@ -125,7 +125,7 @@ namespace ProjetGestionAssistance.Controllers
             }
             ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel", billet.AuteurId);
             ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id", billet.DepartementId);
-            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom");
+            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom",billet.EquipeId);
             return View(billet);
         }
 
@@ -134,7 +134,7 @@ namespace ProjetGestionAssistance.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Modification(int id, [Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId")] Billet billet)
+        public async Task<IActionResult> Modification(int id, [Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId,EquipeId")] Billet billet)
         {
             if (id != billet.Id)
             {
