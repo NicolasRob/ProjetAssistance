@@ -6,17 +6,14 @@
 @{
     ViewData["Title"] = "Index";
 
+    var nomListeBillet = ViewData["NomListeBillet"];
     var ordreCourrant = ViewData["ordre"];
     var numPageCourante = Model.IndexDePage;
     var precDesactive = !Model.APagePrecedente ? "disabled" : "";
     var suivantDesactive = !Model.APageSuivante ? "disabled" : "";
-
-    //Francis Paré: 2017-10-26
-    //L'affichage se fait en fonction de l'utilisateur connecté
-    var roleUtilisateur = Context.Session.GetInt32("_Type");
 }
 
-<h2>Liste des billets</h2>
+<h2>Liste des billets @(nomListeBillet)</h2>
 
 <table class="table">
     <thead>

@@ -59,21 +59,21 @@ else {
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="AuteurId" class="control-label col-md-2"></label>
+            <label asp-for="AuteurId" class="control-label col-md-2" hidden></label>
             <div class="col-md-10">
-                <select asp-for="AuteurId" class="form-control" asp-items="ViewBag.AuteurId"></select>
+                <select asp-for="AuteurId"  class="form-control" asp-items="ViewBag.AuteurId" hidden></select>
                 <span asp-validation-for="AuteurId" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="DepartementId" class="control-label col-md-2"></label>
+            <label asp-for="Departement" class="control-label col-md-2"></label>
             <div class="col-md-10">
                 <select asp-for="DepartementId" class="form-control" asp-items="ViewBag.DepartementID"></select>
                 <span asp-validation-for="DepartementId" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="EquipeId" class="control-label col-md-2"></label>
+            <label asp-for="Equipe" class="control-label col-md-2"></label>
             <div class="col-md-10">
                 <select asp-for="EquipeId" class="form-control" asp-items="ViewBag.EquipeId"></select>
                 <span asp-validation-for="EquipeId" class="text-danger"></span>
