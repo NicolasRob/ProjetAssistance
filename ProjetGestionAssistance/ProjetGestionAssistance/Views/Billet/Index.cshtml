@@ -1,18 +1,19 @@
 @*pour utiliser la PaginatedList*@
 @using ProjetGestionAssistance.Models.Services
+@using Microsoft.AspNetCore.Http;
 
-@model ListePaginee<ProjetGestionAssistance.Models.Billet>
+@model ListePaginee<ProjetGestionAssistance.Models.Billet> 
 @{
     ViewData["Title"] = "Index";
 
+    var nomListeBillet = ViewData["NomListeBillet"];
     var ordreCourrant = ViewData["ordre"];
     var numPageCourante = Model.IndexDePage;
     var precDesactive = !Model.APagePrecedente ? "disabled" : "";
     var suivantDesactive = !Model.APageSuivante ? "disabled" : "";
 }
 
-
-<h2>Liste des billets</h2>
+<h2>Liste des billets @(nomListeBillet)</h2>
 
 <table class="table">
     <thead>
@@ -62,10 +63,26 @@
 
             </td>
             <td>
-                @if (item.Etat != "EN TRAITEMENT") { 
+                @if (item.Etat != "EN TRAITEMENT")
+                {
 
-                <a asp-action="Modification" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Modifier</a> <span>|</span>
-                <a asp-action="Suppression" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Supprimer</a>
+                    <a asp-action="Modification" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Modifier</a> <span>|</span>
+                    <a asp-action="Suppression" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Supprimer</a> 
+                    @if (ordreCourrant.ToString() == "assigne")
+
+                    {
+                        @if (item.CompteId == null)
+                        {
+                            <span>|</span> <a asp-action="Accepter" asp-route-id="@item.Id"  asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)" >ACCEPTER</a>
+
+                        }
+                        else
+                        {
+                            <span>|</span>  @Html.DisplayFor(modelItem => item.Compte.Prenom);
+                        }
+
+                    }
+
                 }
             </td>
         </tr>

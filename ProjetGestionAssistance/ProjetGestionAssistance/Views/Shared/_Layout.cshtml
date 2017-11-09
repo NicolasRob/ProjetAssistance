@@ -70,7 +70,7 @@
                         @if (roleUtilisateur >= 1) //option visible aux employé de service et plus haut [Gestionnaire, Administrateur]
                         {
                             <li>
-                                <a class="nav-link" asp-controller="Billet" asp-action="Index">
+                                <a class="nav-link" asp-controller="Billet" asp-action="Index" asp-route-ordre="assigne">
                                     <i class="fa fa-fw fa-tablet"></i>
                                     <span class="nav-link-text">
                                         Billets assignés

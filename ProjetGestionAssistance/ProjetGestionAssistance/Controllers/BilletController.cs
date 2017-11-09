@@ -35,22 +35,26 @@ namespace ProjetGestionAssistance.Controllers
             // renvoie la vue billet seulement avec les billets que l'utiilisateur connecté à composé
             if (ordre == "compose")
             {
+                ViewData["NomListeBillet"] = "composés";
                 ViewData["ordre"] = "compose";
                 var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.AuteurId == compte.Id);
                 return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
             
-            /*// vérifie si l'utilisateur est minimalement un employé de service   => mise en place pour l'ajout d'assignation
+            // vérifie si l'utilisateur est minimalement un employé de service   => mise en place pour l'ajout d'assignation
             else if (ordre == "assigne" && compte.Type >= 1)
             {
+                ViewData["NomListeBillet"] = "assignés";
                 ViewData["ordre"] = "assigne";
-                //var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.DepartementId == compte.Equipe.DepartementId);
-                return View(await PaginatedList<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
-            }*/
+                //var equipe = _context.Compte.SingleOrDefault(e => e.Id == compte.EquipeId);
+                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.EquipeId == compte.EquipeId);
+                return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
+            }
             
             // vérifie si l'utilisateur est minimalement un gestionnaire
             else if (ordre == "departement" && compte.Type >= 2)
             {
+                ViewData["NomListeBillet"] = "du département";
                 ViewData["ordre"] = "departement";
                 //Joel Lutumba - 2017-10-03
                 /*Impossible d'acceder à l'id du département avec compte.Equipe.DepartementId sans
@@ -70,10 +74,10 @@ namespace ProjetGestionAssistance.Controllers
             else if (ordre == "entreprise" && compte.Type >= 3)
             {
                 ViewData["ordre"] = "entreprise";
+                ViewData["NomListeBillet"] = "de tous les départements";
                 var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement);
                 return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
-            
             //si l'utilisateur n'est qu'un demandeur alors sa vue par defaut sera billets composés sinon ce sera la vue billets assignés
             else
             {
@@ -115,6 +119,7 @@ namespace ProjetGestionAssistance.Controllers
             {
                 return NotFound();
             }
+
             ViewData["ordrePrecedent"] = ordrePrecedent;
             ViewData["pagePrecedente"] = pagePrecedente ?? 1;
             var billet = await _context.Billet.SingleOrDefaultAsync(m => m.Id == id);
@@ -123,7 +128,8 @@ namespace ProjetGestionAssistance.Controllers
                 return NotFound();
             }
             ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel", billet.AuteurId);
-            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id", billet.DepartementId);
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom", billet.DepartementId);
+            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom",billet.EquipeId);
             return View(billet);
         }
 
@@ -132,7 +138,7 @@ namespace ProjetGestionAssistance.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Modification(int id, [Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId")] Billet billet)
+        public async Task<IActionResult> Modification(int id, [Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId,EquipeId")] Billet billet)
         {
             if (id != billet.Id)
             {
@@ -277,6 +283,42 @@ namespace ProjetGestionAssistance.Controllers
             return _context.Billet.Any(e => e.Id == id);
         }
 
+
+        public async Task<IActionResult> Accepter(int id, String ordrePrecedent, int? pagePrecedente)
+        {
+
+            Console.WriteLine("TESTTTTT");
+
+            var billet = await _context.Billet.SingleOrDefaultAsync(m => m.Id == id);
+            Console.WriteLine(billet.Description);
+                if (billet == null)
+                {
+                    return NotFound();
+                }
+
+                billet.CompteId = HttpContext.Session.GetInt32("_Id");
+                try
+                {
+                    _context.Update(billet);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!BilletExists(billet.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+
+                        throw;
+                    }
+                }
+
+        
+
+            return RedirectToAction("Index", new { @ordre = ordrePrecedent, @page = pagePrecedente });
+        }
 
     }
 }
