@@ -284,5 +284,41 @@ namespace ProjetGestionAssistance.Controllers
         }
 
 
+        public async Task<IActionResult> Accepter(int id, String ordrePrecedent, int? pagePrecedente)
+        {
+
+            Console.WriteLine("TESTTTTT");
+
+            var billet = await _context.Billet.SingleOrDefaultAsync(m => m.Id == id);
+            Console.WriteLine(billet.Description);
+                if (billet == null)
+                {
+                    return NotFound();
+                }
+
+                billet.CompteId = HttpContext.Session.GetInt32("_Id");
+                try
+                {
+                    _context.Update(billet);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!BilletExists(billet.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+
+                        throw;
+                    }
+                }
+
+        
+
+            return RedirectToAction("Index", new { @ordre = ordrePrecedent, @page = pagePrecedente });
+        }
+
     }
 }

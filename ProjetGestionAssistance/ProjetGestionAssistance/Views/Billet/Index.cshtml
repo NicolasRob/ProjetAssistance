@@ -68,6 +68,21 @@
 
                     <a asp-action="Modification" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Modifier</a> <span>|</span>
                     <a asp-action="Suppression" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Supprimer</a> 
+                    @if (ordreCourrant.ToString() == "assigne")
+
+                    {
+                        @if (item.CompteId == null)
+                        {
+                            <span>|</span> <a asp-action="Accepter" asp-route-id="@item.Id"  asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)" >ACCEPTER</a>
+
+                        }
+                        else
+                        {
+                            <span>|</span>  @Html.DisplayFor(modelItem => item.Compte.Prenom);
+                        }
+
+                    }
+
                 }
             </td>
         </tr>
