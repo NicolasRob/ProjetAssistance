@@ -1,3 +1,4 @@
+@using ProjetGestionAssistance.Models
 @model ProjetGestionAssistance.Models.Billet
 
 @{
@@ -54,6 +55,9 @@
         </dd>
     </dl>
 </div>
+@foreach (Commentaire c in ViewData["commentaires"] as List<Commentaire>)
+    {   <p class="font-weight-bold">@c.Auteur.Prenom @c.Auteur.Nom : @c.DateCreation</p>
+        <p>@c.Texte</p> }
 <div>
     <a asp-action="Commentaire" asp-route-id="@Model.Id">Ajouter un commentaire</a> |
     <a asp-action="Modification" asp-route-id="@Model.Id">Modifier le billet</a> |

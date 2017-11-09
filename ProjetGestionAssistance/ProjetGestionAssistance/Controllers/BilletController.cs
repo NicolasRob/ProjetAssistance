@@ -104,7 +104,11 @@ namespace ProjetGestionAssistance.Controllers
             {
                 return NotFound();
             }
-
+            ViewData["commentaires"] = _context.Commentaire
+                .Include(c => c.Auteur)
+                .Include(c => c.Billet)
+                .Where(c => c.BilletId == id)
+                .ToList();
             return View(billet);
         }
 
@@ -295,13 +299,16 @@ namespace ProjetGestionAssistance.Controllers
             return View(commentaire);
         }
 
-        public async Task<IActionResult> AjouterCommentaire([Bind("Id,Texte,BilletId")] Commentaire commentaire, String ordrePrecedent, int? pagePrecedente)
+        public async Task<IActionResult> AjouterCommentaire([Bind("Id,Texte")] Commentaire commentaire, int BilletId, String ordrePrecedent, int? pagePrecedente)
         {
             if (ModelState.IsValid)
             {
+                commentaire.BilletId = BilletId;
+                commentaire.AuteurId = HttpContext.Session.GetInt32("_Id");
+                commentaire.DateCreation = DateTime.Now;
                 _context.Add(commentaire);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Details", new { Id = commentaire.Billet.Id, ordrePrecedent = ordrePrecedent, pagePrecedente = pagePrecedente });
+                return RedirectToAction("Details", new { Id = BilletId, ordrePrecedent = ordrePrecedent, pagePrecedente = pagePrecedente });
             }
             ViewData["ordrePrecedent"] = ordrePrecedent;
             ViewData["pagePrecedente"] = pagePrecedente ?? 1;

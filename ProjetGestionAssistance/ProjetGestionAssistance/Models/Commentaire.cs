@@ -12,7 +12,7 @@ namespace ProjetGestionAssistance.Models
         public int Id { get; set; }
         [Required(ErrorMessage = "Le texte du commentaire ne peut être vide.")]
         public string Texte { get; set; }
-        public DateTime DateCreation;
+        public DateTime DateCreation { get; set; }
 
         public int? AuteurId { get; set; }
 
@@ -21,7 +21,7 @@ namespace ProjetGestionAssistance.Models
 
         public int? BilletId { get; set; }
 
-        [ForeignKey("AuteurId")]
+        [ForeignKey("BilletId")]
         public Billet Billet { get; set; }
 
 

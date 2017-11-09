@@ -113,6 +113,34 @@ namespace ProjetGestionAssistance.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Commentaire",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    AuteurId = table.Column<int>(nullable: true),
+                    BilletId = table.Column<int>(nullable: true),
+                    DateCreation = table.Column<DateTime>(nullable: false),
+                    Texte = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Commentaire", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Commentaire_Compte_AuteurId",
+                        column: x => x.AuteurId,
+                        principalTable: "Compte",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Commentaire_Billet_BilletId",
+                        column: x => x.BilletId,
+                        principalTable: "Billet",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Billet_AuteurId",
                 table: "Billet",
@@ -134,6 +162,16 @@ namespace ProjetGestionAssistance.Migrations
                 column: "EquipeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Commentaire_AuteurId",
+                table: "Commentaire",
+                column: "AuteurId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Commentaire_BilletId",
+                table: "Commentaire",
+                column: "BilletId");
+
+            migrationBuilder.CreateIndex(
                 name: "Compte_UQ_Courriel",
                 table: "Compte",
                 column: "Courriel",
@@ -152,6 +190,9 @@ namespace ProjetGestionAssistance.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Commentaire");
+
             migrationBuilder.DropTable(
                 name: "Billet");
 

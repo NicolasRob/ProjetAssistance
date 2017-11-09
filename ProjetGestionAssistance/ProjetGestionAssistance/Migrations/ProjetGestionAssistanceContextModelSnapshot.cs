@@ -54,6 +54,29 @@ namespace ProjetGestionAssistance.Migrations
                     b.ToTable("Billet");
                 });
 
+            modelBuilder.Entity("ProjetGestionAssistance.Models.Commentaire", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("AuteurId");
+
+                    b.Property<int?>("BilletId");
+
+                    b.Property<DateTime>("DateCreation");
+
+                    b.Property<string>("Texte")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuteurId");
+
+                    b.HasIndex("BilletId");
+
+                    b.ToTable("Commentaire");
+                });
+
             modelBuilder.Entity("ProjetGestionAssistance.Models.Compte", b =>
                 {
                     b.Property<int>("Id")
@@ -137,6 +160,17 @@ namespace ProjetGestionAssistance.Migrations
                     b.HasOne("ProjetGestionAssistance.Models.Departement", "Equipe")
                         .WithMany()
                         .HasForeignKey("EquipeId");
+                });
+
+            modelBuilder.Entity("ProjetGestionAssistance.Models.Commentaire", b =>
+                {
+                    b.HasOne("ProjetGestionAssistance.Models.Compte", "Auteur")
+                        .WithMany()
+                        .HasForeignKey("AuteurId");
+
+                    b.HasOne("ProjetGestionAssistance.Models.Billet", "Billet")
+                        .WithMany()
+                        .HasForeignKey("BilletId");
                 });
 
             modelBuilder.Entity("ProjetGestionAssistance.Models.Compte", b =>

@@ -22,6 +22,8 @@ namespace ProjetGestionAssistance.Models
 
         public DbSet<ProjetGestionAssistance.Models.Equipe> Equipe { get; set; }
 
+        public DbSet<ProjetGestionAssistance.Models.Commentaire> Commentaire { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Compte>()
