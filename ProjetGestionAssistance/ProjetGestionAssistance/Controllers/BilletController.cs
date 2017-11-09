@@ -277,6 +277,37 @@ namespace ProjetGestionAssistance.Controllers
             return _context.Billet.Any(e => e.Id == id);
         }
 
+        public async Task<IActionResult> Commentaire(int? id, String ordrePrecedent, int? pagePrecedente)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var billet = await _context.Billet.SingleOrDefaultAsync(m => m.Id == id);
+            if (billet == null)
+            {
+                return NotFound();
+            }
+            var commentaire = new Commentaire();
+            commentaire.Billet = billet;
+            ViewData["ordrePrecedent"] = ordrePrecedent;
+            ViewData["pagePrecedente"] = pagePrecedente ?? 1;
+            return View(commentaire);
+        }
+
+        public async Task<IActionResult> AjouterCommentaire([Bind("Id,Texte,BilletId")] Commentaire commentaire, String ordrePrecedent, int? pagePrecedente)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(commentaire);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Details", new { Id = commentaire.Billet.Id, ordrePrecedent = ordrePrecedent, pagePrecedente = pagePrecedente });
+            }
+            ViewData["ordrePrecedent"] = ordrePrecedent;
+            ViewData["pagePrecedente"] = pagePrecedente ?? 1;
+            return View("Commentaire", commentaire);
+        }
+
 
     }
 }
