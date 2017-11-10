@@ -108,7 +108,11 @@ namespace ProjetGestionAssistance.Controllers
             {
                 return NotFound();
             }
-
+            ViewData["commentaires"] = _context.Commentaire
+                .Include(c => c.Auteur)
+                .Include(c => c.Billet)
+                .Where(c => c.BilletId == id)
+                .ToList();
             return View(billet);
         }
 
@@ -281,6 +285,40 @@ namespace ProjetGestionAssistance.Controllers
         private bool BilletExists(int id)
         {
             return _context.Billet.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> Commentaire(int? id, String ordrePrecedent, int? pagePrecedente)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var billet = await _context.Billet.SingleOrDefaultAsync(m => m.Id == id);
+            if (billet == null)
+            {
+                return NotFound();
+            }
+            var commentaire = new Commentaire();
+            commentaire.Billet = billet;
+            ViewData["ordrePrecedent"] = ordrePrecedent;
+            ViewData["pagePrecedente"] = pagePrecedente ?? 1;
+            return View(commentaire);
+        }
+
+        public async Task<IActionResult> AjouterCommentaire([Bind("Id,Texte")] Commentaire commentaire, int BilletId, String ordrePrecedent, int? pagePrecedente)
+        {
+            if (ModelState.IsValid)
+            {
+                commentaire.BilletId = BilletId;
+                commentaire.AuteurId = HttpContext.Session.GetInt32("_Id");
+                commentaire.DateCreation = DateTime.Now;
+                _context.Add(commentaire);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Details", new { Id = BilletId, ordrePrecedent = ordrePrecedent, pagePrecedente = pagePrecedente });
+            }
+            ViewData["ordrePrecedent"] = ordrePrecedent;
+            ViewData["pagePrecedente"] = pagePrecedente ?? 1;
+            return View("Commentaire", commentaire);
         }
 
 
