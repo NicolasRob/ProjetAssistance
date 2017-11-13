@@ -36,6 +36,6 @@ namespace ProjetGestionAssistance.Models
         public int? EquipeId { get; set; }
 
         [ForeignKey("EquipeId")]
-        public Departement Equipe { get; set; }
+        public Equipe Equipe { get; set; }
     }
 }

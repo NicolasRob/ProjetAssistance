@@ -8,7 +8,7 @@ using ProjetGestionAssistance.Models;
 namespace ProjetGestionAssistance.Migrations
 {
     [DbContext(typeof(ProjetGestionAssistanceContext))]
-    [Migration("20171109182012_Initial")]
+    [Migration("20171110171318_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -158,7 +158,7 @@ namespace ProjetGestionAssistance.Migrations
                         .WithMany()
                         .HasForeignKey("DepartementId");
 
-                    b.HasOne("ProjetGestionAssistance.Models.Departement", "Equipe")
+                    b.HasOne("ProjetGestionAssistance.Models.Equipe", "Equipe")
                         .WithMany()
                         .HasForeignKey("EquipeId");
                 });

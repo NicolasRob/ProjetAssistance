@@ -106,9 +106,9 @@ namespace ProjetGestionAssistance.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Billet_Departement_EquipeId",
+                        name: "FK_Billet_Equipe_EquipeId",
                         column: x => x.EquipeId,
-                        principalTable: "Departement",
+                        principalTable: "Equipe",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });

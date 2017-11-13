@@ -157,7 +157,7 @@ namespace ProjetGestionAssistance.Migrations
                         .WithMany()
                         .HasForeignKey("DepartementId");
 
-                    b.HasOne("ProjetGestionAssistance.Models.Departement", "Equipe")
+                    b.HasOne("ProjetGestionAssistance.Models.Equipe", "Equipe")
                         .WithMany()
                         .HasForeignKey("EquipeId");
                 });
