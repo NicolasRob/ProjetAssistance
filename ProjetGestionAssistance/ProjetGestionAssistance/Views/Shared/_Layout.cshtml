@@ -77,6 +77,14 @@
                                     </span>
                                 </a>
                             </li>
+                            <li>
+                                <a class="nav-link" asp-controller="Billet" asp-action="Index" asp-route-ordre="equipe">
+                                    <i class="fa fa-fw fa-tablet"></i>
+                                    <span class="nav-link-text">
+                                        Billets de l'équipe
+                                    </span>
+                                </a>
+                            </li>
                         }
                         @if (roleUtilisateur >= 2) //option visible aux gestionnaires et plus haut [Administrateur]
                         {

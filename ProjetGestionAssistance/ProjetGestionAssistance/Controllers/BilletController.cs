@@ -47,10 +47,20 @@ namespace ProjetGestionAssistance.Controllers
                 ViewData["NomListeBillet"] = "assignés";
                 ViewData["ordre"] = "assigne";
                 //var equipe = _context.Compte.SingleOrDefault(e => e.Id == compte.EquipeId);
+                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.EquipeId == compte.EquipeId).Where(b => b.CompteId == compte.Id);
+                return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
+            }
+
+            else if (ordre == "equipe" && compte.Type >= 1)
+            {
+                ViewData["NomListeBillet"] = "équipe";
+                ViewData["ordre"] = "equipe";
+                //var equipe = _context.Compte.SingleOrDefault(e => e.Id == compte.EquipeId);
                 var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.EquipeId == compte.EquipeId);
                 return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
-            
+
+
             // vérifie si l'utilisateur est minimalement un gestionnaire
             else if (ordre == "departement" && compte.Type >= 2)
             {
@@ -133,7 +143,13 @@ namespace ProjetGestionAssistance.Controllers
             }
             ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel", billet.AuteurId);
             ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom", billet.DepartementId);
-            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom",billet.EquipeId);
+            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom", billet.EquipeId);
+            List<String> listeEtat = new List<string>(new string[] { "Nouveau", "En traitement", "Fermé" });
+        
+            ViewData["Etat"] = listeEtat.Select(x => new SelectListItem()
+            {
+                Text = x.ToString()
+            });
             return View(billet);
         }
 
@@ -325,7 +341,6 @@ namespace ProjetGestionAssistance.Controllers
         public async Task<IActionResult> Accepter(int id, String ordrePrecedent, int? pagePrecedente)
         {
 
-            Console.WriteLine("TESTTTTT");
 
             var billet = await _context.Billet.SingleOrDefaultAsync(m => m.Id == id);
             Console.WriteLine(billet.Description);
@@ -335,6 +350,7 @@ namespace ProjetGestionAssistance.Controllers
                 }
 
                 billet.CompteId = HttpContext.Session.GetInt32("_Id");
+                billet.Etat = "EN TRAITEMENT";
                 try
                 {
                     _context.Update(billet);

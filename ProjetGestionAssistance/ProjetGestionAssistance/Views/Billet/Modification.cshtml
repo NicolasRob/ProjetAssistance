@@ -39,10 +39,10 @@ else {
         </div>
         <div class="form-group">
             <label asp-for="Etat" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Etat" class="form-control" />
-                <span asp-validation-for="Etat" class="text-danger"></span>
-            </div>
+                <div class="col-md-10">
+                    <select asp-for="Etat" class="form-control" asp-items="ViewBag.Etat"></select>
+                    <span asp-validation-for="Etat" class="text-danger"></span>
+                </div>
         </div>
         <div class="form-group">
             <label asp-for="Image" class="col-md-2 control-label"></label>
