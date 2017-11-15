@@ -112,6 +112,7 @@ namespace ProjetGestionAssistance.Controllers
                 .Include(c => c.Auteur)
                 .Include(c => c.Billet)
                 .Where(c => c.BilletId == id)
+                .OrderByDescending(c => c.DateCreation)
                 .ToList();
             return View(billet);
         }
@@ -287,7 +288,7 @@ namespace ProjetGestionAssistance.Controllers
             return _context.Billet.Any(e => e.Id == id);
         }
 
-        public async Task<IActionResult> Commentaire(int? id, String ordrePrecedent, int? pagePrecedente)
+        /*public async Task<IActionResult> Commentaire(int? id, String ordrePrecedent, int? pagePrecedente)
         {
             if (id == null)
             {
@@ -303,22 +304,48 @@ namespace ProjetGestionAssistance.Controllers
             ViewData["ordrePrecedent"] = ordrePrecedent;
             ViewData["pagePrecedente"] = pagePrecedente ?? 1;
             return View(commentaire);
-        }
+        }*/
 
-        public async Task<IActionResult> AjouterCommentaire([Bind("Id,Texte")] Commentaire commentaire, int BilletId, String ordrePrecedent, int? pagePrecedente)
+        public async Task<IActionResult> AjouterCommentaire(string Texte, int BilletId, String ordrePrecedent, int? pagePrecedente)
         {
-            if (ModelState.IsValid)
+            Billet billet = _context.Billet.SingleOrDefault(b => b.Id == BilletId);
+            int? sessionId = HttpContext.Session.GetInt32("_Id");
+            int? sessionType = HttpContext.Session.GetInt32("_Type");
+            Compte compte = null;
+            if (sessionId != null)
+                compte = _context.Compte.Include(c => c.Equipe).SingleOrDefault(c => c.Id == sessionId);
+            if (billet != null && compte != null 
+                && (compte.Id == billet.CompteId 
+                    || (compte.Type == 2 && compte.Equipe.DepartementId == billet.DepartementId)
+                    || (compte.Type >= 3)))
             {
-                commentaire.BilletId = BilletId;
-                commentaire.AuteurId = HttpContext.Session.GetInt32("_Id");
-                commentaire.DateCreation = DateTime.Now;
-                _context.Add(commentaire);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Details", new { Id = BilletId, ordrePrecedent = ordrePrecedent, pagePrecedente = pagePrecedente });
+                if (string.IsNullOrWhiteSpace(Texte))
+                {
+                    ViewData["TexteVide"] = "Le commentaire ne peut pas être vide.";
+                }
+                else if (ModelState.IsValid)
+                {
+                    Commentaire commentaire = new Commentaire();
+                    commentaire.BilletId = BilletId;
+                    commentaire.Texte = Texte;
+                    commentaire.AuteurId = HttpContext.Session.GetInt32("_Id");
+                    commentaire.DateCreation = DateTime.Now;
+                    _context.Add(commentaire);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Details", new { Id = BilletId, ordrePrecedent = ordrePrecedent, pagePrecedente = pagePrecedente });
+                }
+                ViewData["commentaires"] = _context.Commentaire
+                    .Include(c => c.Auteur)
+                    .Include(c => c.Billet)
+                    .Where(c => c.BilletId == BilletId)
+                    .OrderByDescending(c => c.DateCreation)
+                    .ToList();
+                ViewData["ordrePrecedent"] = ordrePrecedent;
+                ViewData["pagePrecedente"] = pagePrecedente ?? 1;
+                return View("Details", billet);
             }
-            ViewData["ordrePrecedent"] = ordrePrecedent;
-            ViewData["pagePrecedente"] = pagePrecedente ?? 1;
-            return View("Commentaire", commentaire);
+            else
+                return View("/Views/Home/Index.cshtml");
         }
 
 
@@ -352,9 +379,6 @@ namespace ProjetGestionAssistance.Controllers
                         throw;
                     }
                 }
-
-        
-
             return RedirectToAction("Index", new { @ordre = ordrePrecedent, @page = pagePrecedente });
         }
 

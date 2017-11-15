@@ -12,10 +12,10 @@ using System.Reflection;
 
 namespace ProjetGestionAssistance.Controllers
 {
-    //Controlleur qui gère les logins et les créations de comptes
+    //Controlleur qui gï¿½re les logins et les crï¿½ations de comptes
     public class CompteController : Controller
     {
-        //Initialisation de la variable _context pour intéragir avec la base de données
+        //Initialisation de la variable _context pour intï¿½ragir avec la base de donnï¿½es
         private readonly ProjetGestionAssistanceContext _context;
 
         public CompteController(ProjetGestionAssistanceContext context)
@@ -31,56 +31,58 @@ namespace ProjetGestionAssistance.Controllers
             return View();
         }
 
-        //Francis Paré 2017-09-27
-        //Action appelé quand on appuie sur le bouton connection
-        //Si la connection fonctionne, On set le SessionId avec son Id d'utilisateur, il sera maintenant considéré connecté
+        //Francis Parï¿½ 2017-09-27
+        //Action appelï¿½ quand on appuie sur le bouton connection
+        //Si la connection fonctionne, On set le SessionId avec son Id d'utilisateur, il sera maintenant considï¿½rï¿½ connectï¿½
         //Puis, On le redige vers l'action Index dans le controlleur HomeController()
-        //**** A noté que l'utilisateur devra etre rediriger vers sa liste de billet lorsqu'elle sera implémenter ****
+        //**** A notï¿½ que l'utilisateur devra etre rediriger vers sa liste de billet lorsqu'elle sera implï¿½menter ****
         [HttpPost]
         public IActionResult Connection([Bind("Courriel")]string Courriel, [Bind("MotPasse")]string MotPasse)
         {
             if (ModelState.IsValid)
             {
                 //Compte tempCompte = _context.Compte.SingleOrDefault(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse);
-                Compte tempCompte = _context.Compte.Where(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse).AsEnumerable().SingleOrDefault(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse);
+                Compte tempCompte = _context.Compte.Include(cpt => cpt.Equipe).Where(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse).AsEnumerable().SingleOrDefault(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse);
                 if (tempCompte != null)
                 {
-                    // On vérifie si le compte de l'utilisateur est actif
+                    // On vï¿½rifie si le compte de l'utilisateur est actif
                     if (!tempCompte.Actif)
                     {
                         // Le compte n'est pas actif, on le redirige vers le vue de login.
-                        // Puis, on affiche un message à l'utilisateur lui indiquant que son compte n'est pas actif
-                        ViewData["MessageErreurConnection"] = "Votre compte n'est pas activé. Veuillez contacter un supérieur pour plus d'information.";
+                        // Puis, on affiche un message ï¿½ l'utilisateur lui indiquant que son compte n'est pas actif
+                        ViewData["MessageErreurConnection"] = "Votre compte n'est pas activï¿½. Veuillez contacter un supï¿½rieur pour plus d'information.";
                         return View("Login");
                     }
                     //Joel Lutumba 2017-10-01 -ajout
-                    //typeUtilisateur : variable dont la valeur est stockée dans la session pour avoir le type de l'utilisateur connecté
+                    //typeUtilisateur : variable dont la valeur est stockï¿½e dans la session pour avoir le type de l'utilisateur connectï¿½
                     string typeConnecte = "_Type";
+                    string departementConnecte = "_Dep";
 
                     HttpContext.Session.SetInt32(SessionId, tempCompte.Id);
                     HttpContext.Session.SetInt32(typeConnecte, tempCompte.Type);
+                    HttpContext.Session.SetInt32(departementConnecte, tempCompte.Equipe.DepartementId);
                     ViewData["connection"] = tempCompte.Id;
                     return RedirectToAction("Index", "Home");
                 }
                 // On affiche ce message d'erreur quand le courriel utilisateur ou le mot de passe saisie est incorrect.
-                ViewData["MessageErreurConnection"] = "Le courriel ou le mot de passe entré est incorrect";
+                ViewData["MessageErreurConnection"] = "Le courriel ou le mot de passe entrï¿½ est incorrect";
             }
             return View("Login");
         }
 
-        //Action qui affiche la page de création de compte
+        //Action qui affiche la page de crï¿½ation de compte
         public IActionResult AffichageCreation()
         {
-            //Ce ViewData sera utilisé dans le formulaire de création pour afficher une liste des ID des équipes de la BD
+            //Ce ViewData sera utilisï¿½ dans le formulaire de crï¿½ation pour afficher une liste des ID des ï¿½quipes de la BD
             ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom");
             return View("Creation");
         }
 
-        //Action qui s'éxécute quand on appuie sur le bouton Création du compte
-        //Les champs du formulaire POST seront automatiquement utilisés pour créer un objet compte approprié
-        //Cet objet sera ensuite ajouter à la BD
-        //Attention: Il faut avoir créer au moins une équipe pour créer un utilisateur
-        //Sinon, la liste des équipes sera vide et le formulaire ne sera jamais accepté
+        //Action qui s'ï¿½xï¿½cute quand on appuie sur le bouton Crï¿½ation du compte
+        //Les champs du formulaire POST seront automatiquement utilisï¿½s pour crï¿½er un objet compte appropriï¿½
+        //Cet objet sera ensuite ajouter ï¿½ la BD
+        //Attention: Il faut avoir crï¿½er au moins une ï¿½quipe pour crï¿½er un utilisateur
+        //Sinon, la liste des ï¿½quipes sera vide et le formulaire ne sera jamais acceptï¿½
         public async Task<IActionResult> Creation([Bind("Id,Courriel,MotPasse,ConfirmationMotPasse,Nom,Prenom,Telephone,Type,Actif,EquipeId")] Compte compte)
         {
             compte.Type = 1;
@@ -91,26 +93,26 @@ namespace ProjetGestionAssistance.Controllers
                 compte.Actif = true;
                 if (ModelState.IsValid)
                 {
-                    //_contexte représente la BD, .Add est une méthode de DAO qui a été généré automatiquement
-                    //et compte est l'objet créé par le formulaire
+                    //_contexte reprï¿½sente la BD, .Add est une mï¿½thode de DAO qui a ï¿½tï¿½ gï¿½nï¿½rï¿½ automatiquement
+                    //et compte est l'objet crï¿½ï¿½ par le formulaire
                     _context.Add(compte);
                     await _context.SaveChangesAsync();
                     //On redirige ensuite l'utilisateur vers la page de login
-                    //On utilise RedirectToAction plutôt que View pour éviter les doubles submit
+                    //On utilise RedirectToAction plutï¿½t que View pour ï¿½viter les doubles submit
                     return RedirectToAction("Login");
                 }
             }
             else
-                ViewData["CourrielErreur"] = "Le courriel entré est déja en utilisation";
-            //Si la création échoue, on redirige l'utilisateur vers la vue de Creation
-            //Cependant, il faut recréer la liste des Id des équipes puisqu'on a perdu le ViewData précédent
-            //lorsqu'on a appuyé sur le bouton de soumission.
+                ViewData["CourrielErreur"] = "Le courriel entrï¿½ est dï¿½ja en utilisation";
+            //Si la crï¿½ation ï¿½choue, on redirige l'utilisateur vers la vue de Creation
+            //Cependant, il faut recrï¿½er la liste des Id des ï¿½quipes puisqu'on a perdu le ViewData prï¿½cï¿½dent
+            //lorsqu'on a appuyï¿½ sur le bouton de soumission.
             ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom", compte.EquipeId);
             return View();
         }
-        //Francis Paré : 2017-10-07
-        // Action qui déconnecte l'utilisateur de la session
-        // On clear l'élément session, puis on redirige l'utilisateur à la page de connection
+        //Francis Parï¿½ : 2017-10-07
+        // Action qui dï¿½connecte l'utilisateur de la session
+        // On clear l'ï¿½lï¿½ment session, puis on redirige l'utilisateur ï¿½ la page de connection
         public IActionResult Deconnection()
         {
             HttpContext.Session.Clear();
