@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProjetGestionAssistance.Models
 {
-    public class Compte
+    public class Compte : IComparable
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "Vous devez entrer une adresse de courriel valide")]
@@ -36,6 +36,25 @@ namespace ProjetGestionAssistance.Models
         [NotMapped]
         [Compare("MotPasse", ErrorMessage = "La confirmation de mot de passe est différente du mot de passe")]
         public string ConfirmationMotPasse { get; set; }
+
+        public int CompareTo(object obj)
+        {
+            try
+            {
+                if (obj is null)
+                    return 1;
+                else
+                {
+                    Compte c2 = obj as Compte;
+                    return this.Nom.CompareTo(c2.Nom);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception : " + e.Message);
+                return 1;
+            }
+        }
 
     }
 }

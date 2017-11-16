@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using ProjetGestionAssistance.Models.Services;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace ProjetGestionAssistance.Controllers
 {
@@ -24,7 +26,7 @@ namespace ProjetGestionAssistance.Controllers
         //Joel Lutumba - 2017-09-30
         //Paramètre ordre est utilisé pour savoir quels billets aller chercher & afficher
         //Paramètre page peut être null; il sert à la pagination.
-        public async Task<IActionResult> Index(String ordre, int? page)
+        public async Task<IActionResult> Index(String ordre, int? page, string sort, string direction)
         {
             //Compte connecté
             Compte compte = _context.Compte.SingleOrDefault(cpt => cpt.Id == HttpContext.Session.GetInt32("_Id"));
@@ -32,12 +34,44 @@ namespace ProjetGestionAssistance.Controllers
             //nombre de billet par page
             int nbElementParPage = 5;
 
+            string param;
+
+            switch (sort)
+            {
+                case "Titre":
+                    param = "Titre";
+                    break;
+                case "Description":
+                    param = "Description";
+                    break;
+                case "Etat":
+                    param = "Etat";
+                    break;
+                case "Auteur":
+                    param = "Auteur";
+                    break;
+                case "Departement":
+                    param = "Departement";
+                    break;
+                default:
+                    param = "Id";
+                    break;
+            }
+
+            var propertyInfo = typeof(Billet).GetProperty(param);
+
             // renvoie la vue billet seulement avec les billets que l'utiilisateur connecté à composé
             if (ordre == "compose")
             {
                 ViewData["NomListeBillet"] = "composés";
                 ViewData["ordre"] = "compose";
+                ViewData["direction"] = direction;
+                ViewData["sort"] = sort;
                 var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.AuteurId == compte.Id);
+                if (direction == "Down")
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderByDescending(b => propertyInfo.GetValue(b));
+                else
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderBy(b => propertyInfo.GetValue(b));
                 return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
             
@@ -46,8 +80,14 @@ namespace ProjetGestionAssistance.Controllers
             {
                 ViewData["NomListeBillet"] = "assignés";
                 ViewData["ordre"] = "assigne";
+                ViewData["direction"] = direction;
+                ViewData["sort"] = sort;
                 //var equipe = _context.Compte.SingleOrDefault(e => e.Id == compte.EquipeId);
                 var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.EquipeId == compte.EquipeId);
+                if (direction == "Down")
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderByDescending(b => propertyInfo.GetValue(b));
+                else
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderBy(b => propertyInfo.GetValue(b));
                 return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
             
@@ -56,6 +96,8 @@ namespace ProjetGestionAssistance.Controllers
             {
                 ViewData["NomListeBillet"] = "du département";
                 ViewData["ordre"] = "departement";
+                ViewData["direction"] = direction;
+                ViewData["sort"] = sort;
                 //Joel Lutumba - 2017-10-03
                 /*Impossible d'acceder à l'id du département avec compte.Equipe.DepartementId sans
                   chercher l'équipe dont fait partie l'utilisateur connecté donc*/
@@ -67,6 +109,11 @@ namespace ProjetGestionAssistance.Controllers
                 // option 2 - vu que c'est maintenant possible on peut aussi faire
                 //var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.DepartementId == compte.Equipe.DepartementId);
 
+                if (direction == "Down")
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderByDescending(b => propertyInfo.GetValue(b));
+                else
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderBy(b => propertyInfo.GetValue(b));
+
                 return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
             
@@ -75,7 +122,13 @@ namespace ProjetGestionAssistance.Controllers
             {
                 ViewData["ordre"] = "entreprise";
                 ViewData["NomListeBillet"] = "de tous les départements";
-                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement);
+                ViewData["direction"] = direction;
+                ViewData["sort"] = sort;
+                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Select(b => b);
+                if (direction == "Down")
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderByDescending(b => propertyInfo.GetValue(b));
+                else
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderBy(b => propertyInfo.GetValue(b));
                 return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
             //si l'utilisateur n'est qu'un demandeur alors sa vue par defaut sera billets composés sinon ce sera la vue billets assignés
@@ -83,8 +136,14 @@ namespace ProjetGestionAssistance.Controllers
             {
                 //Pour l'instant lorsque le paramètre n'est pas définit on renvoie la vue des billets composés
                 ViewData["ordre"] = "compose";
+                ViewData["direction"] = direction;
+                ViewData["sort"] = sort;
                 var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.AuteurId == HttpContext.Session.GetInt32("_Id"));
                 //return View(await projetGestionAssistanceContext.ToListAsync());
+                if (direction == "Down")
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderByDescending(b => propertyInfo.GetValue(b));
+                else
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderBy(b => propertyInfo.GetValue(b));
                 return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
 
             }
