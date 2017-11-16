@@ -148,6 +148,7 @@ namespace ProjetGestionAssistance.Controllers
             //création d'un objet personnalisé pour permettre d'afficher le nom et le prenom, et les billets en cours des employés dans le SelectList
             var listeCompte = (from cpt in _context.Compte
                             join b in _context.Billet on cpt.Id equals b.CompteId
+                               where(b.Etat != "Nouveau" && b.Etat != "Fermé") 
                             group cpt by new { cpt.Id, cpt.Prenom, cpt.Nom, } into g
                             orderby g.Count() ascending
                             select new { g.Key.Id, g.Key.Prenom, g.Key.Nom, Count = g.Count() }
