@@ -144,12 +144,42 @@ namespace ProjetGestionAssistance.Controllers
             ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel", billet.AuteurId);
             ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom", billet.DepartementId);
             ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom", billet.EquipeId);
-            List<String> listeEtat = new List<string>(new string[] { "Nouveau", "En traitement", "Fermé" });
-        
+            
+            //création d'un objet personnalisé pour permettre d'afficher le nom et le prenom, et les billets en cours des employés dans le SelectList
+            var listeCompte = (from cpt in _context.Compte
+                            join b in _context.Billet on cpt.Id equals b.CompteId
+                            group cpt by new { cpt.Id, cpt.Prenom, cpt.Nom, } into g
+                            orderby g.Count() ascending
+                            select new { g.Key.Id, g.Key.Prenom, g.Key.Nom, Count = g.Count() }
+                            ).ToList();
+
+            var listeComptePersonnalisee =
+              listeCompte
+
+                .Select(c => new
+                {
+                    compteID = c.Id,
+                    Description = $"{c.Prenom} {c.Nom} | {c.Count} billets en cours",
+                })
+                .ToList();
+
+            listeComptePersonnalisee.Insert(0, new
+            {
+                compteID = -1,
+                Description = "Sélectionnez un employé...",
+            });
+
+            ViewData["CompteId"] = new SelectList(listeComptePersonnalisee, "compteID", "Description");
+  
+
+            //Liste des États du billets
+            List < String > listeEtat = new List<string>(new string[] { "Nouveau", "En traitement", "Fermé" });
             ViewData["Etat"] = listeEtat.Select(x => new SelectListItem()
             {
                 Text = x.ToString()
             });
+
+
             return View(billet);
         }
 
@@ -158,7 +188,7 @@ namespace ProjetGestionAssistance.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Modification(int id, [Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId,EquipeId")] Billet billet)
+        public async Task<IActionResult> Modification(int id, int compteId, [Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId,EquipeId")] Billet billet)
         {
             if (id != billet.Id)
             {
@@ -169,6 +199,11 @@ namespace ProjetGestionAssistance.Controllers
             {
                 try
                 {
+                    if (compteId > 0)
+                    {
+                        billet.CompteId = compteId;
+                        billet.Etat = "En traitement";
+                    }
                     _context.Update(billet);
                     await _context.SaveChangesAsync();
                 }
