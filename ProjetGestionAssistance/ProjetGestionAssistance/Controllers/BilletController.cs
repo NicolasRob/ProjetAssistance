@@ -146,7 +146,7 @@ namespace ProjetGestionAssistance.Controllers
             ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom", billet.EquipeId);
             
             //création d'un objet personnalisé pour permettre d'afficher le nom et le prenom, et les billets en cours des employés dans le SelectList
-            var listeCompte = (from cpt in _context.Compte
+            var listeCompteBillet = (from cpt in _context.Compte
                             join b in _context.Billet on cpt.Id equals b.CompteId
                                where(b.Etat != "Nouveau" && b.Etat != "Fermé") 
                             group cpt by new { cpt.Id, cpt.Prenom, cpt.Nom, } into g
@@ -154,13 +154,18 @@ namespace ProjetGestionAssistance.Controllers
                             select new { g.Key.Id, g.Key.Prenom, g.Key.Nom, Count = g.Count() }
                             ).ToList();
 
+            var listeCompteTout = (from cpt in _context.Compte
+                               select new { cpt.Id, cpt.Prenom, cpt.Nom });
+
+            
+
             var listeComptePersonnalisee =
-              listeCompte
+              listeCompteBillet
 
                 .Select(c => new
                 {
                     compteID = c.Id,
-                    Description = $"{c.Prenom} {c.Nom} | {c.Count} billets en cours",
+                    Description = $"{c.Prenom} {c.Nom} | {c.Count} " + ((c.Count < 2) ? " billet" : " billets") + " en cours",
                 })
                 .ToList();
 
@@ -169,6 +174,38 @@ namespace ProjetGestionAssistance.Controllers
                 compteID = -1,
                 Description = "Sélectionnez un employé...",
             });
+
+            List<int> listeID = new List<int>();
+            foreach(var item in listeCompteBillet)
+            {
+                listeID.Add(item.Id);
+            }
+
+      
+            int j = 1;
+
+
+ 
+            foreach (var item in listeCompteTout)
+
+            {
+                if (listeID.Contains(item.Id))
+                { }
+
+                else
+                {
+                    listeComptePersonnalisee.Insert(j, new
+                    {
+                        compteID = item.Id,
+                        Description = $"{item.Prenom} {item.Nom}",
+                    });
+                    j++;
+                }
+
+         
+
+
+            }
 
             ViewData["CompteId"] = new SelectList(listeComptePersonnalisee, "compteID", "Description");
   
@@ -204,6 +241,10 @@ namespace ProjetGestionAssistance.Controllers
                     {
                         billet.CompteId = compteId;
                         billet.Etat = "En traitement";
+                    }
+                    else
+                    {
+                        billet.CompteId = null;
                     }
                     _context.Update(billet);
                     await _context.SaveChangesAsync();
