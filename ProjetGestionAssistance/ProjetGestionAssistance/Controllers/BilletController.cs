@@ -151,7 +151,7 @@ namespace ProjetGestionAssistance.Controllers
         }
 
         // GET: Billet/Details/5
-        public async Task<IActionResult> Details(int? id, String ordrePrecedent, int? pagePrecedente)
+        public async Task<IActionResult> Details(int? id, string sort, string direction, String ordrePrecedent, int? pagePrecedente)
         {
             if (id == null)
             {
@@ -173,11 +173,13 @@ namespace ProjetGestionAssistance.Controllers
                 .Where(c => c.BilletId == id)
                 .OrderByDescending(c => c.DateCreation)
                 .ToList();
+            ViewData["sort"] = sort;
+            ViewData["direction"] = direction;
             return View(billet);
         }
 
         // GET: Billet/Modification/5
-        public async Task<IActionResult> Modification(int? id, String ordrePrecedent, int? pagePrecedente)
+        public async Task<IActionResult> Modification(int? id, string sort, string direction, String ordrePrecedent, int? pagePrecedente)
         {
             if (id == null)
             {
@@ -194,6 +196,8 @@ namespace ProjetGestionAssistance.Controllers
             ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel", billet.AuteurId);
             ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom", billet.DepartementId);
             ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom",billet.EquipeId);
+            ViewData["sort"] = sort;
+            ViewData["direction"] = direction;
             return View(billet);
         }
 
