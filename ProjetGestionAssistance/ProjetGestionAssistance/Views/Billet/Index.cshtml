@@ -73,12 +73,12 @@
 
             </td>
             <td>
-                @if (item.Etat != "EN TRAITEMENT")
+                @if (item.Etat != "En traitement")
                 {
 
                     <a asp-action="Modification" asp-route-sort="@ViewData["sort"]" asp-route-direction="@ViewData["direction"]" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Modifier</a> <span>|</span>
                     <a asp-action="Suppression" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Supprimer</a> 
-                    @if (ordreCourrant.ToString() == "assigne")
+                    @if (ordreCourrant.ToString() == "equipe")
 
                     {
                         @if (item.CompteId == null)
