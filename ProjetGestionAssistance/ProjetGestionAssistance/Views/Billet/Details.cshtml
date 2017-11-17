@@ -93,7 +93,7 @@
         <a href="javascript:void(0)" id="comm">Ajouter un commentaire |</a>
     }
     <a asp-action="Modification" asp-route-id="@Model.Id">Modifier le billet</a> |
-    <a asp-action="Index" asp-route-ordre="@ViewData[" ordrePrecedent "]" asp-route-page="@ViewData[" pagePrecedente "]">Revenir &agrave; la liste</a>
+    <a asp-action="Index" asp-route-sort="@ViewData["sort"]" asp-route-direction="@ViewData["direction"]" asp-route-ordre="@ViewData["ordrePrecedent"]" asp-route-page="@ViewData["pagePrecedente"]">Revenir &agrave; la liste</a>
 </div>
 <hr>
 <div id="ajoutComm">
