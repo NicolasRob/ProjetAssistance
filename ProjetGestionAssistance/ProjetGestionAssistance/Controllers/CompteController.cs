@@ -6,13 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using ProjetGestionAssistance.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using ProjetGestionAssistance.Models.Services;
+using System.Reflection;
 
 namespace ProjetGestionAssistance.Controllers
 {
-    //Controlleur qui gère les logins et les créations de comptes
+    //Controlleur qui gÃ©re les logins et les crÃ©ations de comptes
     public class CompteController : Controller
     {
-        //Initialisation de la variable _context pour intéragir avec la base de données
+        //Initialisation de la variable _context pour intÃ©ragir avec la base de donnÃ©es
         private readonly ProjetGestionAssistanceContext _context;
 
         public CompteController(ProjetGestionAssistanceContext context)
@@ -28,55 +31,58 @@ namespace ProjetGestionAssistance.Controllers
             return View();
         }
 
-        //Francis Paré 2017-09-27
-        //Action appelé quand on appuie sur le bouton connection
-        //Si la connection fonctionne, On set le SessionId avec son Id d'utilisateur, il sera maintenant considéré connecté
+        //Francis ParÃ© 2017-09-27
+        //Action appelÃ© quand on appuie sur le bouton connection
+        //Si la connection fonctionne, On set le SessionId avec son Id d'utilisateur, il sera maintenant considÃ©rÃ© connectÃ©
         //Puis, On le redige vers l'action Index dans le controlleur HomeController()
-        //**** A noté que l'utilisateur devra etre rediriger vers sa liste de billet lorsqu'elle sera implémenter ****
+        //**** A notÃ© que l'utilisateur devra etre rediriger vers sa liste de billet lorsqu'elle sera implÃ©menter ****
         [HttpPost]
         public IActionResult Connection([Bind("Courriel")]string Courriel, [Bind("MotPasse")]string MotPasse)
         {
             if (ModelState.IsValid)
             {
-                Compte tempCompte = _context.Compte.SingleOrDefault(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse);
+                //Compte tempCompte = _context.Compte.SingleOrDefault(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse);
+                Compte tempCompte = _context.Compte.Include(cpt => cpt.Equipe).Where(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse).AsEnumerable().SingleOrDefault(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse);
                 if (tempCompte != null)
                 {
-                    // On vérifie si le compte de l'utilisateur est actif
+                    // On vÃ©rifie si le compte de l'utilisateur est actif
                     if (!tempCompte.Actif)
                     {
                         // Le compte n'est pas actif, on le redirige vers le vue de login.
-                        // Puis, on affiche un message à l'utilisateur lui indiquant que son compte n'est pas actif
-                        ViewData["MessageErreurConnection"] = "Votre compte n'est pas activé. Veuillez contacter un supérieur pour plus d'information.";
+                        // Puis, on affiche un message Ã  l'utilisateur lui indiquant que son compte n'est pas actif
+                        ViewData["MessageErreurConnection"] = "Votre compte n'est pas activÃ©. Veuillez contacter un supÃ©rieur pour plus d'information.";
                         return View("Login");
                     }
                     //Joel Lutumba 2017-10-01 -ajout
-                    //typeUtilisateur : variable dont la valeur est stockée dans la session pour avoir le type de l'utilisateur connecté
+                    //typeUtilisateur : variable dont la valeur est stockÃ©e dans la session pour avoir le type de l'utilisateur connectÃ©
                     string typeConnecte = "_Type";
+                    string departementConnecte = "_Dep";
 
                     HttpContext.Session.SetInt32(SessionId, tempCompte.Id);
                     HttpContext.Session.SetInt32(typeConnecte, tempCompte.Type);
+                    HttpContext.Session.SetInt32(departementConnecte, tempCompte.Equipe.DepartementId);
                     ViewData["connection"] = tempCompte.Id;
                     return RedirectToAction("Index", "Home");
                 }
                 // On affiche ce message d'erreur quand le courriel utilisateur ou le mot de passe saisie est incorrect.
-                ViewData["MessageErreurConnection"] = "Le courriel ou le mot de passe entré est incorrect";
+                ViewData["MessageErreurConnection"] = "Le courriel ou le mot de passe entrÃ© est incorrect";
             }
             return View("Login");
         }
 
-        //Action qui affiche la page de création de compte
+        //Action qui affiche la page de crÃ©ation de compte
         public IActionResult AffichageCreation()
         {
-            //Ce ViewData sera utilisé dans le formulaire de création pour afficher une liste des ID des équipes de la BD
+            //Ce ViewData sera utilisÃ© dans le formulaire de crÃ©ation pour afficher une liste des ID des Ã©quipes de la BD
             ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom");
             return View("Creation");
         }
 
-        //Action qui s'éxécute quand on appuie sur le bouton Création du compte
-        //Les champs du formulaire POST seront automatiquement utilisés pour créer un objet compte approprié
-        //Cet objet sera ensuite ajouter à la BD
-        //Attention: Il faut avoir créer au moins une équipe pour créer un utilisateur
-        //Sinon, la liste des équipes sera vide et le formulaire ne sera jamais accepté
+        //Action qui s'Ã©xÃ©cute quand on appuie sur le bouton CrÃ©ation du compte
+        //Les champs du formulaire POST seront automatiquement utilisÃ©s pour crÃ©er un objet compte appropriÃ©
+        //Cet objet sera ensuite ajouter Ã  la BD
+        //Attention: Il faut avoir crÃ©er au moins une Ã©quipe pour crÃ©er un utilisateur
+        //Sinon, la liste des Ã©quipes sera vide et le formulaire ne sera jamais acceptÃ©
         public async Task<IActionResult> Creation([Bind("Id,Courriel,MotPasse,ConfirmationMotPasse,Nom,Prenom,Telephone,Type,Actif,EquipeId")] Compte compte)
         {
             compte.Type = 1;
@@ -87,30 +93,172 @@ namespace ProjetGestionAssistance.Controllers
                 compte.Actif = true;
                 if (ModelState.IsValid)
                 {
-                    //_contexte représente la BD, .Add est une méthode de DAO qui a été généré automatiquement
-                    //et compte est l'objet créé par le formulaire
+                    //_contexte reprÃ©sente la BD, .Add est une mÃ©thode de DAO qui a Ã©tÃ© gÃ©nÃ©rÃ© automatiquement
+                    //et compte est l'objet crÃ©Ã© par le formulaire
                     _context.Add(compte);
                     await _context.SaveChangesAsync();
                     //On redirige ensuite l'utilisateur vers la page de login
-                    //On utilise RedirectToAction plutôt que View pour éviter les doubles submit
+                    //On utilise RedirectToAction plutÃ´t que View pour Ã©viter les doubles submit
                     return RedirectToAction("Login");
                 }
             }
             else
-                ViewData["CourrielErreur"] = "Le courriel entré est déja en utilisation";
-            //Si la création échoue, on redirige l'utilisateur vers la vue de Creation
-            //Cependant, il faut recréer la liste des Id des équipes puisqu'on a perdu le ViewData précédent
-            //lorsqu'on a appuyé sur le bouton de soumission.
+                ViewData["CourrielErreur"] = "Le courriel entrÃ© est dÃ©ja en utilisation";
+            //Si la crÃ©ation Ã©choue, on redirige l'utilisateur vers la vue de Creation
+            //Cependant, il faut recrÃ©er la liste des Id des Ã©quipes puisqu'on a perdu le ViewData prÃ©cÃ©dent
+            //lorsqu'on a appuyÃ© sur le bouton de soumission.
             ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom", compte.EquipeId);
             return View();
         }
-        //Francis Paré : 2017-10-07
-        // Action qui déconnecte l'utilisateur de la session
-        // On clear l'élément session, puis on redirige l'utilisateur à la page de connection
+        //Francis ParÃ© : 2017-10-07
+        // Action qui dÃ©connecte l'utilisateur de la session
+        // On clear l'Ã©lÃ©ment session, puis on redirige l'utilisateur Ã  la page de connection
         public IActionResult Deconnection()
         {
             HttpContext.Session.Clear();
             return RedirectToAction("Login","Compte");
+        }
+
+        public async Task<IActionResult> AfficherGestionCompte(String ordre, int? page)
+        {
+            //nombre de billet par page
+            int nbElementParPage = 5;
+
+            IOrderedQueryable<Compte> listeCompte;
+            switch (ordre)
+            {
+                case "IdUp":
+                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderBy(c => c.Id);
+                    break;
+                case "IdDown":
+                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderByDescending(c => c.Id);
+                    break;
+                case "PrenomUp":
+                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderBy(c => c.Prenom);
+                    break;
+                case "PrenomDown":
+                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderByDescending(c => c.Prenom);
+                    break;
+                case "NomUp":
+                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderBy(c => c.Nom);
+                    break;
+                case "NomDown":
+                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderByDescending(c => c.Nom);
+                    break;
+                case "CourrielUp":
+                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderBy(c => c.Courriel);
+                    break;
+                case "CourrielDown":
+                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderByDescending(c => c.Courriel);
+                    break;
+                case "EquipeUp":
+                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderBy(c => c.Equipe.Nom);
+                    break;
+                case "EquipeDown":
+                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderByDescending(c => c.Equipe.Nom);
+                    break;
+                case "TypeUp":
+                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderBy(c => c.Type);
+                    break;
+                case "TypeDown":
+                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderByDescending(c => c.Type);
+                    break;
+                case "EtatUp":
+                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderBy(c => c.Actif);
+                    break;
+                case "EtatDown":
+                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderByDescending(c => c.Actif);
+                    break;
+                default:
+                    ordre = "IdUp";
+                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderBy(c => c.Id);
+                    break;
+            }
+            ViewData["ordre"] = ordre;
+            return View("GestionCompte", await ListePaginee<Compte>.CreateAsync(listeCompte, page ?? 1, nbElementParPage));
+
+        }
+
+
+        public async Task<IActionResult> AfficherModificationCompte(int? id, string ordre, int? page)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var compte = await _context.Compte.SingleOrDefaultAsync(m => m.Id == id);
+            if (compte == null)
+            {
+                return NotFound();
+            }
+            ViewData["ordre"] = ordre;
+            ViewData["page"] = page;
+            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom", compte.EquipeId);
+            return View("ModificationCompte", compte);
+        }
+
+        public async Task<IActionResult> ModifierCompte(int id, [Bind("Id,Courriel,MotPasse,ConfirmationMotPasse,Nom,Prenom,Telephone,Type,Actif,EquipeId")] Compte compte)
+        {
+            if (id != compte.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(compte);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CompteExists(compte.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+            ViewData["MessageModificationCompte"] = "Les changements ont &eacute;t&eacute; enregistr&eacute;s avec succ&egrave;s !";
+            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom", compte.EquipeId);
+            return View("ModificationCompte", compte);
+        }
+
+        public async Task<IActionResult> ModifierEtatCompte(int? id, string ordre, int? page)
+        {
+            Compte compte = await _context.Compte.SingleOrDefaultAsync(c => c.Id == id);
+            compte.Actif = !compte.Actif;
+            //compte.ConfirmationMotPasse = compte.MotPasse;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(compte);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CompteExists(compte.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+            return RedirectToAction("AfficherGestionCompte", new { ordre = ordre, page = page });
+        }
+
+        private bool CompteExists(int id)
+        {
+            return _context.Compte.Any(e => e.Id == id);
         }
     }
 }

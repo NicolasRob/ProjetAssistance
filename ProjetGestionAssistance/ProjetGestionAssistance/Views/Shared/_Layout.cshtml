@@ -21,226 +21,196 @@
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-        <a class="navbar-brand" href="#">Start Bootstrap</a>
+        <a asp-controller="Home" asp-action="Index" class="navbar-brand">SQUID</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
-            <!-- Ajout de 4 nouveaux boutons -->
-            <!-- Ces boutons dirigent vers les vues et controlleurs pas défaut pour gérer les entités de la BD -->
-
-            <!-- CA : Ajout du bouton "Créer un billet" -->
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="CreerBillet">
-                <a class="nav-link" asp-area="" asp-controller="Billet" asp-action="Creation">
-                    <i class="fa fa-fw fa-table"></i>
-                    <span class="nav-link-text">
-                        Créer un billet
-                    </span>
-                </a>
-            </li>
-
-            
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Billets">
-                
-                <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#optionsBillet" data-parent="#exampleAccordion">
-                    <i class="fa fa-fw fa-table"></i>
-                    <span class="nav-link-text">
-                        Billets
-                    </span>
-                </a>
-                <ul class="sidenav-second-level collapse" id="optionsBillet">
-                    
-                    @{
-                        //Joel Lutumba`: 2017-09-31
-                        //L'affichage se fait en fonction de l'utilisateur connecté
-                        var roleUtilisateur = Context.Session.GetInt32("_Type");
-                    }
-                    @if (roleUtilisateur >= 0) //option visible aux demandeurs et plus haut [Employé de Service, Gestionnaire, Administrateur]
-                    {
-                    <li>
-                        <a class="nav-link" asp-controller="Billet" asp-action="Index" asp-route-ordre="compose">
-                            <i class="fa fa-fw fa-tablet"></i>
-                            <span class="nav-link-text">
-                               Billets composés
-                            </span>
-                        </a>
-                    </li>
-                    }
-                    @if (roleUtilisateur >= 1) //option visible aux employé de service et plus haut [Gestionnaire, Administrateur]
-                    {
-                        <li>
-                            <a class="nav-link" asp-controller="Billet" asp-action="Index">
-                                <i class="fa fa-fw fa-tablet"></i>
-                                <span class="nav-link-text">
-                                    Billets assignés
-                                </span>
-                            </a>
-                        </li>
-                    }
-                    @if (roleUtilisateur >= 2) //option visible aux gestionnaires et plus haut [Administrateur]
-                    {
-                    <li>
-                        <a class="nav-link" asp-controller="Billet" asp-action="Index" asp-route-ordre="departement">
-                            <i class="fa fa-fw fa-tablet"></i>
-                            <span class="nav-link-text">
-                                Billets du département
-                            </span>
-                        </a>
-                    </li>
-                    }
-                    @if (roleUtilisateur >= 3) //option visible aux administrateurs ou plus haut
-                    {
-                    <li>
-                        <a class="nav-link" asp-controller="Billet" asp-action="Index" asp-route-ordre="entreprise">
-                            <i class="fa fa-fw fa-tablet"></i>
-                            <span class="nav-link-text">
-                                Billets de tous les départements
-                            </span>
-                        </a>
-                    </li>
-                    }
-                </ul>
-
-            </li>
-           
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Comptes">
-                <a class="nav-link" asp-area="" asp-controller="Comptes" asp-action="Index">
-                    <i class="fa fa-fw fa-male"></i>
-                    <span class="nav-link-text">
-                        Comptes
-                    </span>
-                </a>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Equipes">
-                <a class="nav-link" asp-area="" asp-controller="Equipes" asp-action="Index">
-                    <i class="fa fa-fw fa-male"></i>
-                    <span class="nav-link-text">
-                        Equipes
-                    </span>
-                </a>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Departements">
-                <a class="nav-link" asp-area="" asp-controller="Departements" asp-action="Index">
-                    <i class="fa fa-fw fa-male"></i>
-                    <span class="nav-link-text">
-                        Departements
-                    </span>
-                </a>
-            </li>
-            <!-- Fin des nouveaux boutons -->
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
-                <a class="nav-link" href="#">
-                    <i class="fa fa-fw fa-dashboard"></i>
-                    <span class="nav-link-text">
-                        Dashboard
-                    </span>
-                </a>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
-                <a class="nav-link" href="#">
-                    <i class="fa fa-fw fa-area-chart"></i>
-                    <span class="nav-link-text">
-                        Charts
-                    </span>
-                </a>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
-                <a class="nav-link" href="#">
-                    <i class="fa fa-fw fa-table"></i>
-                    <span class="nav-link-text">
-                        Tables
-                    </span>
-                </a>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
-                <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#exampleAccordion">
-                    <i class="fa fa-fw fa-wrench"></i>
-                    <span class="nav-link-text">
-                        Components
-                    </span>
-                </a>
-                <ul class="sidenav-second-level collapse" id="collapseComponents">
-                    <li>
-                        <a href="static-nav.html">Static Navigation</a>
-                    </li>
-                    <li>
-                        <a href="#">Custom Card Examples</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Example Pages">
-                <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseExamplePages" data-parent="#exampleAccordion">
-                    <i class="fa fa-fw fa-file"></i>
-                    <span class="nav-link-text">
-                        Example Pages
-                    </span>
-                </a>
-                <ul class="sidenav-second-level collapse" id="collapseExamplePages">
-                    <li>
-                        <a href="login.html">Login Page</a>
-                    </li>
-                    <li>
-                        <a href="register.html">Registration Page</a>
-                    </li>
-                    <li>
-                        <a href="forgot-password.html">Forgot Password Page</a>
-                    </li>
-                    <li>
-                        <a href="blank.html">Blank Page</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Menu Levels">
-                <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseMulti" data-parent="#exampleAccordion">
-                    <i class="fa fa-fw fa-sitemap"></i>
-                    <span class="nav-link-text">
-                        Menu Levels
-                    </span>
-                </a>
-                <ul class="sidenav-second-level collapse" id="collapseMulti">
-                    <li>
-                        <a href="#">Second Level Item</a>
-                    </li>
-                    <li>
-                        <a href="#">Second Level Item</a>
-                    </li>
-                    <li>
-                        <a class="nav-link-collapse collapsed" data-toggle="collapse" href="#collapseMulti2">Third Level</a>
-                        <ul class="sidenav-third-level collapse" id="collapseMulti2">
-                            <li>
-                                <a href="#">Third Level Item</a>
-                            </li>
-                            <li>
-                                <a href="#">Third Level Item</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
-                <a class="nav-link" href="#">
-                    <i class="fa fa-fw fa-link"></i>
-                    <span class="nav-link-text">
-                        Link
-                    </span>
-                </a>
-            </li>
-        </ul>
-            <ul class="navbar-nav sidenav-toggler">
-                <li class="nav-item">
-                    <a class="nav-link text-center" id="sidenavToggler">
-                        <i class="fa fa-fw fa-angle-left"></i>
+            <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+                <!-- Ajout de 4 nouveaux boutons -->
+                <!-- Ces boutons dirigent vers les vues et controlleurs pas défaut pour gérer les entités de la BD -->
+                <!-- CA : Ajout du bouton "Créer un billet" -->
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="CreerBillet">
+                    <a class="nav-link" asp-area="" asp-controller="Billet" asp-action="Creation">
+                        <i class="fa fa-fw fa-table"></i>
+                        <span class="nav-link-text">
+                            Créer un billet
+                        </span>
                     </a>
                 </li>
+
+
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Billets">
+
+
+                    <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#optionsBillet" data-parent="#exampleAccordion">
+                        <i class="fa fa-fw fa-table"></i>
+                        <span class="nav-link-text">
+                            Billets
+                        </span>
+                    </a>
+                    <ul class="sidenav-second-level collapse" id="optionsBillet">
+
+                        @{
+                            //Joel Lutumba`: 2017-09-31
+                            //L'affichage se fait en fonction de l'utilisateur connecté
+                            var roleUtilisateur = Context.Session.GetInt32("_Type");
+                        }
+                        @if (roleUtilisateur >= 0) //option visible aux demandeurs et plus haut [Employé de Service, Gestionnaire, Administrateur]
+                        {
+                            <li>
+                                <a class="nav-link" asp-controller="Billet" asp-action="Index" asp-route-ordre="compose">
+                                    <i class="fa fa-fw fa-tablet"></i>
+                                    <span class="nav-link-text">
+                                        Billets composés
+                                    </span>
+                                </a>
+                            </li>
+                        }
+                        @if (roleUtilisateur >= 1) //option visible aux employé de service et plus haut [Gestionnaire, Administrateur]
+                        {
+                            <li>
+                                <a class="nav-link" asp-controller="Billet" asp-action="Index" asp-route-ordre="assigne">
+                                    <i class="fa fa-fw fa-tablet"></i>
+                                    <span class="nav-link-text">
+                                        Billets assignés
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link" asp-controller="Billet" asp-action="Index" asp-route-ordre="equipe">
+                                    <i class="fa fa-fw fa-tablet"></i>
+                                    <span class="nav-link-text">
+                                        Billets de l'équipe
+                                    </span>
+                                </a>
+                            </li>
+                        }
+                        @if (roleUtilisateur >= 2) //option visible aux gestionnaires et plus haut [Administrateur]
+                        {
+                            <li>
+                                <a class="nav-link" asp-controller="Billet" asp-action="Index" asp-route-ordre="departement">
+                                    <i class="fa fa-fw fa-tablet"></i>
+                                    <span class="nav-link-text">
+                                        Billets du département
+                                    </span>
+                                </a>
+                            </li>
+                        }
+                        @if (roleUtilisateur >= 3) //option visible aux administrateurs ou plus haut
+                        {
+                            <li>
+                                <a class="nav-link" asp-controller="Billet" asp-action="Index" asp-route-ordre="entreprise">
+                                    <i class="fa fa-fw fa-tablet"></i>
+                                    <span class="nav-link-text">
+                                        Billets de tous les départements
+                                    </span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+
+                </li>
+
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Comptes">
+                    <a class="nav-link" asp-area="" asp-controller="Comptes" asp-action="Index">
+                        <i class="fa fa-fw fa-male"></i>
+                        <span class="nav-link-text">
+                            Comptes
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Equipes">
+                    <a class="nav-link" asp-area="" asp-controller="Equipes" asp-action="Index">
+                        <i class="fa fa-fw fa-male"></i>
+                        <span class="nav-link-text">
+                            Equipes
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Departements">
+                    <a class="nav-link" asp-area="" asp-controller="Departements" asp-action="Index">
+                        <i class="fa fa-fw fa-male"></i>
+                        <span class="nav-link-text">
+                            Departements
+                        </span>
+                    </a>
+                </li>
+                @if (roleUtilisateur >= 3) //option visible aux administrateurs ou plus haut
+                {
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Gestion des comptes">
+                    <a class="nav-link" asp-area="" asp-controller="Compte" asp-action="AfficherGestionCompte">
+                        <i class="fa fa-fw fa-male"></i>
+                        <span class="nav-link-text">
+                            Gestion des comptes
+                        </span>
+                    </a>
+                </li>
+                }
+                <!-- Fin des nouveaux boutons -->
             </ul>
+                <ul class="navbar-nav sidenav-toggler">
+                    <li class="nav-item">
+                        <a class="nav-link text-center" id="sidenavToggler">
+                            <i class="fa fa-fw fa-angle-left"></i>
+                        </a>
+                    </li>
+                </ul>
+
             <ul class="navbar-nav ml-auto">
+                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle mr-lg-2" href="#" id="alertsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-fw fa-bell"></i>
+                        <span class="d-lg-none">
+                            Alerts
+                            <span class="badge badge-pill badge-warning">2 Nouveaux</span>
+                        </span>
+                        <span class="new-indicator text-warning d-none d-lg-block">
+                            <i class="fa fa-fw fa-circle"></i>
+                            <span class="number">2</span>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="alertsDropdown">
+                        <h6 class="dropdown-header">Alertes:</h6>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">
+                            <span class="text-success">
+                                <strong>
+                                    <i class="fa fa-long-arrow-up"></i>
+                                    Un nouveau billet <br />
+                                    vous a été assigné
+                                </strong>
+                            </span>
+                            
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">
+                            <span class="text-info">
+                                <strong>
+                                    <i class="fa fa-long-arrow-down"></i>
+                                    Un nouveau billet <br />
+                                    est destiné à votre équipe
+                                </strong>
+                            </span>
+                            
+                        </a>
+                       
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item small" href="#">
+                            Voir toutes les alertes
+                        </a>
+                    </div>
+                </li>
+                
+                
+                
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle mr-lg-2" href="#" id="messagesDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-fw fa-envelope"></i>
                         <span class="d-lg-none">
                             Messages
-                            <span class="badge badge-pill badge-primary">12 New</span>
+                            <span class="badge badge-pill badge-primary">12 Nouveaux</span>
                         </span>
                         <span class="new-indicator text-primary d-none d-lg-block">
                             <i class="fa fa-fw fa-circle"></i>
@@ -248,7 +218,7 @@
                         </span>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="messagesDropdown">
-                        <h6 class="dropdown-header">New Messages:</h6>
+                        <h6 class="dropdown-header">Nouveaux messages:</h6>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#">
                             <strong>David Miller</strong>
@@ -269,63 +239,13 @@
                         </a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item small" href="#">
-                            View all messages
+                            Voir tous les messages
                         </a>
                     </div>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle mr-lg-2" href="#" id="alertsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-fw fa-bell"></i>
-                        <span class="d-lg-none">
-                            Alerts
-                            <span class="badge badge-pill badge-warning">6 New</span>
-                        </span>
-                        <span class="new-indicator text-warning d-none d-lg-block">
-                            <i class="fa fa-fw fa-circle"></i>
-                            <span class="number">6</span>
-                        </span>
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="alertsDropdown">
-                        <h6 class="dropdown-header">New Alerts:</h6>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">
-                            <span class="text-success">
-                                <strong>
-                                    <i class="fa fa-long-arrow-up"></i>
-                                    Status Update
-                                </strong>
-                            </span>
-                            <span class="small float-right text-muted">11:21 AM</span>
-                            <div class="dropdown-message small">This is an automated server response message. All systems are online.</div>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">
-                            <span class="text-danger">
-                                <strong>
-                                    <i class="fa fa-long-arrow-down"></i>
-                                    Status Update
-                                </strong>
-                            </span>
-                            <span class="small float-right text-muted">11:21 AM</span>
-                            <div class="dropdown-message small">This is an automated server response message. All systems are online.</div>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">
-                            <span class="text-success">
-                                <strong>
-                                    <i class="fa fa-long-arrow-up"></i>
-                                    Status Update
-                                </strong>
-                            </span>
-                            <span class="small float-right text-muted">11:21 AM</span>
-                            <div class="dropdown-message small">This is an automated server response message. All systems are online.</div>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item small" href="#">
-                            View all alerts
-                        </a>
-                    </div>
-                </li>
+                
+                <!--PAS BESOIN DE LA BARRE DE RECHERCHE POUR TOUT LE SITE-->
+                 <!--
                 <li class="nav-item">
                     <form class="form-inline my-2 my-lg-0 mr-lg-2">
                         <div class="input-group">
@@ -338,6 +258,7 @@
                         </div>
                     </form>
                 </li>
+                     -->
                 <!--Francis Paré : 2017-10-07-->
                 <!-- Bouton de déconnection qui affiche le modal "#modalDeconnection" déclarer plus bas -->
                 <li class="nav-item">
@@ -359,7 +280,7 @@
     <footer class="sticky-footer">
         <div class="container">
             <div class="text-center">
-                <small>Copyright &copy; Your Website 2017</small>
+                <small>Copyright &copy; SQUID 2017</small>
             </div>
         </div>
     </footer>

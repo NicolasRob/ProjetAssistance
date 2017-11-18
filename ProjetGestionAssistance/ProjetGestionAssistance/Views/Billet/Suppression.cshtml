@@ -4,8 +4,19 @@
     ViewData["Title"] = "Suppression";
 }
 
-<h2>Suppression</h2>
+<h2>Suppression impossible</h2>
+@if (Model.Etat == "EN TRAITEMENT") {
 
+    <h3>Votre demande est pr&eacute;sentement trait&eacute;e</h3>
+    <div class="container">
+
+    <h5>Titre : @Model.Titre</h5>
+    <h5>Description :</h5>
+    <p>@Model.Description</p>
+    </div>
+<div><a asp-action="Index" asp-route-ordre="@ViewData["ordrePrecedent"]" asp-route-page="@ViewData["pagePrecedente"]">Revenir &agrave; la liste</a></div>
+}
+else {
 <h3>&Ecirc;tes-vous s&ucirc;r de vouloir supprimer ce billet?</h3>
 <div>
     <h4>Billet</h4>
@@ -52,14 +63,18 @@
             @Html.DisplayNameFor(model => model.Departement)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Departement.Id)
+            @Html.DisplayFor(model => model.Departement.Nom)
         </dd>
     </dl>
     
     <form asp-action="Suppression">
         <div class="form-actions no-color">
+            <input type="hidden" name="ordrePrecedent" value="@ViewData["ordrePrecedent"]" />
+            <input type="hidden" name="pagePrecedente" value="@ViewData["pagePrecedente"]" />
             <input type="submit" value="Supprimer" class="btn btn-default" /> |
-            <a asp-action="Index">Revenir &agrave; la liste</a>
+            <a asp-action="Index" asp-route-ordre="@ViewData["ordrePrecedent"]" asp-route-page="@ViewData["pagePrecedente"]">Revenir &agrave; la liste</a>
         </div>
     </form>
 </div>
+}
+

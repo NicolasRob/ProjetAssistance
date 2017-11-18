@@ -1,0 +1,31 @@
+@model ProjetGestionAssistance.Models.Commentaire
+
+@{
+    ViewData["Title"] = "Ajouter un commentaire";
+}
+
+<h2>Ajout d'un commentaire</h2>
+
+<h4>@Html.DisplayFor(model => model.Billet.Titre)</h4>
+
+<form asp-action="AjouterCommentaire">
+    <div class="form-horizontal">
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Texte" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <textarea asp-for="Texte" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Texte" class="text-danger"></span>
+            </div>
+        </div>
+        <input type="hidden" asp-for="BilletId" name="BilletId" value="@Model.Billet.Id" />
+        <input type="hidden" name="ordrePrecedent" value="@ViewData["ordrePrecedent"]" />
+        <input type="hidden" name="pagePrecedente" value="@ViewData["pagePrecedente"]" />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Enregistrer" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>

@@ -8,15 +8,31 @@ namespace ProjetGestionAssistance.Models.Services
 {
     public class ListePaginee<T> : List<T>
     {
-        public int IndexDePage { get; private set; }
+        private int indexDePage;
+
         public int NbPagesTotal { get; private set; }
 
         public ListePaginee(List<T> listeElements, int nbElementTotal, int indexDePage, int nbElementParPage)
         {
+            NbPagesTotal = (int)Math.Ceiling(nbElementTotal / (double)nbElementParPage); //Arrondit vers le haut pour permettre une page de plus.
             IndexDePage = indexDePage;
-            NbPagesTotal = (int)Math.Ceiling(nbElementTotal / (double)nbElementParPage); //Arrondit vers le haut pour permettre un page de plus.
 
             this.AddRange(listeElements);
+        }
+        public int IndexDePage 
+        {
+            get 
+            {
+                return this.indexDePage;
+            }
+            private set {
+                if (value > NbPagesTotal)
+                    this.indexDePage = NbPagesTotal;
+                else if (value < 1)
+                    this.indexDePage = 1;
+                else
+                    this.indexDePage = value;
+            }
         }
 
         public bool APagePrecedente
@@ -44,6 +60,9 @@ namespace ProjetGestionAssistance.Models.Services
         //Elle reçoit une liste de données, la page présente et, le nombre d'élément par page et retourne une version de liste en format PaginatedList Async
         public static async Task<ListePaginee<T>> CreateAsync(IQueryable<T> source, int indexDePage, int nbElementParPage)
         {
+            if (indexDePage < 1)
+                indexDePage = 1;
+
             var nbElementTotal = await source.CountAsync();
             var listeElements = await source.Skip((indexDePage - 1) * nbElementParPage).Take(nbElementParPage).ToListAsync();
             return new ListePaginee<T>(listeElements, nbElementTotal, indexDePage, nbElementParPage);

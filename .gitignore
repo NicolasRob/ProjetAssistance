@@ -8,3 +8,8 @@ ProjetGestionAssistance/obj/
 /ProjetGestionAssistance/ProjetGestionAssistance/bin/Release/netcoreapp1.1
 /ProjetGestionAssistance/ProjetGestionAssistance/obj/Release/netcoreapp1.1
 /ProjetGestionAssistance/ProjetGestionAssistance/Properties/PublishProfiles
+/ProjetGestionAssistance/ProjetGestionAssistance/Images
+.vscode/launch.json
+.vscode/tasks.json
+ProjetGestionAssistance/ProjetGestionAssistance/bin/Debug/netcoreapp1.1/ProjetGestionAssistance.dll
+ProjetGestionAssistance/ProjetGestionAssistance/bin/Debug/netcoreapp1.1/ProjetGestionAssistance.pdb
