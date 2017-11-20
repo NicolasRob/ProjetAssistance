@@ -28,7 +28,10 @@ namespace ProjetGestionAssistance.Controllers
         //Redirige vers la vue Compte/Login.cshtml
         public IActionResult Login()
         {
-            return View();
+            if (HttpContext.Session.GetInt32("_Id") != null) {
+                return RedirectToAction("Index","Home");
+            }
+            return View();                
         }
 
         //Francis Paré 2017-09-27
