@@ -372,11 +372,11 @@ namespace ProjetGestionAssistance.Controllers
                         idBilletTemp = 0;
                     else
                         idBilletTemp = billetTemp.Id + 1;
-                    var filePath = "./images/billet"+billet.AuteurId+"-"+idBilletTemp;
+                    var filePath = "/images/billets/billet" + billet.AuteurId+"-"+idBilletTemp+".jpg";
                     try
                     {
                         //Copie du fichierPhoto dans notre dossier local
-                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        using (var stream = new FileStream("./wwwroot/" + filePath, FileMode.Create))
                         {
                             await fichierPhoto.CopyToAsync(stream);
                         }
@@ -432,6 +432,10 @@ namespace ProjetGestionAssistance.Controllers
         public async Task<IActionResult> SuppressionConfirmee(int id)
         {
             var billet = await _context.Billet.SingleOrDefaultAsync(m => m.Id == id);
+            var cheminImage = "./wwwroot/" + billet.Image; //chemin à partir de la racine de l'application
+            if (System.IO.File.Exists(cheminImage)) {
+                System.IO.File.Delete(cheminImage);
+            }
             _context.Billet.Remove(billet);
             await _context.SaveChangesAsync();
 
