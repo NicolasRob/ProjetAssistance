@@ -6,12 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjetGestionAssistance.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace ProjetGestionAssistance.Controllers
 {
     public class EquipesController : Controller
     {
         private readonly ProjetGestionAssistanceContext _context;
+        const string SessionId = "";
 
         public EquipesController(ProjetGestionAssistanceContext context)
         {
@@ -21,6 +23,9 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Equipes
         public async Task<IActionResult> Index()
         {
+            if (HttpContext.Session.GetInt32(SessionId) == null)
+                return RedirectToAction("Login", "Compte");
+
             var projetGestionAssistanceContext = _context.Equipe.Include(e => e.Departement);
             return View(await projetGestionAssistanceContext.ToListAsync());
         }
@@ -28,6 +33,9 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Equipes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            if (HttpContext.Session.GetInt32(SessionId) == null)
+                return RedirectToAction("Login", "Compte");
+
             if (id == null)
             {
                 return NotFound();
@@ -47,6 +55,9 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Equipes/Create
         public IActionResult Create()
         {
+            if (HttpContext.Session.GetInt32(SessionId) == null)
+                return RedirectToAction("Login", "Compte");
+
             ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id");
             return View();
         }
@@ -71,6 +82,9 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Equipes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (HttpContext.Session.GetInt32(SessionId) == null)
+                return RedirectToAction("Login", "Compte");
+
             if (id == null)
             {
                 return NotFound();
@@ -92,6 +106,9 @@ namespace ProjetGestionAssistance.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nom,DepartementId")] Equipe equipe)
         {
+            if (HttpContext.Session.GetInt32(SessionId) == null)
+                return RedirectToAction("Login", "Compte");
+
             if (id != equipe.Id)
             {
                 return NotFound();
@@ -124,6 +141,9 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Equipes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (HttpContext.Session.GetInt32(SessionId) == null)
+                return RedirectToAction("Login", "Compte");
+
             if (id == null)
             {
                 return NotFound();
