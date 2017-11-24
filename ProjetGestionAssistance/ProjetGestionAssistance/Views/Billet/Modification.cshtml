@@ -14,9 +14,11 @@
     <h5>Description :</h5>
     <p>@Model.Description</p>
 }
-else
-{
-<form asp-action="Modification">
+
+else {
+
+<form asp-action="Modification" enctype="multipart/form-data">
+
     <div class="form-horizontal">
         <h4>Billet</h4>
         <hr />
@@ -56,12 +58,25 @@ else
                     <span asp-validation-for="Etat" class="text-danger"></span>
                 </div>
         </div>
+
         }
+
         <div class="form-group">
-            <label asp-for="Image" class="col-md-2 control-label"></label>
+            <label  class="col-md-2 control-label">Joindre une photo</label>
             <div class="col-md-10">
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
+                <input  type="file" accept="image/*" name="fichierPhoto" class="form-control" />
+
+                
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            <label asp-for="Commentaires" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Commentaires" class="form-control" />
+                <span asp-validation-for="Commentaires" class="text-danger"></span>
             </div>
         </div>
 
@@ -116,20 +131,20 @@ else
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 <script>
-    // Fonction créé par : Francis Paré 17-11-2017
-    // Elle est appelé lorsque l'utilisateur sélectionne un autre département
-    // Elle change les donnés du select équipe, pour  qu'il affiche
-    // les équipes qui font parti du département sélectionner
+    // Fonction crÃ©Ã© par : Francis ParÃ© 17-11-2017
+    // Elle est appelÃ© lorsque l'utilisateur sÃ©lectionne un autre dÃ©partement
+    // Elle change les donnÃ©s du select Ã©quipe, pour  qu'il affiche
+    // les Ã©quipes qui font parti du dÃ©partement sÃ©lectionner
     function changerEquipeParDepartement() {
-        // On va chercher le Id du département selectionner 
+        // On va chercher le Id du dÃ©partement selectionner 
         var id = $("#DepartementId option:selected").val();
-        // on va chercher la liste de tout les équipes faisant partie de ce département
+        // on va chercher la liste de tout les Ã©quipes faisant partie de ce dÃ©partement
         $.ajax({
             type: "Post",
             url: "/Billet/ListeEquipeParDepartementId/"+id,
             datatype: "json",
             success: function (Equipe) {
-                // On créé un nouveau select avec les nouvelles équipes
+                // On crÃ©Ã© un nouveau select avec les nouvelles Ã©quipes
                 var nouveauSelect = "<select id=\"EquipeId\" class=\"form-control\">"+
                                         "<option selected= \"selected\" value= \"NULL\"> Aucune &eacutequipe </option>";
                 for (i= 0; i < Object.keys(Equipe).length;i++){

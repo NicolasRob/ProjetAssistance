@@ -306,8 +306,9 @@ namespace ProjetGestionAssistance.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Modification(int id, int compteId, [Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId,EquipeId")] Billet billet)
+        public async Task<IActionResult> Modification(int id, int compteId, IFormFile fichierPhoto, [Bind("Id,Titre,Description,Image,Etat,Commentaires,AuteurId,DepartementId,EquipeId")] Billet billet)
         {
+
             if (HttpContext.Session.GetInt32("_Id") == null) {
                 return RedirectToAction("Login", "Compte");
             }
@@ -330,6 +331,33 @@ namespace ProjetGestionAssistance.Controllers
                     {
                         billet.CompteId = null;
                     }
+
+
+                    if (fichierPhoto != null)
+                    {
+
+                        string filePath = "./images/billet" + billet.AuteurId + "-" + billet.Id;
+                        try
+                        {
+                            //Copie du fichierPhoto dans notre dossier local
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await fichierPhoto.CopyToAsync(stream);
+                            }
+
+                            billet.Image = filePath; //copie du chemin d'accès du fichier dans l'attribut Image du billet
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            Console.WriteLine("Erreur : " + e.Message);
+                        }
+
+                    }
+
+                    else
+                        billet.Image = "TEST TEST";
+
+
                     _context.Update(billet);
                     await _context.SaveChangesAsync();
                 }
