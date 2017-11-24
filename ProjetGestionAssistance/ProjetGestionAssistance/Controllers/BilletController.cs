@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using ProjetGestionAssistance.Models.Services;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace ProjetGestionAssistance.Controllers
 {
@@ -24,38 +26,92 @@ namespace ProjetGestionAssistance.Controllers
         //Joel Lutumba - 2017-09-30
         //Paramètre ordre est utilisé pour savoir quels billets aller chercher & afficher
         //Paramètre page peut être null; il sert à la pagination.
-        public async Task<IActionResult> Index(String ordre, int? page)
+        public async Task<IActionResult> Index(String ordre, int? page, string sort, string direction)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
             //Compte connecté
             Compte compte = _context.Compte.SingleOrDefault(cpt => cpt.Id == HttpContext.Session.GetInt32("_Id"));
             
             //nombre de billet par page
             int nbElementParPage = 5;
 
+            string param;
+
+            switch (sort)
+            {
+                case "Titre":
+                    param = "Titre";
+                    break;
+                case "Description":
+                    param = "Description";
+                    break;
+                case "Etat":
+                    param = "Etat";
+                    break;
+                case "Auteur":
+                    param = "Auteur";
+                    break;
+                case "Departement":
+                    param = "Departement";
+                    break;
+                default:
+                    param = "Id";
+                    direction = "Down";
+                    break;
+            }
+
+            var propertyInfo = typeof(Billet).GetProperty(param);
+
             // renvoie la vue billet seulement avec les billets que l'utiilisateur connecté à composé
-            if (ordre == "compose")
+            if (ordre == "compose" && compte.Actif)
             {
                 ViewData["NomListeBillet"] = "composés";
                 ViewData["ordre"] = "compose";
+                ViewData["direction"] = direction;
+                ViewData["sort"] = sort;
                 var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.AuteurId == compte.Id);
+                if (direction == "Down")
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderByDescending(b => propertyInfo.GetValue(b));
+                else
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderBy(b => propertyInfo.GetValue(b));
                 return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
             
             // vérifie si l'utilisateur est minimalement un employé de service   => mise en place pour l'ajout d'assignation
-            else if (ordre == "assigne" && compte.Type >= 1)
+            else if (ordre == "assigne" && compte.Type >= 1 && compte.Actif)
             {
                 ViewData["NomListeBillet"] = "assignés";
                 ViewData["ordre"] = "assigne";
+                ViewData["direction"] = direction;
+                ViewData["sort"] = sort;
                 //var equipe = _context.Compte.SingleOrDefault(e => e.Id == compte.EquipeId);
-                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.EquipeId == compte.EquipeId);
+                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.EquipeId == compte.EquipeId).Where(b => b.CompteId == compte.Id);
                 return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
-            
+
+            else if (ordre == "equipe" && compte.Type >= 1 && compte.Actif)
+            {
+                ViewData["NomListeBillet"] = "équipe";
+                ViewData["ordre"] = "equipe";
+                //var equipe = _context.Compte.SingleOrDefault(e => e.Id == compte.EquipeId);
+                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.EquipeId == compte.EquipeId);
+                if (direction == "Down")
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderByDescending(b => propertyInfo.GetValue(b));
+                else
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderBy(b => propertyInfo.GetValue(b));
+                return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
+            }
+
+
             // vérifie si l'utilisateur est minimalement un gestionnaire
-            else if (ordre == "departement" && compte.Type >= 2)
+            else if (ordre == "departement" && compte.Type >= 2 && compte.Actif)
             {
                 ViewData["NomListeBillet"] = "du département";
                 ViewData["ordre"] = "departement";
+                ViewData["direction"] = direction;
+                ViewData["sort"] = sort;
                 //Joel Lutumba - 2017-10-03
                 /*Impossible d'acceder à l'id du département avec compte.Equipe.DepartementId sans
                   chercher l'équipe dont fait partie l'utilisateur connecté donc*/
@@ -67,15 +123,26 @@ namespace ProjetGestionAssistance.Controllers
                 // option 2 - vu que c'est maintenant possible on peut aussi faire
                 //var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.DepartementId == compte.Equipe.DepartementId);
 
+                if (direction == "Down")
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderByDescending(b => propertyInfo.GetValue(b));
+                else
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderBy(b => propertyInfo.GetValue(b));
+
                 return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
             
             // revoie la vue billet avec tous les billets crées
-            else if (ordre == "entreprise" && compte.Type >= 3)
+            else if (ordre == "entreprise" && compte.Type >= 3 && compte.Actif)
             {
                 ViewData["ordre"] = "entreprise";
                 ViewData["NomListeBillet"] = "de tous les départements";
-                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement);
+                ViewData["direction"] = direction;
+                ViewData["sort"] = sort;
+                var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Select(b => b);
+                if (direction == "Down")
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderByDescending(b => propertyInfo.GetValue(b));
+                else
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderBy(b => propertyInfo.GetValue(b));
                 return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
             //si l'utilisateur n'est qu'un demandeur alors sa vue par defaut sera billets composés sinon ce sera la vue billets assignés
@@ -83,8 +150,14 @@ namespace ProjetGestionAssistance.Controllers
             {
                 //Pour l'instant lorsque le paramètre n'est pas définit on renvoie la vue des billets composés
                 ViewData["ordre"] = "compose";
+                ViewData["direction"] = direction;
+                ViewData["sort"] = sort;
                 var projetGestionAssistanceContext = _context.Billet.Include(b => b.Auteur).Include(b => b.Departement).Where(b => b.AuteurId == HttpContext.Session.GetInt32("_Id"));
                 //return View(await projetGestionAssistanceContext.ToListAsync());
+                if (direction == "Down")
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderByDescending(b => propertyInfo.GetValue(b));
+                else
+                    projetGestionAssistanceContext = projetGestionAssistanceContext.OrderBy(b => propertyInfo.GetValue(b));
                 return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
 
             }
@@ -92,8 +165,12 @@ namespace ProjetGestionAssistance.Controllers
         }
 
         // GET: Billet/Details/5
-        public async Task<IActionResult> Details(int? id, String ordrePrecedent, int? pagePrecedente)
+        public async Task<IActionResult> Details(int? id, string sort, string direction, String ordrePrecedent, int? pagePrecedente)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -114,12 +191,18 @@ namespace ProjetGestionAssistance.Controllers
                 .Where(c => c.BilletId == id)
                 .OrderByDescending(c => c.DateCreation)
                 .ToList();
+            ViewData["sort"] = sort;
+            ViewData["direction"] = direction;
             return View(billet);
         }
 
         // GET: Billet/Modification/5
-        public async Task<IActionResult> Modification(int? id, String ordrePrecedent, int? pagePrecedente)
+        public async Task<IActionResult> Modification(int? id, string sort, string direction, String ordrePrecedent, int? pagePrecedente)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -139,6 +222,83 @@ namespace ProjetGestionAssistance.Controllers
             // On insere une valeur 'aucune équipe' qui vaut pour NULL dans la base de donnée
             equipe.Insert(0, (new SelectListItem { Text = "Aucune équipe", Value = DBNull.Value.ToString() }));
             ViewData["EquipeId"] = equipe;
+            
+            //création d'un objet personnalisé pour permettre d'afficher le nom et le prenom, et les billets en cours des employés dans le SelectList
+            var listeCompteBillet = (from cpt in _context.Compte
+                            join b in _context.Billet on cpt.Id equals b.CompteId
+                               where(b.Etat != "Nouveau" && b.Etat != "Fermé") 
+                            group cpt by new { cpt.Id, cpt.Prenom, cpt.Nom, } into g
+                            orderby g.Count() ascending
+                            select new { g.Key.Id, g.Key.Prenom, g.Key.Nom, Count = g.Count() }
+                            ).ToList();
+
+            var listeCompteTout = (from cpt in _context.Compte
+                               select new { cpt.Id, cpt.Prenom, cpt.Nom });
+
+            
+
+            var listeComptePersonnalisee =
+              listeCompteBillet
+
+                .Select(c => new
+                {
+                    compteID = c.Id,
+                    Description = $"{c.Prenom} {c.Nom} | {c.Count} " + ((c.Count < 2) ? " billet" : " billets") + " en cours",
+                })
+                .ToList();
+
+            listeComptePersonnalisee.Insert(0, new
+            {
+                compteID = -1,
+                Description = "Sélectionnez un employé...",
+            });
+
+            List<int> listeID = new List<int>();
+            foreach(var item in listeCompteBillet)
+            {
+                listeID.Add(item.Id);
+            }
+
+      
+            int j = 1;
+
+
+ 
+            foreach (var item in listeCompteTout)
+
+            {
+                if (listeID.Contains(item.Id))
+                { }
+
+                else
+                {
+                    listeComptePersonnalisee.Insert(j, new
+                    {
+                        compteID = item.Id,
+                        Description = $"{item.Prenom} {item.Nom}",
+                    });
+                    j++;
+                }
+
+         
+
+
+            }
+
+            ViewData["CompteId"] = new SelectList(listeComptePersonnalisee, "compteID", "Description");
+  
+
+            //Liste des États du billets
+            List < String > listeEtat = new List<string>(new string[] { "Nouveau", "En traitement", "Fermé" });
+            ViewData["Etat"] = listeEtat.Select(x => new SelectListItem()
+            {
+                Text = x.ToString()
+            });
+
+            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom",billet.EquipeId);
+            ViewData["sort"] = sort;
+            ViewData["direction"] = direction;
+
             return View(billet);
         }
 
@@ -147,8 +307,12 @@ namespace ProjetGestionAssistance.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Modification(int id, [Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId,EquipeId")] Billet billet)
+        public async Task<IActionResult> Modification(int id, int compteId, [Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId,EquipeId")] Billet billet)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             if (id != billet.Id)
             {
                 return NotFound();
@@ -158,6 +322,15 @@ namespace ProjetGestionAssistance.Controllers
             {
                 try
                 {
+                    if (compteId > 0)
+                    {
+                        billet.CompteId = compteId;
+                        billet.Etat = "En traitement";
+                    }
+                    else
+                    {
+                        billet.CompteId = null;
+                    }
                     _context.Update(billet);
                     await _context.SaveChangesAsync();
                 }
@@ -184,6 +357,10 @@ namespace ProjetGestionAssistance.Controllers
         //Get : Création d'un billet
         public IActionResult Creation()
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel");
             ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom");
             return View("Creation");
@@ -218,11 +395,11 @@ namespace ProjetGestionAssistance.Controllers
                         idBilletTemp = 0;
                     else
                         idBilletTemp = billetTemp.Id + 1;
-                    var filePath = "./images/billet"+billet.AuteurId+"-"+idBilletTemp;
+                    var filePath = "/images/billets/billet" + billet.AuteurId+"-"+idBilletTemp+".jpg";
                     try
                     {
                         //Copie du fichierPhoto dans notre dossier local
-                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        using (var stream = new FileStream("./wwwroot/" + filePath, FileMode.Create))
                         {
                             await fichierPhoto.CopyToAsync(stream);
                         }
@@ -254,6 +431,10 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Billet/Suppression/5
         public async Task<IActionResult> Suppression(int? id, String ordrePrecedent, int? pagePrecedente)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -277,7 +458,15 @@ namespace ProjetGestionAssistance.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SuppressionConfirmee(int id)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             var billet = await _context.Billet.SingleOrDefaultAsync(m => m.Id == id);
+            var cheminImage = "./wwwroot/" + billet.Image; //chemin à partir de la racine de l'application
+            if (System.IO.File.Exists(cheminImage)) {
+                System.IO.File.Delete(cheminImage);
+            }
             _context.Billet.Remove(billet);
             await _context.SaveChangesAsync();
 
@@ -356,7 +545,6 @@ namespace ProjetGestionAssistance.Controllers
         public async Task<IActionResult> Accepter(int id, String ordrePrecedent, int? pagePrecedente)
         {
 
-            Console.WriteLine("TESTTTTT");
 
             var billet = await _context.Billet.SingleOrDefaultAsync(m => m.Id == id);
             Console.WriteLine(billet.Description);
@@ -366,6 +554,7 @@ namespace ProjetGestionAssistance.Controllers
                 }
 
                 billet.CompteId = HttpContext.Session.GetInt32("_Id");
+                billet.Etat = "EN TRAITEMENT";
                 try
                 {
                     _context.Update(billet);

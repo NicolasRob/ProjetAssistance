@@ -19,19 +19,29 @@
     <thead>
         <tr>
             <th>
-                Titre
+                <a asp-action="Index" asp-route-sort="Titre" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(numPageCourante)" asp-route-direction="@((string)ViewData["direction"] == "Up" ? "Down" : "Up")">
+                    Titre
+                </a>
             </th>
             <th>
-                Description
+                <a asp-action="Index" asp-route-sort="Description" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(numPageCourante)" asp-route-direction="@((string)ViewData["direction"] == "Up" ? "Down" : "Up")">
+                    Description
+                </a>
             </th>
             <th>
-                Etat
+                <a asp-action="Index" asp-route-sort="Etat" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(numPageCourante)" asp-route-direction="@((string)ViewData["direction"] == "Up" ? "Down" : "Up")">
+                    Etat
+                </a>
             </th>
             <th>
-                Auteur
+                <a asp-action="Index" asp-route-sort="Auteur" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(numPageCourante)" asp-route-direction="@((string)ViewData["direction"] == "Up" ? "Down" : "Up")">
+                    Auteur
+                </a>
             </th>
             <th>
-                Departement
+                <a asp-action="Index" asp-route-sort="Departement" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(numPageCourante)" asp-route-direction="@((string)ViewData["direction"] == "Up" ? "Down" : "Up")">
+                    Departement
+                </a>
             </th>
             <th></th>
         </tr>
@@ -40,7 +50,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                <a asp-action="Details" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">
+                <a asp-action="Details" asp-route-sort="@ViewData["sort"]" asp-route-direction="@ViewData["direction"]" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">
                     @Html.DisplayFor(modelItem => item.Titre)
                 </a>
             </td>
@@ -63,12 +73,12 @@
 
             </td>
             <td>
-                @if (item.Etat != "EN TRAITEMENT")
+                @if (item.Etat != "En traitement")
                 {
 
-                    <a asp-action="Modification" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Modifier</a> <span>|</span>
+                    <a asp-action="Modification" asp-route-sort="@ViewData["sort"]" asp-route-direction="@ViewData["direction"]" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Modifier</a> <span>|</span>
                     <a asp-action="Suppression" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Supprimer</a> 
-                    @if (ordreCourrant.ToString() == "assigne")
+                    @if (ordreCourrant.ToString() == "equipe")
 
                     {
                         @if (item.CompteId == null)
@@ -98,14 +108,14 @@
 
 <div class="col-lg-12">
     <ul class="pagination justify-content-center">
-        <li class="page-item"><a asp-action="Index" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(Model.IndexDePage - 1)" class="page-link btn @precDesactive">Pr&eacute;c&eacute;dant </a></li>
+        <li class="page-item"><a asp-action="Index" asp-route-sort="@ViewData["sort"]" asp-route-direction="@ViewData["direction"]" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(Model.IndexDePage - 1)" class="page-link btn @precDesactive">Pr&eacute;c&eacute;dant </a></li>
         @for (int i = 1; i <= Model.NbPagesTotal; i++)
         {
             var pageDesactive = Model.PageCourante(i) ? "btn-secondary disabled" : "";
-            <li class="page-item"><a asp-action="Index" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(i)" class="page-link btn @pageDesactive">@i</a></li>
+            <li class="page-item"><a asp-action="Index" asp-route-sort="@ViewData["sort"]" asp-route-direction="@ViewData["direction"]" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(i)" class="page-link btn @pageDesactive">@i</a></li>
         }
         
-        <li class="page-item"><a asp-action="Index" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(Model.IndexDePage + 1)" class="page-link btn @suivantDesactive">Suivant</a></li>
+        <li class="page-item"><a asp-action="Index" asp-route-sort="@ViewData["sort"]" asp-route-direction="@ViewData["direction"]" asp-route-ordre="@(ordreCourrant)" asp-route-page="@(Model.IndexDePage + 1)" class="page-link btn @suivantDesactive">Suivant</a></li>
     </ul>
 </div>
 

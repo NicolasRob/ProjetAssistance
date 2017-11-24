@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjetGestionAssistance.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace ProjetGestionAssistance.Controllers
 {
@@ -21,12 +22,20 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Departements
         public async Task<IActionResult> Index()
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             return View(await _context.Departement.ToListAsync());
         }
 
         // GET: Departements/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -55,6 +64,13 @@ namespace ProjetGestionAssistance.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nom")] Departement departement)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+            else if (HttpContext.Session.GetInt32("_Type") >= 3) {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(departement);
@@ -67,6 +83,13 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Departements/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+            else if (HttpContext.Session.GetInt32("_Type") >= 3) {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -87,6 +110,13 @@ namespace ProjetGestionAssistance.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nom")] Departement departement)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+            else if (HttpContext.Session.GetInt32("_Type") >= 3) {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (id != departement.Id)
             {
                 return NotFound();
@@ -118,6 +148,13 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Departements/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+            else if (HttpContext.Session.GetInt32("_Type") >= 3) {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -139,6 +176,13 @@ namespace ProjetGestionAssistance.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+            else if (HttpContext.Session.GetInt32("_Type") >= 3) {
+                return RedirectToAction("Index", "Home");
+            }
+
             var billets = await _context.Billet.Where(b => b.DepartementId == id).ToListAsync();
             foreach (var b in billets)
             {
