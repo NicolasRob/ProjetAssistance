@@ -292,12 +292,8 @@ namespace ProjetGestionAssistance.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Modification(int id, int compteId, [Bind("Id,Titre,Description,Etat,Commentaires,AuteurId,DepartementId,EquipeId")] Billet billet, IFormFile fichierPhoto)
+        public async Task<IActionResult> Modification(int id, int compteId, IFormFile fichierPhoto, [Bind("Id,Titre,Description,Image,Etat,Commentaires,AuteurId,DepartementId,EquipeId")] Billet billet)
         {
-            Console.WriteLine("ALLOOOOOOOOOOOOOOOOOOO");
-            Console.WriteLine("ALLOOOOOOOOOOOOOOOOOOO");
-            Console.WriteLine("ALLOOOOOOOOOOOOOOOOOOO");
-            Console.WriteLine("ALLOOOOOOOOOOOOOOOOOOO");
 
             if (id != billet.Id)
             {
@@ -317,8 +313,7 @@ namespace ProjetGestionAssistance.Controllers
                     {
                         billet.CompteId = null;
                     }
-                    Console.WriteLine("ALLOOOOOOOOOOOOOOOOOOO");
-                    Console.WriteLine("==================="+fichierPhoto);
+
 
                     if (fichierPhoto != null)
                     {
