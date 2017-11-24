@@ -226,13 +226,14 @@ namespace ProjetGestionAssistance.Controllers
             //création d'un objet personnalisé pour permettre d'afficher le nom et le prenom, et les billets en cours des employés dans le SelectList
             var listeCompteBillet = (from cpt in _context.Compte
                             join b in _context.Billet on cpt.Id equals b.CompteId
-                               where(b.Etat != "Nouveau" && b.Etat != "Fermé") 
+                               where(b.Etat != "Nouveau" && b.Etat != "Fermé" && billet.EquipeId == cpt.EquipeId) 
                             group cpt by new { cpt.Id, cpt.Prenom, cpt.Nom, } into g
                             orderby g.Count() ascending
                             select new { g.Key.Id, g.Key.Prenom, g.Key.Nom, Count = g.Count() }
                             ).ToList();
 
             var listeCompteTout = (from cpt in _context.Compte
+                                   where (billet.EquipeId == cpt.EquipeId)
                                select new { cpt.Id, cpt.Prenom, cpt.Nom });
 
             
@@ -355,7 +356,7 @@ namespace ProjetGestionAssistance.Controllers
                     }
 
                     else
-                        billet.Image = "TEST TEST";
+                        billet.Image = "";
 
 
                     _context.Update(billet);
@@ -609,6 +610,79 @@ namespace ProjetGestionAssistance.Controllers
         {
             List<Equipe> listEquipe = new List<Equipe>(_context.Equipe.Where(e => e.DepartementId == Id));
             return Json(listEquipe);
+        }
+
+        
+        public JsonResult ListeCompteParEquipeId(int Id)
+        {
+            List<Equipe> listEquipe = new List<Equipe>(_context.Equipe.Where(e => e.DepartementId == Id));
+
+  
+
+            //création d'un objet personnalisé pour permettre d'afficher le nom et le prenom, et les billets en cours des employés dans le SelectList
+            var listeCompteBillet = (from cpt in _context.Compte
+                                     join b in _context.Billet on cpt.Id equals b.CompteId
+                                     where (b.Etat != "Nouveau" && b.Etat != "Fermé" && Id == cpt.EquipeId)
+                                     group cpt by new { cpt.Id, cpt.Prenom, cpt.Nom, } into g
+                                     orderby g.Count() ascending
+                                     select new { g.Key.Id, g.Key.Prenom, g.Key.Nom, Count = g.Count() }
+                            ).ToList();
+
+            var listeCompteTout = (from cpt in _context.Compte
+                                   where (cpt.EquipeId == Id)
+                                   select new { cpt.Id, cpt.Prenom, cpt.Nom });
+
+
+
+            var listeComptePersonnalisee =
+              listeCompteBillet
+
+                .Select(c => new
+                {
+                    compteID = c.Id,
+                    Description = $"{c.Prenom} {c.Nom} | {c.Count} " + ((c.Count < 2) ? " billet" : " billets") + " en cours",
+                })
+                .ToList();
+
+            listeComptePersonnalisee.Insert(0, new
+            {
+                compteID = -1,
+                Description = "Sélectionnez un employé...",
+            });
+
+            List<int> listeID = new List<int>();
+            foreach (var item in listeCompteBillet)
+            {
+                listeID.Add(item.Id);
+            }
+
+
+            int j = 1;
+
+
+
+            foreach (var item in listeCompteTout)
+            {
+                if (listeID.Contains(item.Id))
+                { }
+
+                else
+                {
+                    listeComptePersonnalisee.Insert(j, new
+                    {
+                        compteID = item.Id,
+                        Description = $"{item.Prenom} {item.Nom}",
+                    });
+                    j++;
+                }
+            }
+
+
+
+
+
+
+            return Json(listeComptePersonnalisee);
         }
 
     }
