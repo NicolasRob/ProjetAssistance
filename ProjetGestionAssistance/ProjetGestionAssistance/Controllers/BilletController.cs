@@ -55,6 +55,7 @@ namespace ProjetGestionAssistance.Controllers
                     break;
                 default:
                     param = "Id";
+                    direction = "Down";
                     break;
             }
 

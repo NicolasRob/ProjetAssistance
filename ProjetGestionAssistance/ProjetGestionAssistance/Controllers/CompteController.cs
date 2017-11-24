@@ -85,12 +85,10 @@ namespace ProjetGestionAssistance.Controllers
         //Sinon, la liste des équipes sera vide et le formulaire ne sera jamais accepté
         public async Task<IActionResult> Creation([Bind("Id,Courriel,MotPasse,ConfirmationMotPasse,Nom,Prenom,Telephone,Type,Actif,EquipeId")] Compte compte)
         {
-            compte.Type = 1;
-            compte.Actif = true;
             if (_context.Compte.SingleOrDefault(cpt => cpt.Courriel == compte.Courriel) == null)
             {
                 compte.Type = 1;
-                compte.Actif = true;
+                compte.Actif = false;
                 if (ModelState.IsValid)
                 {
                     //_contexte représente la BD, .Add est une méthode de DAO qui a été généré automatiquement
@@ -170,8 +168,8 @@ namespace ProjetGestionAssistance.Controllers
                     listeCompte = _context.Compte.Include(b => b.Equipe).OrderByDescending(c => c.Actif);
                     break;
                 default:
-                    ordre = "IdUp";
-                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderBy(c => c.Id);
+                    ordre = "IdDown";
+                    listeCompte = _context.Compte.Include(b => b.Equipe).OrderByDescending(c => c.Id);
                     break;
             }
             ViewData["ordre"] = ordre;
