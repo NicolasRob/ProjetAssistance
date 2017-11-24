@@ -28,6 +28,9 @@ namespace ProjetGestionAssistance.Controllers
         //Paramètre page peut être null; il sert à la pagination.
         public async Task<IActionResult> Index(String ordre, int? page, string sort, string direction)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
             //Compte connecté
             Compte compte = _context.Compte.SingleOrDefault(cpt => cpt.Id == HttpContext.Session.GetInt32("_Id"));
             
@@ -62,7 +65,7 @@ namespace ProjetGestionAssistance.Controllers
             var propertyInfo = typeof(Billet).GetProperty(param);
 
             // renvoie la vue billet seulement avec les billets que l'utiilisateur connecté à composé
-            if (ordre == "compose")
+            if (ordre == "compose" && compte.Actif)
             {
                 ViewData["NomListeBillet"] = "composés";
                 ViewData["ordre"] = "compose";
@@ -77,7 +80,7 @@ namespace ProjetGestionAssistance.Controllers
             }
             
             // vérifie si l'utilisateur est minimalement un employé de service   => mise en place pour l'ajout d'assignation
-            else if (ordre == "assigne" && compte.Type >= 1)
+            else if (ordre == "assigne" && compte.Type >= 1 && compte.Actif)
             {
                 ViewData["NomListeBillet"] = "assignés";
                 ViewData["ordre"] = "assigne";
@@ -88,7 +91,7 @@ namespace ProjetGestionAssistance.Controllers
                 return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
 
-            else if (ordre == "equipe" && compte.Type >= 1)
+            else if (ordre == "equipe" && compte.Type >= 1 && compte.Actif)
             {
                 ViewData["NomListeBillet"] = "équipe";
                 ViewData["ordre"] = "equipe";
@@ -103,7 +106,7 @@ namespace ProjetGestionAssistance.Controllers
 
 
             // vérifie si l'utilisateur est minimalement un gestionnaire
-            else if (ordre == "departement" && compte.Type >= 2)
+            else if (ordre == "departement" && compte.Type >= 2 && compte.Actif)
             {
                 ViewData["NomListeBillet"] = "du département";
                 ViewData["ordre"] = "departement";
@@ -129,7 +132,7 @@ namespace ProjetGestionAssistance.Controllers
             }
             
             // revoie la vue billet avec tous les billets crées
-            else if (ordre == "entreprise" && compte.Type >= 3)
+            else if (ordre == "entreprise" && compte.Type >= 3 && compte.Actif)
             {
                 ViewData["ordre"] = "entreprise";
                 ViewData["NomListeBillet"] = "de tous les départements";
@@ -164,6 +167,10 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Billet/Details/5
         public async Task<IActionResult> Details(int? id, string sort, string direction, String ordrePrecedent, int? pagePrecedente)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -192,6 +199,10 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Billet/Modification/5
         public async Task<IActionResult> Modification(int? id, string sort, string direction, String ordrePrecedent, int? pagePrecedente)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -295,6 +306,10 @@ namespace ProjetGestionAssistance.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Modification(int id, int compteId, [Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId,EquipeId")] Billet billet)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             if (id != billet.Id)
             {
                 return NotFound();
@@ -339,6 +354,10 @@ namespace ProjetGestionAssistance.Controllers
         //Get : Création d'un billet
         public IActionResult Creation()
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel");
             ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom");
             return View("Creation");
@@ -373,11 +392,11 @@ namespace ProjetGestionAssistance.Controllers
                         idBilletTemp = 0;
                     else
                         idBilletTemp = billetTemp.Id + 1;
-                    var filePath = "./images/billet"+billet.AuteurId+"-"+idBilletTemp;
+                    var filePath = "/images/billets/billet" + billet.AuteurId+"-"+idBilletTemp+".jpg";
                     try
                     {
                         //Copie du fichierPhoto dans notre dossier local
-                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        using (var stream = new FileStream("./wwwroot/" + filePath, FileMode.Create))
                         {
                             await fichierPhoto.CopyToAsync(stream);
                         }
@@ -409,6 +428,10 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Billet/Suppression/5
         public async Task<IActionResult> Suppression(int? id, String ordrePrecedent, int? pagePrecedente)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -432,7 +455,15 @@ namespace ProjetGestionAssistance.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SuppressionConfirmee(int id)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             var billet = await _context.Billet.SingleOrDefaultAsync(m => m.Id == id);
+            var cheminImage = "./wwwroot/" + billet.Image; //chemin à partir de la racine de l'application
+            if (System.IO.File.Exists(cheminImage)) {
+                System.IO.File.Delete(cheminImage);
+            }
             _context.Billet.Remove(billet);
             await _context.SaveChangesAsync();
 
