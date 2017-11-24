@@ -295,7 +295,6 @@ namespace ProjetGestionAssistance.Controllers
                 Text = x.ToString()
             });
 
-            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom",billet.EquipeId);
             ViewData["sort"] = sort;
             ViewData["direction"] = direction;
 
