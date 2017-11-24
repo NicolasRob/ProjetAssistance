@@ -217,8 +217,11 @@ namespace ProjetGestionAssistance.Controllers
             }
             ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel", billet.AuteurId);
             ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom", billet.DepartementId);
-
-            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom", billet.EquipeId);
+            // Création d'une selectList avec les équipes qui font partie du département
+            List<SelectListItem> equipe = new SelectList(_context.Set<Equipe>().Where(e => e.DepartementId == billet.DepartementId), "Id", "Nom", billet.EquipeId).ToList();
+            // On insere une valeur 'aucune équipe' qui vaut pour NULL dans la base de donnée
+            equipe.Insert(0, (new SelectListItem { Text = "Aucune équipe", Value = DBNull.Value.ToString() }));
+            ViewData["EquipeId"] = equipe;
             
             //création d'un objet personnalisé pour permettre d'afficher le nom et le prenom, et les billets en cours des employés dans le SelectList
             var listeCompteBillet = (from cpt in _context.Compte
@@ -572,5 +575,15 @@ namespace ProjetGestionAssistance.Controllers
             return RedirectToAction("Index", new { @ordre = ordrePrecedent, @page = pagePrecedente });
         }
 
+        // Fonction créé par Francis Paré : 11-17-2017
+        // Elle retourne la liste de toute les équipes faisant 
+        // partie du département donné en paramètre. 
+        public JsonResult ListeEquipeParDepartementId(int Id)
+        {
+            List<Equipe> listEquipe = new List<Equipe>(_context.Equipe.Where(e => e.DepartementId == Id));
+            return Json(listEquipe);
+        }
+
     }
+
 }
