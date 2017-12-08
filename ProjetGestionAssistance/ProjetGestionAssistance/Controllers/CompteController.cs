@@ -85,6 +85,7 @@ namespace ProjetGestionAssistance.Controllers
             }
             //Ce ViewData sera utilisé dans le formulaire de création pour afficher une liste des ID des équipes de la BD
             ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom");
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom");
             return View("Creation");
         }
 
@@ -209,7 +210,7 @@ namespace ProjetGestionAssistance.Controllers
                 return NotFound();
             }
 
-            var compte = await _context.Compte.SingleOrDefaultAsync(m => m.Id == id);
+            var compte = await _context.Compte.Include(m => m.Equipe).SingleOrDefaultAsync(m => m.Id == id);
             if (compte == null)
             {
                 return NotFound();
@@ -217,6 +218,7 @@ namespace ProjetGestionAssistance.Controllers
             ViewData["ordre"] = ordre;
             ViewData["page"] = page;
             ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom", compte.EquipeId);
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom", compte.Equipe.DepartementId);
             return View("ModificationCompte", compte);
         }
 
@@ -285,6 +287,12 @@ namespace ProjetGestionAssistance.Controllers
                 }
             }
             return RedirectToAction("AfficherGestionCompte", new { ordre = ordre, page = page });
+        }
+
+        public JsonResult ListeEquipeParDepartementId(int Id)
+        {
+            List<Equipe> listEquipe = new List<Equipe>(_context.Equipe.Where(e => e.DepartementId == Id));
+            return Json(listEquipe);
         }
 
         private bool CompteExists(int id)
