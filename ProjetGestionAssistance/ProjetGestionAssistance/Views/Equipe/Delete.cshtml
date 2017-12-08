@@ -1,15 +1,17 @@
 @model ProjetGestionAssistance.Models.Equipe
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Delete";
 }
 
-<h2>Details</h2>
+<h2>Supprimer</h2>
 
+<h3>Êtes vous sûr de vouloir supprimer cette équipe?</h3>
 <div>
     <h4>Equipe</h4>
     <hr />
     <dl class="dl-horizontal">
+        <input type="hidden" asp-for="Id" />
         <dt>
             @Html.DisplayNameFor(model => model.Nom)
         </dt>
@@ -23,8 +25,11 @@
             @Html.DisplayFor(model => model.Departement.Id)
         </dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    
+    <form asp-action="Delete">
+        <div class="form-actions no-color">
+            <input type="submit" value="Supprimer" class="btn btn-default" /> |
+            <a asp-action="Index">Retour à la liste</a>
+        </div>
+    </form>
 </div>

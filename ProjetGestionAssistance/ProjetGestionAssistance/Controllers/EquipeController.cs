@@ -10,114 +10,105 @@ using Microsoft.AspNetCore.Http;
 
 namespace ProjetGestionAssistance.Controllers
 {
-    public class DepartementsController : Controller
+    public class EquipeController : Controller
     {
         private readonly ProjetGestionAssistanceContext _context;
 
-        public DepartementsController(ProjetGestionAssistanceContext context)
+        public EquipeController(ProjetGestionAssistanceContext context)
         {
             _context = context;    
         }
 
-        // GET: Departements
+        // GET: Equipes
         public async Task<IActionResult> Index()
         {
-            if (HttpContext.Session.GetInt32("_Id") == null) {
+            if (HttpContext.Session.GetInt32("_Id") == null)
                 return RedirectToAction("Login", "Compte");
-            }
 
-            return View(await _context.Departement.ToListAsync());
+            var projetGestionAssistanceContext = _context.Equipe.Include(e => e.Departement);
+            return View(await projetGestionAssistanceContext.ToListAsync());
         }
 
-        // GET: Departements/Details/5
+        // GET: Equipes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (HttpContext.Session.GetInt32("_Id") == null) {
+            if (HttpContext.Session.GetInt32("_Id") == null)
                 return RedirectToAction("Login", "Compte");
-            }
 
             if (id == null)
             {
                 return NotFound();
             }
 
-            var departement = await _context.Departement
+            var equipe = await _context.Equipe
+                .Include(e => e.Departement)
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (departement == null)
+            if (equipe == null)
             {
                 return NotFound();
             }
 
-            return View(departement);
+            return View(equipe);
         }
 
-        // GET: Departements/Create
+        // GET: Equipes/Create
         public IActionResult Create()
         {
+            if (HttpContext.Session.GetInt32("_Id") == null)
+                return RedirectToAction("Login", "Compte");
+
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id");
             return View();
         }
 
-        // POST: Departements/Create
+        // POST: Equipes/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nom")] Departement departement)
+        public async Task<IActionResult> Create([Bind("Id,Nom,DepartementId")] Equipe equipe)
         {
-            if (HttpContext.Session.GetInt32("_Id") == null) {
-                return RedirectToAction("Login", "Compte");
-            }
-            else if (HttpContext.Session.GetInt32("_Type") >= 3) {
-                return RedirectToAction("Index", "Home");
-            }
-
             if (ModelState.IsValid)
             {
-                _context.Add(departement);
+                _context.Add(equipe);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(departement);
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id", equipe.DepartementId);
+            return View(equipe);
         }
 
-        // GET: Departements/Edit/5
+        // GET: Equipes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (HttpContext.Session.GetInt32("_Id") == null) {
+            if (HttpContext.Session.GetInt32("_Id") == null)
                 return RedirectToAction("Login", "Compte");
-            }
-            else if (HttpContext.Session.GetInt32("_Type") >= 3) {
-                return RedirectToAction("Index", "Home");
-            }
 
             if (id == null)
             {
                 return NotFound();
             }
 
-            var departement = await _context.Departement.SingleOrDefaultAsync(m => m.Id == id);
-            if (departement == null)
+            var equipe = await _context.Equipe.SingleOrDefaultAsync(m => m.Id == id);
+            if (equipe == null)
             {
                 return NotFound();
             }
-            return View(departement);
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id", equipe.DepartementId);
+            return View(equipe);
         }
 
-        // POST: Departements/Edit/5
+        // POST: Equipes/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nom")] Departement departement)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nom,DepartementId")] Equipe equipe)
         {
-            if (HttpContext.Session.GetInt32("_Id") == null) {
+            if (HttpContext.Session.GetInt32("_Id") == null)
                 return RedirectToAction("Login", "Compte");
-            }
-            else if (HttpContext.Session.GetInt32("_Type") >= 3) {
-                return RedirectToAction("Index", "Home");
-            }
 
-            if (id != departement.Id)
+            if (id != equipe.Id)
             {
                 return NotFound();
             }
@@ -126,12 +117,12 @@ namespace ProjetGestionAssistance.Controllers
             {
                 try
                 {
-                    _context.Update(departement);
+                    _context.Update(equipe);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DepartementExists(departement.Id))
+                    if (!EquipeExists(equipe.Id))
                     {
                         return NotFound();
                     }
@@ -142,61 +133,46 @@ namespace ProjetGestionAssistance.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(departement);
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id", equipe.DepartementId);
+            return View(equipe);
         }
 
-        // GET: Departements/Delete/5
+        // GET: Equipes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (HttpContext.Session.GetInt32("_Id") == null) {
+            if (HttpContext.Session.GetInt32("_Id") == null)
                 return RedirectToAction("Login", "Compte");
-            }
-            else if (HttpContext.Session.GetInt32("_Type") >= 3) {
-                return RedirectToAction("Index", "Home");
-            }
 
             if (id == null)
             {
                 return NotFound();
             }
 
-            var departement = await _context.Departement
+            var equipe = await _context.Equipe
+                .Include(e => e.Departement)
                 .SingleOrDefaultAsync(m => m.Id == id);
-
-            if (departement == null)
+            if (equipe == null)
             {
                 return NotFound();
             }
 
-            return View(departement);
+            return View(equipe);
         }
 
-        // POST: Departements/Delete/5
+        // POST: Equipes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (HttpContext.Session.GetInt32("_Id") == null) {
-                return RedirectToAction("Login", "Compte");
-            }
-            else if (HttpContext.Session.GetInt32("_Type") >= 3) {
-                return RedirectToAction("Index", "Home");
-            }
-
-            var billets = await _context.Billet.Where(b => b.DepartementId == id).ToListAsync();
-            foreach (var b in billets)
-            {
-                b.DepartementId = null;
-            }
-            var departement = await _context.Departement.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Departement.Remove(departement);
+            var equipe = await _context.Equipe.SingleOrDefaultAsync(m => m.Id == id);
+            _context.Equipe.Remove(equipe);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        private bool DepartementExists(int id)
+        private bool EquipeExists(int id)
         {
-            return _context.Departement.Any(e => e.Id == id);
+            return _context.Equipe.Any(e => e.Id == id);
         }
     }
 }
