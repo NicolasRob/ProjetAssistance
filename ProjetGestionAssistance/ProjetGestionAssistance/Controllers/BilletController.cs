@@ -28,6 +28,9 @@ namespace ProjetGestionAssistance.Controllers
         //Paramètre page peut être null; il sert à la pagination.
         public async Task<IActionResult> Index(String ordre, int? page, string sort, string direction)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
             //Compte connecté
             Compte compte = _context.Compte.SingleOrDefault(cpt => cpt.Id == HttpContext.Session.GetInt32("_Id"));
             
@@ -55,13 +58,14 @@ namespace ProjetGestionAssistance.Controllers
                     break;
                 default:
                     param = "Id";
+                    direction = "Down";
                     break;
             }
 
             var propertyInfo = typeof(Billet).GetProperty(param);
 
             // renvoie la vue billet seulement avec les billets que l'utiilisateur connecté à composé
-            if (ordre == "compose")
+            if (ordre == "compose" && compte.Actif)
             {
                 ViewData["NomListeBillet"] = "composés";
                 ViewData["ordre"] = "compose";
@@ -76,7 +80,7 @@ namespace ProjetGestionAssistance.Controllers
             }
             
             // vérifie si l'utilisateur est minimalement un employé de service   => mise en place pour l'ajout d'assignation
-            else if (ordre == "assigne" && compte.Type >= 1)
+            else if (ordre == "assigne" && compte.Type >= 1 && compte.Actif)
             {
                 ViewData["NomListeBillet"] = "assignés";
                 ViewData["ordre"] = "assigne";
@@ -87,7 +91,7 @@ namespace ProjetGestionAssistance.Controllers
                 return View(await ListePaginee<Billet>.CreateAsync(projetGestionAssistanceContext, page ?? 1, nbElementParPage));
             }
 
-            else if (ordre == "equipe" && compte.Type >= 1)
+            else if (ordre == "equipe" && compte.Type >= 1 && compte.Actif)
             {
                 ViewData["NomListeBillet"] = "équipe";
                 ViewData["ordre"] = "equipe";
@@ -102,7 +106,7 @@ namespace ProjetGestionAssistance.Controllers
 
 
             // vérifie si l'utilisateur est minimalement un gestionnaire
-            else if (ordre == "departement" && compte.Type >= 2)
+            else if (ordre == "departement" && compte.Type >= 2 && compte.Actif)
             {
                 ViewData["NomListeBillet"] = "du département";
                 ViewData["ordre"] = "departement";
@@ -128,7 +132,7 @@ namespace ProjetGestionAssistance.Controllers
             }
             
             // revoie la vue billet avec tous les billets crées
-            else if (ordre == "entreprise" && compte.Type >= 3)
+            else if (ordre == "entreprise" && compte.Type >= 3 && compte.Actif)
             {
                 ViewData["ordre"] = "entreprise";
                 ViewData["NomListeBillet"] = "de tous les départements";
@@ -163,6 +167,10 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Billet/Details/5
         public async Task<IActionResult> Details(int? id, string sort, string direction, String ordrePrecedent, int? pagePrecedente)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -191,6 +199,10 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Billet/Modification/5
         public async Task<IActionResult> Modification(int? id, string sort, string direction, String ordrePrecedent, int? pagePrecedente)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -205,19 +217,23 @@ namespace ProjetGestionAssistance.Controllers
             }
             ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel", billet.AuteurId);
             ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom", billet.DepartementId);
-
-            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom", billet.EquipeId);
+            // Création d'une selectList avec les équipes qui font partie du département
+            List<SelectListItem> equipe = new SelectList(_context.Set<Equipe>().Where(e => e.DepartementId == billet.DepartementId), "Id", "Nom", billet.EquipeId).ToList();
+            // On insere une valeur 'aucune équipe' qui vaut pour NULL dans la base de donnée
+            equipe.Insert(0, (new SelectListItem { Text = "Aucune équipe", Value = DBNull.Value.ToString() }));
+            ViewData["EquipeId"] = equipe;
             
             //création d'un objet personnalisé pour permettre d'afficher le nom et le prenom, et les billets en cours des employés dans le SelectList
             var listeCompteBillet = (from cpt in _context.Compte
                             join b in _context.Billet on cpt.Id equals b.CompteId
-                               where(b.Etat != "Nouveau" && b.Etat != "Fermé") 
+                               where(b.Etat != "Nouveau" && b.Etat != "Fermé" && billet.EquipeId == cpt.EquipeId) 
                             group cpt by new { cpt.Id, cpt.Prenom, cpt.Nom, } into g
                             orderby g.Count() ascending
                             select new { g.Key.Id, g.Key.Prenom, g.Key.Nom, Count = g.Count() }
                             ).ToList();
 
             var listeCompteTout = (from cpt in _context.Compte
+                                   where (billet.EquipeId == cpt.EquipeId)
                                select new { cpt.Id, cpt.Prenom, cpt.Nom });
 
             
@@ -280,7 +296,6 @@ namespace ProjetGestionAssistance.Controllers
                 Text = x.ToString()
             });
 
-            ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom",billet.EquipeId);
             ViewData["sort"] = sort;
             ViewData["direction"] = direction;
 
@@ -292,8 +307,13 @@ namespace ProjetGestionAssistance.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Modification(int id, int compteId, [Bind("Id,Titre,Description,Etat,Image,Commentaires,AuteurId,DepartementId,EquipeId")] Billet billet)
+        public async Task<IActionResult> Modification(int id, int compteId, IFormFile fichierPhoto, [Bind("Id,Titre,Description,Image,Etat,Commentaires,AuteurId,DepartementId,EquipeId")] Billet billet)
         {
+
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             if (id != billet.Id)
             {
                 return NotFound();
@@ -312,6 +332,33 @@ namespace ProjetGestionAssistance.Controllers
                     {
                         billet.CompteId = null;
                     }
+
+
+                    if (fichierPhoto != null)
+                    {
+
+                        string filePath = "./images/billet" + billet.AuteurId + "-" + billet.Id;
+                        try
+                        {
+                            //Copie du fichierPhoto dans notre dossier local
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await fichierPhoto.CopyToAsync(stream);
+                            }
+
+                            billet.Image = filePath; //copie du chemin d'accès du fichier dans l'attribut Image du billet
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            Console.WriteLine("Erreur : " + e.Message);
+                        }
+
+                    }
+
+                    else
+                        billet.Image = "";
+
+
                     _context.Update(billet);
                     await _context.SaveChangesAsync();
                 }
@@ -338,6 +385,10 @@ namespace ProjetGestionAssistance.Controllers
         //Get : Création d'un billet
         public IActionResult Creation()
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             ViewData["AuteurId"] = new SelectList(_context.Compte, "Id", "Courriel");
             ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom");
             return View("Creation");
@@ -372,11 +423,11 @@ namespace ProjetGestionAssistance.Controllers
                         idBilletTemp = 0;
                     else
                         idBilletTemp = billetTemp.Id + 1;
-                    var filePath = "./images/billet"+billet.AuteurId+"-"+idBilletTemp;
+                    var filePath = "/images/billets/billet" + billet.AuteurId+"-"+idBilletTemp+".jpg";
                     try
                     {
                         //Copie du fichierPhoto dans notre dossier local
-                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        using (var stream = new FileStream("./wwwroot/" + filePath, FileMode.Create))
                         {
                             await fichierPhoto.CopyToAsync(stream);
                         }
@@ -408,6 +459,10 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Billet/Suppression/5
         public async Task<IActionResult> Suppression(int? id, String ordrePrecedent, int? pagePrecedente)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -431,7 +486,15 @@ namespace ProjetGestionAssistance.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SuppressionConfirmee(int id)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             var billet = await _context.Billet.SingleOrDefaultAsync(m => m.Id == id);
+            var cheminImage = "./wwwroot/" + billet.Image; //chemin à partir de la racine de l'application
+            if (System.IO.File.Exists(cheminImage)) {
+                System.IO.File.Delete(cheminImage);
+            }
             _context.Billet.Remove(billet);
             await _context.SaveChangesAsync();
 
@@ -540,5 +603,88 @@ namespace ProjetGestionAssistance.Controllers
             return RedirectToAction("Index", new { @ordre = ordrePrecedent, @page = pagePrecedente });
         }
 
+        // Fonction créé par Francis Paré : 11-17-2017
+        // Elle retourne la liste de toute les équipes faisant 
+        // partie du département donné en paramètre. 
+        public JsonResult ListeEquipeParDepartementId(int Id)
+        {
+            List<Equipe> listEquipe = new List<Equipe>(_context.Equipe.Where(e => e.DepartementId == Id));
+            return Json(listEquipe);
+        }
+
+        
+        public JsonResult ListeCompteParEquipeId(int Id)
+        {
+            List<Equipe> listEquipe = new List<Equipe>(_context.Equipe.Where(e => e.DepartementId == Id));
+
+  
+
+            //création d'un objet personnalisé pour permettre d'afficher le nom et le prenom, et les billets en cours des employés dans le SelectList
+            var listeCompteBillet = (from cpt in _context.Compte
+                                     join b in _context.Billet on cpt.Id equals b.CompteId
+                                     where (b.Etat != "Nouveau" && b.Etat != "Fermé" && Id == cpt.EquipeId)
+                                     group cpt by new { cpt.Id, cpt.Prenom, cpt.Nom, } into g
+                                     orderby g.Count() ascending
+                                     select new { g.Key.Id, g.Key.Prenom, g.Key.Nom, Count = g.Count() }
+                            ).ToList();
+
+            var listeCompteTout = (from cpt in _context.Compte
+                                   where (cpt.EquipeId == Id)
+                                   select new { cpt.Id, cpt.Prenom, cpt.Nom });
+
+
+
+            var listeComptePersonnalisee =
+              listeCompteBillet
+
+                .Select(c => new
+                {
+                    compteID = c.Id,
+                    Description = $"{c.Prenom} {c.Nom} | {c.Count} " + ((c.Count < 2) ? " billet" : " billets") + " en cours",
+                })
+                .ToList();
+
+            listeComptePersonnalisee.Insert(0, new
+            {
+                compteID = -1,
+                Description = "Sélectionnez un employé...",
+            });
+
+            List<int> listeID = new List<int>();
+            foreach (var item in listeCompteBillet)
+            {
+                listeID.Add(item.Id);
+            }
+
+
+            int j = 1;
+
+
+
+            foreach (var item in listeCompteTout)
+            {
+                if (listeID.Contains(item.Id))
+                { }
+
+                else
+                {
+                    listeComptePersonnalisee.Insert(j, new
+                    {
+                        compteID = item.Id,
+                        Description = $"{item.Prenom} {item.Nom}",
+                    });
+                    j++;
+                }
+            }
+
+
+
+
+
+
+            return Json(listeComptePersonnalisee);
+        }
+
     }
+
 }

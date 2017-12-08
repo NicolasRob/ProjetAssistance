@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Http;
 @model ProjetGestionAssistance.Models.Billet
 
 @{
@@ -6,16 +7,18 @@
 
     <div class="container">
 <h2>Modification</h2>
-@if (Model.Etat == "En traitement") {
+@if (Model.Etat == "En traitement" && (Context.Session.GetInt32("_Type") < 2 || Context.Session.GetInt32("_Id")!= Model.CompteId)) {
     <h3>Votre demande est pr&eacute;sentement trait&eacute;e</h3>
 
     <h5>Titre : @Model.Titre</h5>
     <h5>Description :</h5>
     <p>@Model.Description</p>
 }
+
 else {
 
-<form asp-action="Modification">
+<form asp-action="Modification" enctype="multipart/form-data">
+
     <div class="form-horizontal">
         <h4>Billet</h4>
         <hr />
@@ -26,17 +29,28 @@ else {
         <div class="form-group">
             <label asp-for="Titre" class="col-md-2 control-label"></label>
             <div class="col-md-10">
+            @if (Context.Session.GetInt32("_Id") == Model.CompteId || Context.Session.GetInt32("_Type") >= 2) {
                 <input asp-for="Titre" class="form-control" />
                 <span asp-validation-for="Titre" class="text-danger"></span>
+            }
+            else {
+                <input asp-for="Titre" class="form-control" disabled/>
+            }
             </div>
         </div>
         <div class="form-group">
             <label asp-for="Description" class="col-md-2 control-label"></label>
             <div class="col-md-10">
+            @if (Context.Session.GetInt32("_Id") == Model.AuteurId || Context.Session.GetInt32("_Id") == Model.CompteId || Context.Session.GetInt32("_Type") >= 2) {
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
+            }
+            else {
+                <input asp-for="Description" class="form-control" />
+            }
             </div>
         </div>
+        @if (Context.Session.GetInt32("_Id") == Model.CompteId || Context.Session.GetInt32("_Type") >= 2) { 
         <div class="form-group">
             <label asp-for="Etat" class="col-md-2 control-label"></label>
                 <div class="col-md-10">
@@ -44,13 +58,20 @@ else {
                     <span asp-validation-for="Etat" class="text-danger"></span>
                 </div>
         </div>
+
+        }
+
         <div class="form-group">
-            <label asp-for="Image" class="col-md-2 control-label"></label>
+            <label  class="col-md-2 control-label">Joindre une photo</label>
             <div class="col-md-10">
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
+                <input  type="file" accept="image/*" name="fichierPhoto" class="form-control" />
+
+                
             </div>
         </div>
+
+
+
         <div class="form-group">
             <label asp-for="Commentaires" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -58,6 +79,7 @@ else {
                 <span asp-validation-for="Commentaires" class="text-danger"></span>
             </div>
         </div>
+
         <div class="form-group">
             <label asp-for="AuteurId" class="control-label col-md-2" hidden></label>
             <div class="col-md-10">
@@ -65,17 +87,20 @@ else {
                 <span asp-validation-for="AuteurId" class="text-danger"></span>
             </div>
         </div>
+
+        @if (Context.Session.GetInt32("_Type") >= 2) {
         <div class="form-group">
             <label asp-for="Departement" class="control-label col-md-2"></label>
             <div class="col-md-10">
-                <select asp-for="DepartementId" class="form-control" asp-items="ViewBag.DepartementID"></select>
+                <select asp-for="DepartementId" onchange="changerEquipeParDepartement()" class="form-control" asp-items="ViewBag.DepartementID"></select>
                 <span asp-validation-for="DepartementId" class="text-danger"></span>
             </div>
         </div>
+
         <div class="form-group">
             <label asp-for="Equipe" class="control-label col-md-2"></label>
             <div class="col-md-10">
-                <select asp-for="EquipeId" class="form-control" asp-items="ViewBag.EquipeId"></select>
+                <select asp-for="EquipeId" onchange="changerCompteParEquipe()" class="form-control" asp-items="ViewBag.EquipeId"></select>
                 <span asp-validation-for="EquipeId" class="text-danger"></span>
             </div>
         </div>
@@ -87,6 +112,7 @@ else {
                 <span asp-validation-for="CompteId" class="text-danger"></span>
             </div>
         </div>
+        }
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Sauvegarder" class="btn btn-default" />
@@ -104,3 +130,59 @@ else {
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<script>
+    // Fonction créé par : Francis Paré 17-11-2017
+    // Elle est appelé lorsque l'utilisateur sélectionne un autre département
+    // Elle change les donnés du select équipe, pour  qu'il affiche
+    // les équipes qui font parti du département sélectionner
+    function changerEquipeParDepartement() {
+        // On va chercher le Id du département selectionner 
+        var id = $("#DepartementId option:selected").val();
+        // on va chercher la liste de tout les équipes faisant partie de ce département
+        $.ajax({
+            type: "Post",
+            url: "/Billet/ListeEquipeParDepartementId/" + id,
+            datatype: "json",
+            success: function (Equipe) {
+                // On créé un nouveau select avec les nouvelles équipes
+                var nouveauSelect = "<select name =\"EquipeId\" id=\"EquipeId\" class=\"form-control\"  onchange=\"changerCompteParEquipe()\">"+
+                                        "<option selected= \"selected\" value= \"NULL\"> Aucune &eacutequipe </option>";
+                for (i= 0; i < Object.keys(Equipe).length;i++){
+                    nouveauSelect += " <option value=\""+Equipe[i].id+"\">"+Equipe[i].nom+"</option> ";
+                }
+                nouveauSelect += "</select >";
+                // On remplace ce qui est dans le select #EquipeId par le nouveau select
+                $("#EquipeId").replaceWith(nouveauSelect);
+                changerCompteParEquipe();
+            }
+
+        })
+        
+    }
+    function changerCompteParEquipe() {
+
+        var idEquipe = $("#EquipeId option:selected").val();
+        $.ajax({
+          
+            type: "Post",
+            url: "/Billet/ListeCompteParEquipeId/" + idEquipe,
+            datatype: "json",
+            success: function (Compte) {
+                // On créé un nouveau select avec les nouvelles équipes
+
+                var nouveauSelect = "<select name =\"CompteId\" id=\"CompteId\" class=\"form-control\" >";
+                    
+                for (i = 0; i < Object.keys(Compte).length; i++) {
+                    nouveauSelect += " <option value=\"" + Compte[i].compteID + "\">" + Compte[i].description + "</option> ";
+                }
+                nouveauSelect += "</select >";
+                // On remplace ce qui est dans le select #EquipeId par le nouveau select
+                $("#CompteId").replaceWith(nouveauSelect);
+                
+                
+            }
+
+
+        })
+    }
+</script>

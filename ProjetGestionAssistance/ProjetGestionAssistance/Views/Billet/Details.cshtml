@@ -1,7 +1,7 @@
 @using ProjetGestionAssistance.Models 
 @model ProjetGestionAssistance.Models.Billet 
 @using Microsoft.AspNetCore.Http;
-@{ ViewData["Title"] = "Details"; } 
+@{ ViewData["Title"] = "Details";} 
 @section Scripts{
 <script>
     $(document).ready(function () {
@@ -25,6 +25,7 @@
 <div>
     <h4>Billet</h4>
     <hr />
+
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Titre)
@@ -48,7 +49,10 @@
             @Html.DisplayNameFor(model => model.Image)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Image)
+            <!-- Bouton qui active le modal -->
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#imageModal">
+                <img src="@Url.Content("~"+Model.Image)" height="50" width="70"/>             
+            </button>
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Auteur)
@@ -61,12 +65,6 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Departement.Nom)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Commentaires)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Commentaires)
         </dd>
     </dl>
 </div>
@@ -119,4 +117,30 @@
             <p class="text-danger" id="TexteVide">@ViewData["TexteVide"]</p>
         </div>
     </form>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="imageModal" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">@Model.Titre</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <img src="@Url.Content(Model.Image)" height="100%" width="100%" /> <img/>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            </div>
+
+        </div>
+    
+    </div>
 </div>
