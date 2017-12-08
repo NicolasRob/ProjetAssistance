@@ -86,7 +86,7 @@ namespace ProjetGestionAssistance.Controllers
             if (HttpContext.Session.GetInt32("_Id") == null) {
                 return RedirectToAction("Login", "Compte");
             }
-            else if (HttpContext.Session.GetInt32("_Type") >= 3) {
+            else if (HttpContext.Session.GetInt32("_Type") < 3) {
                 return RedirectToAction("Index", "Home");
             }
 
@@ -113,7 +113,7 @@ namespace ProjetGestionAssistance.Controllers
             if (HttpContext.Session.GetInt32("_Id") == null) {
                 return RedirectToAction("Login", "Compte");
             }
-            else if (HttpContext.Session.GetInt32("_Type") >= 3) {
+            else if (HttpContext.Session.GetInt32("_Type") < 3) {
                 return RedirectToAction("Index", "Home");
             }
 
@@ -151,7 +151,7 @@ namespace ProjetGestionAssistance.Controllers
             if (HttpContext.Session.GetInt32("_Id") == null) {
                 return RedirectToAction("Login", "Compte");
             }
-            else if (HttpContext.Session.GetInt32("_Type") >= 3) {
+            else if (HttpContext.Session.GetInt32("_Type") < 3) {
                 return RedirectToAction("Index", "Home");
             }
 
@@ -179,7 +179,7 @@ namespace ProjetGestionAssistance.Controllers
             if (HttpContext.Session.GetInt32("_Id") == null) {
                 return RedirectToAction("Login", "Compte");
             }
-            else if (HttpContext.Session.GetInt32("_Type") >= 3) {
+            else if (HttpContext.Session.GetInt32("_Type") < 3) {
                 return RedirectToAction("Index", "Home");
             }
 
