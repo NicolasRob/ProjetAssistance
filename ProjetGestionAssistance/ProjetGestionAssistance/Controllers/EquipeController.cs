@@ -57,7 +57,7 @@ namespace ProjetGestionAssistance.Controllers
             if (HttpContext.Session.GetInt32("_Id") == null)
                 return RedirectToAction("Login", "Compte");
 
-            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id");
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom");
             return View();
         }
 
@@ -74,7 +74,7 @@ namespace ProjetGestionAssistance.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id", equipe.DepartementId);
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom", equipe.DepartementId);
             return View(equipe);
         }
 
@@ -94,7 +94,7 @@ namespace ProjetGestionAssistance.Controllers
             {
                 return NotFound();
             }
-            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id", equipe.DepartementId);
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom", equipe.DepartementId);
             return View(equipe);
         }
 
