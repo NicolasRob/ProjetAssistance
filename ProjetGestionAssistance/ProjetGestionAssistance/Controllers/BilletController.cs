@@ -582,7 +582,7 @@ namespace ProjetGestionAssistance.Controllers
                 }
 
                 billet.CompteId = HttpContext.Session.GetInt32("_Id");
-                billet.Etat = "EN TRAITEMENT";
+                billet.Etat = "En traitement";
                 try
                 {
                     _context.Update(billet);
