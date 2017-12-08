@@ -338,8 +338,8 @@ namespace ProjetGestionAssistance.Controllers
                     {
 
                         string filePath = "./images/billet" + billet.AuteurId + "-" + billet.Id;
-                        try
-                        {
+                        System.IO.Directory.CreateDirectory("./wwwroot/images/billets"); //crée le dossier s'il n'existe pas
+                        try {
                             //Copie du fichierPhoto dans notre dossier local
                             using (var stream = new FileStream(filePath, FileMode.Create))
                             {
@@ -424,6 +424,7 @@ namespace ProjetGestionAssistance.Controllers
                     else
                         idBilletTemp = billetTemp.Id + 1;
                     var filePath = "/images/billets/billet" + billet.AuteurId+"-"+idBilletTemp+".jpg";
+                    System.IO.Directory.CreateDirectory("./wwwroot/images/billets"); //crée le dossier s'il n'existe pas
                     try
                     {
                         //Copie du fichierPhoto dans notre dossier local
@@ -582,7 +583,7 @@ namespace ProjetGestionAssistance.Controllers
                 }
 
                 billet.CompteId = HttpContext.Session.GetInt32("_Id");
-                billet.Etat = "EN TRAITEMENT";
+                billet.Etat = "En traitement";
                 try
                 {
                     _context.Update(billet);
