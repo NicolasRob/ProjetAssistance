@@ -7,16 +7,7 @@
 
     <div class="container">
 <h2>Modification</h2>
-@if (Model.Etat == "En traitement" && (Context.Session.GetInt32("_Type") < 2 || Context.Session.GetInt32("_Id")!= Model.CompteId)) {
-    <h3>Votre demande est pr&eacute;sentement trait&eacute;e</h3>
-
-    <h5>Titre : @Model.Titre</h5>
-    <h5>Description :</h5>
-    <p>@Model.Description</p>
-}
-
-else {
-
+@if ((Context.Session.GetInt32("_Type") > 2) || (Model.Etat == "En traitement" && Context.Session.GetInt32("_Id")== Model.CompteId) || (Model.Etat=="Nouveau" && Model.AuteurId == Context.Session.GetInt32("_Id"))) {
 <form asp-action="Modification" enctype="multipart/form-data">
 
     <div class="form-horizontal">
@@ -29,38 +20,47 @@ else {
         <div class="form-group">
             <label asp-for="Titre" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-            @if (Context.Session.GetInt32("_Id") == Model.CompteId || Context.Session.GetInt32("_Type") >= 2) {
-                <input asp-for="Titre" class="form-control" />
-                <span asp-validation-for="Titre" class="text-danger"></span>
+            @if (Context.Session.GetInt32("_Id") == Model.AuteurId || Context.Session.GetInt32("_Id") == Model.CompteId || Context.Session.GetInt32("_Type") >= 2) {
+                if ((Model.Etat == "En traitement" && (Context.Session.GetInt32("_Id") == Model.CompteId))) {
+                    <input asp-for="Titre" class="form-control" readonly />
+                }
+                else {
+                    <input asp-for="Titre" class="form-control" />
+                }
             }
             else {
-                <input asp-for="Titre" class="form-control" disabled/>
+                <input asp-for="Titre" class="form-control" readonly/>
             }
+            <span asp-validation-for="Titre" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group">
             <label asp-for="Description" class="col-md-2 control-label"></label>
             <div class="col-md-10">
             @if (Context.Session.GetInt32("_Id") == Model.AuteurId || Context.Session.GetInt32("_Id") == Model.CompteId || Context.Session.GetInt32("_Type") >= 2) {
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+                if ((Model.Etat == "En traitement" && (Context.Session.GetInt32("_Id") == Model.CompteId))) {
+                    <input asp-for="Description" class="form-control" readonly/>
+                }
+                else {
+                    <input asp-for="Description" class="form-control" />
+                }
             }
             else {
                 <input asp-for="Description" class="form-control" />
             }
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
-        @if (Context.Session.GetInt32("_Id") == Model.CompteId || Context.Session.GetInt32("_Type") >= 2) { 
+        @if (Context.Session.GetInt32("_Id") == Model.CompteId || Context.Session.GetInt32("_Type") >= 2 || (Model.Etat == "En traitement" && (Context.Session.GetInt32("_Id") == Model.CompteId)) ) { 
         <div class="form-group">
             <label asp-for="Etat" class="col-md-2 control-label"></label>
-                <div class="col-md-10">
-                    <select asp-for="Etat" class="form-control" asp-items="ViewBag.Etat"></select>
-                    <span asp-validation-for="Etat" class="text-danger"></span>
-                </div>
+            <div class="col-md-10">
+                <select asp-for="Etat" class="form-control" asp-items="ViewBag.Etat"></select>
+                <span asp-validation-for="Etat" class="text-danger"></span>
+            </div>
         </div>
-
         }
-
+        @if(!((Model.Etat == "En traitement") && (Context.Session.GetInt32("_Id") == Model.CompteId))) {
         <div class="form-group">
             <label  class="col-md-2 control-label">Joindre une photo</label>
             <div class="col-md-10">
@@ -75,7 +75,7 @@ else {
                 <span asp-validation-for="AuteurId" class="text-danger"></span>
             </div>
         </div>
-
+        }
         @if (Context.Session.GetInt32("_Type") >= 2) {
         <div class="form-group">
             <label asp-for="Departement" class="control-label col-md-2"></label>
@@ -92,6 +92,7 @@ else {
                 <span asp-validation-for="EquipeId" class="text-danger"></span>
             </div>
         </div>
+        
         <div class="form-group">
             <label asp-for="Compte" class="control-label col-md-2"></label>
             <div class="col-md-10">
@@ -100,6 +101,14 @@ else {
                 <span asp-validation-for="CompteId" class="text-danger"></span>
             </div>
         </div>
+
+        }
+        else {
+            <input asp-for="Id" value="@Model.Id" type="hidden" />
+            <input asp-for="AuteurId" value="@Model.AuteurId" type="hidden" />
+            <input asp-for="DepartementId" value="@Model.DepartementId" type="hidden" />
+            <input asp-for="EquipeId" value="@Model.EquipeId" type="hidden" />
+            <input asp-for="CompteId" value="@Model.CompteId" type="hidden"/>
         }
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -108,11 +117,19 @@ else {
         </div>
     </div>
 </form>
-}
-
 <div>
     <a asp-action="Index" asp-route-sort="@ViewData["sort"]" asp-route-direction="@ViewData["direction"]" asp-route-ordre="@ViewData["ordrePrecedent"]" asp-route-page="@ViewData["pagePrecedente"]">Revenir &agrave; la liste</a>
 </div>
+}
+
+else {
+    <h3>Votre demande est pr&eacute;sentement trait&eacute;e</h3>
+
+    <h5>Titre : @Model.Titre</h5>
+    <h5>Description :</h5>
+    <p>@Model.Description</p>
+}
+
 
     </div>
 @section Scripts {
