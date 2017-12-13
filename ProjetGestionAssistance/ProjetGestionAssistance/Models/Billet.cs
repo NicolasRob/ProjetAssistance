@@ -16,7 +16,6 @@ namespace ProjetGestionAssistance.Models
         public string Description { get; set; }
         public string Etat { get; set; }
         public string Image { get; set; }
-        public string Commentaires { get; set; }
 
         public int AuteurId { get; set; }
 

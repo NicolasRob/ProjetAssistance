@@ -29,7 +29,7 @@ namespace ProjetGestionAssistance
             services.AddMvc();
 
             services.AddDbContext<ProjetGestionAssistanceContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("ProjetGestionAssistanceContext")));
+                options.UseMySQL(Configuration.GetConnectionString("ProjetGestionAssistanceContext")));
 
             services.AddDistributedMemoryCache();
 

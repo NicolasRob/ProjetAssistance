@@ -93,6 +93,7 @@ namespace ProjetGestionAssistance.Controllers
         //Cet objet sera ensuite ajouter à la BD
         //Attention: Il faut avoir créer au moins une équipe pour créer un utilisateur
         //Sinon, la liste des équipes sera vide et le formulaire ne sera jamais accepté
+        [HttpPost]
         public async Task<IActionResult> Creation([Bind("Id,Courriel,MotPasse,ConfirmationMotPasse,Nom,Prenom,Telephone,Type,Actif,EquipeId")] Compte compte)
         {
 
@@ -121,6 +122,8 @@ namespace ProjetGestionAssistance.Controllers
             //Cependant, il faut recréer la liste des Id des équipes puisqu'on a perdu le ViewData précédent
             //lorsqu'on a appuyé sur le bouton de soumission.
             ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom", compte.EquipeId);
+            var equipe = _context.Equipe.Include(eq => eq.Departement).SingleOrDefault(eq => eq.Id == compte.EquipeId);
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom", equipe.DepartementId);
             return View();
         }
         //Francis Paré : 2017-10-07
@@ -132,6 +135,8 @@ namespace ProjetGestionAssistance.Controllers
             return RedirectToAction("Login","Compte");
         }
 
+        //Affiche la page de gestion des comptes
+        //Utilise un ordre et un numéro de page pour faire fonctionner le système de tri
         public async Task<IActionResult> AfficherGestionCompte(String ordre, int? page)
         {
 
@@ -197,7 +202,7 @@ namespace ProjetGestionAssistance.Controllers
 
         }
 
-
+        //Affiche la page de modification d'un compte
         public async Task<IActionResult> AfficherModificationCompte(int? id, string ordre, int? page)
         {
             if (HttpContext.Session.GetInt32("_Id") == null || HttpContext.Session.GetInt32("_Type") < 3) {
@@ -221,6 +226,8 @@ namespace ProjetGestionAssistance.Controllers
             return View("ModificationCompte", compte);
         }
 
+        //Éxécute la modification d'un compte
+        [HttpPost]
         public async Task<IActionResult> ModifierCompte(int id, [Bind("Id,Courriel,MotPasse,ConfirmationMotPasse,Nom,Prenom,Telephone,Type,Actif,EquipeId")] Compte compte)
         {
             if (HttpContext.Session.GetInt32("_Id") == null || HttpContext.Session.GetInt32("_Type") < 3) {
@@ -256,6 +263,7 @@ namespace ProjetGestionAssistance.Controllers
             return View("ModificationCompte", compte);
         }
 
+        //Active ou désactive un compte
         public async Task<IActionResult> ModifierEtatCompte(int? id, string ordre, int? page)
         {
 
@@ -288,6 +296,7 @@ namespace ProjetGestionAssistance.Controllers
             return RedirectToAction("AfficherGestionCompte", new { ordre = ordre, page = page });
         }
 
+        //Fonction AJAX utilisé pour retourner la liste d'équipe d'un département
         public JsonResult ListeEquipeParDepartementId(int Id)
         {
             List<Equipe> listEquipe = new List<Equipe>(_context.Equipe.Where(e => e.DepartementId == Id));

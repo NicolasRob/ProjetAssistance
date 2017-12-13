@@ -287,10 +287,15 @@ namespace ProjetGestionAssistance.Controllers
             }
 
             ViewData["CompteId"] = new SelectList(listeComptePersonnalisee, "compteID", "Description");
-  
 
+            List<String> listeEtat;
             //Liste des États du billets
-            List < String > listeEtat = new List<string>(new string[] { "Nouveau", "En traitement", "Fermé" });
+            if (HttpContext.Session.GetInt32("_Type") > 2) {
+              listeEtat = new List<string>(new string[] { "Nouveau", "En traitement", "Fermé" });
+            }
+            else {
+              listeEtat = new List<string>(new string[] { "En traitement", "Fermé" });
+            }
             ViewData["Etat"] = listeEtat.Select(x => new SelectListItem()
             {
                 Text = x.ToString()
@@ -324,7 +329,10 @@ namespace ProjetGestionAssistance.Controllers
                     if (compteId > 0)
                     {
                         billet.CompteId = compteId;
-                        billet.Etat = "En traitement";
+                        if(billet.Etat == "Nouveau") {
+                            billet.Etat = "En traitement";
+                        }
+
                     }
                     else
                     {

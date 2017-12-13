@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
+	<RuntimeIdentifiers>win10-x64;win7-x64;win7-x86;osx.10.11-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,6 +26,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.1.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="1.1.1" />
+    <PackageReference Include="MySql.Data" Version="6.10.4" />
+    <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="6.10.4" />
   </ItemGroup>
 
   <ItemGroup>
