@@ -93,28 +93,7 @@
 </form>
 
 <script>
-    function changerEquipeParDepartement() {
-        // On va chercher le Id du département selectionner 
-        var id = $("#DepartementId option:selected").val();
-        // on va chercher la liste de tout les équipes faisant partie de ce département
-        $.ajax({
-            type: "Post",
-            url: "/Compte/ListeEquipeParDepartementId/" + id,
-            datatype: "json",
-            success: function (Equipe) {
-                // On créé un nouveau select avec les nouvelles équipes
-                var nouveauSelect = "<select name =\"EquipeId\" id=\"EquipeId\" class=\"form-control\"  onchange=\"changerCompteParEquipe()\">";
-                for (i= 0; i < Object.keys(Equipe).length;i++){
-                    nouveauSelect += " <option value=\""+Equipe[i].id+"\">"+Equipe[i].nom+"</option> ";
-                }
-                nouveauSelect += "</select >";
-                // On remplace ce qui est dans le select #EquipeId par le nouveau select
-                $("#EquipeId").replaceWith(nouveauSelect);
-                changerCompteParEquipe();
-            }
-
-        })
-    }
+    
 </script>
 
 @section Scripts {
