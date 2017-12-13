@@ -122,6 +122,8 @@ namespace ProjetGestionAssistance.Controllers
             //Cependant, il faut recréer la liste des Id des équipes puisqu'on a perdu le ViewData précédent
             //lorsqu'on a appuyé sur le bouton de soumission.
             ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom", compte.EquipeId);
+            var equipe = _context.Equipe.Include(eq => eq.Departement).SingleOrDefault(eq => eq.Id == compte.EquipeId);
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom", equipe.DepartementId);
             return View();
         }
         //Francis Paré : 2017-10-07
