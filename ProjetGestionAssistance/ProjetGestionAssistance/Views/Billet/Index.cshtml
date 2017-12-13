@@ -61,10 +61,10 @@
                 @Html.DisplayFor(modelItem => item.Etat)
             </td>
             <td>
-                <a asp-controller="Comptes" asp-action="Details" asp-route-id="@item.AuteurId">
+                <span>
                     @Html.DisplayFor(modelItem => item.Auteur.Prenom)
                     @Html.DisplayFor(modelItem => item.Auteur.Nom)
-                </a>
+                </span>
             </td>
             <td>
                 <a asp-controller="Departement" asp-action="Details" asp-route-id="@item.DepartementId">
@@ -73,10 +73,13 @@
 
             </td>
             <td>
-                @if (item.Etat != "En traitement")
+                @if ((item.CompteId == Context.Session.GetInt32("_Id") && item.Etat == "En traitement") || item.Etat == "Nouveau")
                 {
 
-                    <a asp-action="Modification" asp-route-sort="@ViewData["sort"]" asp-route-direction="@ViewData["direction"]" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Modifier</a> <span>|</span>
+                    <a asp-action="Modification" asp-route-sort="@ViewData["sort"]" asp-route-direction="@ViewData["direction"]" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Modifier</a> 
+                    @if(item.CompteId != Context.Session.GetInt32("_Id")) { 
+                    <span>|</span>
+
                     <a asp-action="Suppression" asp-route-id="@item.Id" asp-route-ordrePrecedent="@(ordreCourrant)" asp-route-pagePrecedente="@(numPageCourante)">Supprimer</a> 
                     @if (ordreCourrant.ToString() == "equipe")
 
@@ -91,6 +94,7 @@
                             <span>|</span>  @Html.DisplayFor(modelItem => item.Compte.Prenom);
                         }
 
+                    }
                     }
 
                 }

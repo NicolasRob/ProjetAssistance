@@ -10779,7 +10779,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Vengor\\.nuget\\packages\\": {}
+    "C:\\Users\\Joel\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
@@ -10787,14 +10787,14 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "C:\\Users\\Vengor\\Desktop\\Automne 2017\\Dev Projet\\Repo\\ProjetAssistance\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
+      "projectUniqueName": "C:\\Users\\Joel\\Documents\\École\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
       "projectName": "ProjetGestionAssistance",
-      "projectPath": "C:\\Users\\Vengor\\Desktop\\Automne 2017\\Dev Projet\\Repo\\ProjetAssistance\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
-      "packagesPath": "C:\\Users\\Vengor\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Vengor\\Desktop\\Automne 2017\\Dev Projet\\Repo\\ProjetAssistance\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\obj\\",
+      "projectPath": "C:\\Users\\Joel\\Documents\\École\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance.csproj",
+      "packagesPath": "C:\\Users\\Joel\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Joel\\Documents\\École\\ProjetAssistance\\ProjetGestionAssistance\\ProjetGestionAssistance\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Vengor\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Joel\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -10802,12 +10802,18 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "netcoreapp1.1": {
           "projectReferences": {}
         }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
       }
     },
     "frameworks": {
