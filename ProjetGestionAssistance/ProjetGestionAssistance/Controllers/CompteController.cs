@@ -38,7 +38,6 @@ namespace ProjetGestionAssistance.Controllers
         //Action appelé quand on appuie sur le bouton connection
         //Si la connection fonctionne, On set le SessionId avec son Id d'utilisateur, il sera maintenant considéré connecté
         //Puis, On le redige vers l'action Index dans le controlleur HomeController()
-        //**** A noté que l'utilisateur devra etre rediriger vers sa liste de billet lorsqu'elle sera implémenter ****
         [HttpPost]
         public IActionResult Connection([Bind("Courriel")]string Courriel, [Bind("MotPasse")]string MotPasse)
         {

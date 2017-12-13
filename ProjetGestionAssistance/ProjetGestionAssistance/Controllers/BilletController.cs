@@ -302,9 +302,7 @@ namespace ProjetGestionAssistance.Controllers
             return View(billet);
         }
 
-        // POST: Billet/Modification/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Billet/Modification/
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Modification(int id, int compteId, IFormFile fichierPhoto, [Bind("Id,Titre,Description,Image,Etat,Commentaires,AuteurId,DepartementId,EquipeId")] Billet billet)
@@ -509,24 +507,6 @@ namespace ProjetGestionAssistance.Controllers
         {
             return _context.Billet.Any(e => e.Id == id);
         }
-
-        /*public async Task<IActionResult> Commentaire(int? id, String ordrePrecedent, int? pagePrecedente)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var billet = await _context.Billet.SingleOrDefaultAsync(m => m.Id == id);
-            if (billet == null)
-            {
-                return NotFound();
-            }
-            var commentaire = new Commentaire();
-            commentaire.Billet = billet;
-            ViewData["ordrePrecedent"] = ordrePrecedent;
-            ViewData["pagePrecedente"] = pagePrecedente ?? 1;
-            return View(commentaire);
-        }*/
 
         public async Task<IActionResult> AjouterCommentaire(string Texte, int BilletId, String ordrePrecedent, int? pagePrecedente)
         {
