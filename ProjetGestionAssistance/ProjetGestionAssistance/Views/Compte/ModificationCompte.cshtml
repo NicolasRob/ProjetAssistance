@@ -73,7 +73,7 @@
         <div class="form-group">
             <label class="control-label col-md-2">Département</label>
             <div class="col-md-10">
-                <select name="DepartementId" id="DepartementId" onchange="changerEquipeParDepartement()" class="form-control" asp-items="ViewBag.DepartementID"></select>
+                <select name="DepartementId" id="DepartementId" onchange="changerEquipeParDepartement2()" class="form-control" asp-items="ViewBag.DepartementID"></select>
             </div>
         </div>
         <div class="form-group">
@@ -98,6 +98,11 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+            $(document).ready(function () {
+                changerEquipeParDepartement2();
+            });
+</script>
 }
 
 

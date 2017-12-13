@@ -62,7 +62,7 @@ function changerEquipeParDepartement2() {
         datatype: "json",
         success: function (Equipe) {
             // On créé un nouveau select avec les nouvelles équipes
-            var nouveauSelect = "<select name =\"EquipeId\" id=\"EquipeId\" class=\"form-control\"  onchange=\"changerCompteParEquipe()\">";
+            var nouveauSelect = "<select name =\"EquipeId\" id=\"EquipeId\" class=\"form-control\"  onchange=\"changerCompteParEquipe2()\">";
             for (i = 0; i < Object.keys(Equipe).length; i++) {
                 nouveauSelect += " <option value=\"" + Equipe[i].id + "\">" + Equipe[i].nom + "</option> ";
             }
