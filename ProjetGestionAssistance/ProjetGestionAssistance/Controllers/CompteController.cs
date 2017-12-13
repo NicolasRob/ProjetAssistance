@@ -42,6 +42,10 @@ namespace ProjetGestionAssistance.Controllers
         [HttpPost]
         public IActionResult Connection([Bind("Courriel")]string Courriel, [Bind("MotPasse")]string MotPasse)
         {
+            if (HttpContext.Session.GetInt32("_Id") != null) {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (ModelState.IsValid)
             {
                 //Compte tempCompte = _context.Compte.SingleOrDefault(cpt => cpt.Courriel == Courriel & cpt.MotPasse == MotPasse);
@@ -76,8 +80,12 @@ namespace ProjetGestionAssistance.Controllers
         //Action qui affiche la page de création de compte
         public IActionResult AffichageCreation()
         {
+            if (HttpContext.Session.GetInt32("_Id") != null) {
+                return RedirectToAction("Index", "Home");
+            }
             //Ce ViewData sera utilisé dans le formulaire de création pour afficher une liste des ID des équipes de la BD
             ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom");
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom");
             return View("Creation");
         }
 
@@ -88,6 +96,11 @@ namespace ProjetGestionAssistance.Controllers
         //Sinon, la liste des équipes sera vide et le formulaire ne sera jamais accepté
         public async Task<IActionResult> Creation([Bind("Id,Courriel,MotPasse,ConfirmationMotPasse,Nom,Prenom,Telephone,Type,Actif,EquipeId")] Compte compte)
         {
+
+            if (HttpContext.Session.GetInt32("_Id") != null) {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (_context.Compte.SingleOrDefault(cpt => cpt.Courriel == compte.Courriel) == null)
             {
                 compte.Type = 1;
@@ -122,6 +135,11 @@ namespace ProjetGestionAssistance.Controllers
 
         public async Task<IActionResult> AfficherGestionCompte(String ordre, int? page)
         {
+
+            if (HttpContext.Session.GetInt32("_Id") == null || HttpContext.Session.GetInt32("_Type") < 3) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             //nombre de billet par page
             int nbElementParPage = 5;
 
@@ -183,12 +201,16 @@ namespace ProjetGestionAssistance.Controllers
 
         public async Task<IActionResult> AfficherModificationCompte(int? id, string ordre, int? page)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null || HttpContext.Session.GetInt32("_Type") < 3) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var compte = await _context.Compte.SingleOrDefaultAsync(m => m.Id == id);
+            var compte = await _context.Compte.Include(m => m.Equipe).SingleOrDefaultAsync(m => m.Id == id);
             if (compte == null)
             {
                 return NotFound();
@@ -196,11 +218,16 @@ namespace ProjetGestionAssistance.Controllers
             ViewData["ordre"] = ordre;
             ViewData["page"] = page;
             ViewData["EquipeId"] = new SelectList(_context.Set<Equipe>(), "Id", "Nom", compte.EquipeId);
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom", compte.Equipe.DepartementId);
             return View("ModificationCompte", compte);
         }
 
         public async Task<IActionResult> ModifierCompte(int id, [Bind("Id,Courriel,MotPasse,ConfirmationMotPasse,Nom,Prenom,Telephone,Type,Actif,EquipeId")] Compte compte)
         {
+            if (HttpContext.Session.GetInt32("_Id") == null || HttpContext.Session.GetInt32("_Type") < 3) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             if (id != compte.Id)
             {
                 return NotFound();
@@ -232,6 +259,11 @@ namespace ProjetGestionAssistance.Controllers
 
         public async Task<IActionResult> ModifierEtatCompte(int? id, string ordre, int? page)
         {
+
+            if (HttpContext.Session.GetInt32("_Id") == null || HttpContext.Session.GetInt32("_Type") < 3) {
+                return RedirectToAction("Login", "Compte");
+            }
+
             Compte compte = await _context.Compte.SingleOrDefaultAsync(c => c.Id == id);
             compte.Actif = !compte.Actif;
             //compte.ConfirmationMotPasse = compte.MotPasse;
@@ -255,6 +287,12 @@ namespace ProjetGestionAssistance.Controllers
                 }
             }
             return RedirectToAction("AfficherGestionCompte", new { ordre = ordre, page = page });
+        }
+
+        public JsonResult ListeEquipeParDepartementId(int Id)
+        {
+            List<Equipe> listEquipe = new List<Equipe>(_context.Equipe.Where(e => e.DepartementId == Id));
+            return Json(listEquipe);
         }
 
         private bool CompteExists(int id)

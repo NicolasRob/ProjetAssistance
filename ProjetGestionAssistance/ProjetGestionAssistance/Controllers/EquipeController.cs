@@ -10,12 +10,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace ProjetGestionAssistance.Controllers
 {
-    public class EquipesController : Controller
+    public class EquipeController : Controller
     {
         private readonly ProjetGestionAssistanceContext _context;
-        const string SessionId = "";
 
-        public EquipesController(ProjetGestionAssistanceContext context)
+        public EquipeController(ProjetGestionAssistanceContext context)
         {
             _context = context;    
         }
@@ -23,7 +22,7 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Equipes
         public async Task<IActionResult> Index()
         {
-            if (HttpContext.Session.GetInt32(SessionId) == null)
+            if (HttpContext.Session.GetInt32("_Id") == null)
                 return RedirectToAction("Login", "Compte");
 
             var projetGestionAssistanceContext = _context.Equipe.Include(e => e.Departement);
@@ -33,7 +32,7 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Equipes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (HttpContext.Session.GetInt32(SessionId) == null)
+            if (HttpContext.Session.GetInt32("_Id") == null)
                 return RedirectToAction("Login", "Compte");
 
             if (id == null)
@@ -55,10 +54,10 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Equipes/Create
         public IActionResult Create()
         {
-            if (HttpContext.Session.GetInt32(SessionId) == null)
+            if (HttpContext.Session.GetInt32("_Id") == null)
                 return RedirectToAction("Login", "Compte");
 
-            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id");
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom");
             return View();
         }
 
@@ -75,14 +74,14 @@ namespace ProjetGestionAssistance.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id", equipe.DepartementId);
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom", equipe.DepartementId);
             return View(equipe);
         }
 
         // GET: Equipes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (HttpContext.Session.GetInt32(SessionId) == null)
+            if (HttpContext.Session.GetInt32("_Id") == null)
                 return RedirectToAction("Login", "Compte");
 
             if (id == null)
@@ -95,7 +94,7 @@ namespace ProjetGestionAssistance.Controllers
             {
                 return NotFound();
             }
-            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Id", equipe.DepartementId);
+            ViewData["DepartementId"] = new SelectList(_context.Departement, "Id", "Nom", equipe.DepartementId);
             return View(equipe);
         }
 
@@ -106,7 +105,7 @@ namespace ProjetGestionAssistance.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nom,DepartementId")] Equipe equipe)
         {
-            if (HttpContext.Session.GetInt32(SessionId) == null)
+            if (HttpContext.Session.GetInt32("_Id") == null)
                 return RedirectToAction("Login", "Compte");
 
             if (id != equipe.Id)
@@ -141,7 +140,7 @@ namespace ProjetGestionAssistance.Controllers
         // GET: Equipes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (HttpContext.Session.GetInt32(SessionId) == null)
+            if (HttpContext.Session.GetInt32("_Id") == null)
                 return RedirectToAction("Login", "Compte");
 
             if (id == null)
